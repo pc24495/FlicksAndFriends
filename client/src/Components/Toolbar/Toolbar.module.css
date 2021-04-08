@@ -11,10 +11,12 @@
   padding: 0 20px;
   box-sizing: border-box;
   z-index: 90;
+  margin: 0px;
 }
 
 .Toolbar nav {
   height: 100%;
+  margin: 0px;
 }
 
 @media (max-width: 499px) {
