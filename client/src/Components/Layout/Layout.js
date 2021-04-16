@@ -8,8 +8,7 @@ class Layout extends Component {
   render() {
     return (
       <Aux>
-        <Toolbar height="11%" />
-
+        <Toolbar />
         <main className={classes.content}>{this.props.children}</main>
       </Aux>
     );

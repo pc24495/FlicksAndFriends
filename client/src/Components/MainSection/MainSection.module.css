@@ -7,6 +7,6 @@
   background-color: yellow;
   position: auto;
   margin: 0px;
-  position: fixed;
+  position: absolute;
   overflow: scroll;
 }

@@ -29,7 +29,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 1000 * 60 * 60,
+      maxAge: 1000 * 60 * 5,
     },
   })
 );
@@ -138,15 +138,51 @@ app.get("/api/PopulateDatabases", async (req, res, next) => {
   res.json(showData);
 });
 
-// app.post("/api/register", (req,res) => {
-//   const username = req.body.username;
-//   const password = req.body.password;
+app.post("/api/register", (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
 
-//   bcrypt.hash(password,saltRounds, (err,hash) => {
+  bcrypt.hash(password, saltRounds, (err, hash) => {
+    db.query(
+      "INSERT INTO users(username, password) values($1,$2)",
+      [username, hash],
+      (err, result) => {
+        if (err) {
+          console.log(err);
+        }
+      }
+    );
+  });
+});
 
-//   });
+app.post("/api/login", (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
 
-// });
+  db.query(
+    "SELECT * FROM users WHERE username = $1",
+    [username],
+    (err, result) => {
+      if (err) {
+        res.send({ err: err });
+      }
+
+      if (result.length > 0) {
+        bcrypt.compare(password, result[0].password, (error, response) => {
+          if (response) {
+            req.session.user = result;
+            console.log(res.session.user);
+            res.send(result);
+          } else {
+            res.send({ message: "Wrong username/password combination!" });
+          }
+        });
+      } else {
+        res.send({ message: "User doesn't exist!" });
+      }
+    }
+  );
+});
 
 const PORT = process.env.port || 5000;
 

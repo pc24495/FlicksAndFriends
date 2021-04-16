@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import NavigationItem from "./NavigationItem/NavigationItem.js";
 import classes from "./NavigationItems.module.css";
 import axios from "axios";
 
@@ -16,15 +15,7 @@ class NavigationItems extends Component {
   };
 
   render() {
-    return (
-      <ul className={classes.NavigationItems}>
-        <NavigationItem link="/" exact>
-          Burger Builder
-        </NavigationItem>
-        <NavigationItem link="/orders">Orders</NavigationItem>
-        <button onClick={this.getShows}>Test Button</button>
-      </ul>
-    );
+    return <ul className={classes.NavigationItems}>{this.props.children}</ul>;
   }
 }
 
