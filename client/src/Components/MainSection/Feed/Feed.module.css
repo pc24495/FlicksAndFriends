@@ -1,11 +1,17 @@
 .Feed {
-  height: 1000px;
+  min-height: calc(100vh - 56px);
+  height: 100%;
   position: relative;
-  width: 40%;
+  width: 570px;
   left: 30%;
   border-left: 2px solid black;
   border-right: 2px solid black;
   background-color: green;
-  top: 0;
+  top: 0px;
   margin: 0px;
+  overflow: scroll;
+}
+
+.Feed::-webkit-scrollbar {
+  display: none;
 }

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import classes from "./NavigationItems.module.css";
 import axios from "axios";
+import { connect } from "react-redux";
 
 class NavigationItems extends Component {
   state = {
@@ -19,4 +20,8 @@ class NavigationItems extends Component {
   }
 }
 
-export default NavigationItems;
+const mapStateToProps = () => {
+  return {};
+};
+
+export default connect()(NavigationItems);

@@ -1,0 +1,9 @@
+.Post {
+  height: 200px;
+  width: 100%;
+  border: solid purple 3px;
+  margin: 0px;
+  left: 0px;
+  position: relative;
+  box-sizing: border-box;
+}

@@ -2,9 +2,10 @@ import React from "react";
 import classes from "./Toolbar.module.css";
 import NavigationItems from "../NavigationItems/NavigationItems.js";
 import NavigationItem from "../NavigationItems/NavigationItem/NavigationItem.js";
-import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+// import axios from "axios";
 
-const toolbar = (props) => {
+const Toolbar = (props) => {
   // const getShowsData = async () => {
   //   console.log("Hey");
   //   axios
@@ -21,6 +22,14 @@ const toolbar = (props) => {
   //     })
   //     .then((res) => console.log(res));
   // };
+  // const counter = useSelector((state) => state.counter);
+  const counter = useSelector((state) => state.counter);
+
+  const dispatch = useDispatch();
+
+  const incrementHandler = () => {
+    dispatch({ type: "INCREMENT" });
+  };
 
   return (
     <header className={classes.Toolbar}>
@@ -36,5 +45,5 @@ const toolbar = (props) => {
     </header>
   );
 };
-//
-export default toolbar;
+
+export default Toolbar;
