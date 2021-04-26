@@ -1,11 +1,18 @@
 import React, { Component } from "react";
 import classes from "./Backdrop.module.css";
 import Modal from "./Modal.js";
+import { connect } from "react-redux";
 
-export default class Backdrop extends Component {
+class Backdrop extends Component {
+  closeBackdropClick = (event) => {
+    if (event.target.className.includes("Backdrop")) {
+      this.props.closeBackdrop();
+    }
+  };
+
   render() {
-    return (
-      <div className={classes.Backdrop}>
+    return this.props.showBackdrop ? (
+      <div className={classes.Backdrop} onClick={this.closeBackdropClick}>
         <Modal>
           <div
             style={{
@@ -23,6 +30,20 @@ export default class Backdrop extends Component {
           ></div>
         </Modal>
       </div>
-    );
+    ) : null;
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    showBackdrop: state.showBackdrop,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    closeBackdrop: () => dispatch({ type: "CLOSE_BACKDROP" }),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Backdrop);

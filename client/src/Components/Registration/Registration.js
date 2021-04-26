@@ -3,8 +3,9 @@ import classes from "./Registration.module.css";
 import Input from "./Input/Input.js";
 import Button from "../../Components/Button/Button.js";
 import axios from "../../../../server/node_modules/axios";
+import { connect } from "react-redux";
 
-export default class Registration extends Component {
+class Registration extends Component {
   state = {
     orderForm: {
       username: {
@@ -130,7 +131,6 @@ export default class Registration extends Component {
       updatedOrderForm.password_confirmation.valid = true;
       updatedOrderForm.password_confirmation.displayWarning = false;
       updatedOrderForm.password_confirmation.warningMessages.length = 0;
-      updatedOrderForm.password_confirmation.valid = true;
     }
     for (let key in updatedOrderForm) {
       valid = valid && updatedOrderForm[key].valid;
@@ -138,10 +138,39 @@ export default class Registration extends Component {
 
     if (valid) {
       console.log("Valid!");
-      axios.post("http://localhost:3000/api/register", {
-        username: updatedOrderForm.username.value,
-        password: updatedOrderForm.password.value,
-      });
+      axios
+        .post("http://localhost:3000/api/register", {
+          username: updatedOrderForm.username.value,
+          password: updatedOrderForm.password.value,
+        })
+        .then((res) => {
+          console.log(res.data);
+          if (res.data === "User already exists") {
+            updatedOrderForm.username.valid = false;
+            updatedOrderForm.username.displayWarning = true;
+            updatedOrderForm.username.warningMessages.push(
+              "Username is taken, please select a different one"
+            );
+          } else {
+            console.log("Username is unique!");
+            axios
+              .post("http://localhost:3000/api/login", {
+                username: updatedOrderForm.username.value.trim(),
+                password: updatedOrderForm.password.value,
+              })
+              .then((res) => {
+                console.log("Setting token");
+                localStorage.setItem("token", res.data.token);
+
+                this.props.login(res.data);
+                this.props.history.push("/");
+              });
+          }
+          for (let key in updatedOrderForm) {
+            valid = valid && updatedOrderForm[key].valid;
+          }
+          this.setState({ orderForm: updatedOrderForm, isValid: valid });
+        });
     } else {
       this.setState({ orderForm: updatedOrderForm, isValid: valid });
     }
@@ -186,3 +215,19 @@ export default class Registration extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    loggedIn: state.loggedIn,
+    user: state.user,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    login: (user) => dispatch({ type: "LOGIN", user: user }),
+    logout: () => dispatch({ type: "LOGOUT" }),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Registration);

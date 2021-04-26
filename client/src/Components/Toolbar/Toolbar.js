@@ -22,13 +22,17 @@ const Toolbar = (props) => {
   //     })
   //     .then((res) => console.log(res));
   // };
+  const loggedIn = useSelector((state) => state.loggedIn);
   // const counter = useSelector((state) => state.counter);
-  const counter = useSelector((state) => state.counter);
 
   const dispatch = useDispatch();
 
-  const incrementHandler = () => {
-    dispatch({ type: "INCREMENT" });
+  console.log(loggedIn);
+
+  const logout = () => {
+    console.log("LOGGING OUT");
+    localStorage.removeItem("token");
+    dispatch({ type: "LOGOUT" });
   };
 
   return (
@@ -36,10 +40,21 @@ const Toolbar = (props) => {
       <nav className={classes.DesktopOnly}>
         <NavigationItems>
           <NavigationItem link="/" exact>
-            Burger Builder
+            Home
           </NavigationItem>
-          <NavigationItem link="/registration">Registration</NavigationItem>
-          <NavigationItem link="/login">Login</NavigationItem>
+
+          {loggedIn ? (
+            <div className={classes.Logout} onClick={logout}>
+              <p>Logout</p>
+            </div>
+          ) : null}
+
+          {loggedIn ? null : (
+            <NavigationItem link="/registration">Registration</NavigationItem>
+          )}
+          {loggedIn ? null : (
+            <NavigationItem link="/login">Login</NavigationItem>
+          )}
         </NavigationItems>
       </nav>
     </header>

@@ -20,8 +20,8 @@ class NavigationItems extends Component {
   }
 }
 
-const mapStateToProps = () => {
-  return {};
-};
+// const mapStateToProps = () => {
+//   return {};
+// };
 
 export default connect()(NavigationItems);

@@ -11,3 +11,12 @@
   margin: 0px;
   position: absolute;
 }
+
+.TestClass {
+  background-color: plum;
+  width: 100px;
+  height: 100px;
+  left: 32%;
+  top: 40px;
+  position: relative;
+}

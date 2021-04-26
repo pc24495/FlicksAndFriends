@@ -1,0 +1,28 @@
+.Sidebar {
+  min-height: calc(100vh - 56px);
+  height: 100%;
+  position: relative;
+  width: 26%;
+  left: 0%;
+  background-color: yellow;
+  top: 0px;
+  margin: 0px;
+  border-top: solid purple 3px;
+}
+
+.Username {
+  max-width: 95%;
+  width: fit-content;
+  position: relative;
+  font: inherit;
+  text-decoration: underline;
+  font-weight: bold;
+  font-size: 40px;
+  left: 15%;
+  top: 20px;
+  display: block;
+  margin: 0px;
+}
+
+.ShowTag {
+}

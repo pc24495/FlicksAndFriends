@@ -9,6 +9,7 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 
 const saltRounds = 10;
+const jwt = require("jsonwebtoken");
 
 const app = express();
 
@@ -83,7 +84,7 @@ app.get("/api/PopulateDatabases", async (req, res, next) => {
               .get(episodeQueryString)
               .then((res) => res.data.episodes);
             // console.log(episodeResults);
-            console.log(episodeResults);
+            // console.log(episodeResults);
             let fixedEpisodes = episodeResults.map((episode) => {
               return {
                 episode_id: episode.id,
@@ -123,7 +124,7 @@ app.get("/api/PopulateDatabases", async (req, res, next) => {
   }
 
   showData.forEach(async (show) => {
-    console.log(show.seasons);
+    // console.log(show.seasons);
     await db.query(
       "INSERT INTO shows(tv_id, title, popularity, episodes) values($1, $2, $3, $4)",
       [
@@ -137,8 +138,9 @@ app.get("/api/PopulateDatabases", async (req, res, next) => {
 
   res.json(showData);
 });
+//
 
-app.post("/api/register", (req, res) => {
+app.post("/api/register", async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
 
@@ -149,10 +151,59 @@ app.post("/api/register", (req, res) => {
       (err, result) => {
         if (err) {
           console.log(err);
+          res.send("User already exists");
+        } else {
+          res.send("Valid!");
         }
+        //
       }
     );
   });
+});
+
+const verifyJWT = (req, res, next) => {
+  const token = req.headers["x-access-token"];
+
+  if (!token) {
+    res.send("Hey, we need a token");
+  } else {
+    jwt.verify(token, process.env.SECRET, (err, decoded) => {
+      if (err) {
+        console.log("Error verifying");
+        res.json({ auth: false, message: "You failed to authenticate" });
+      } else {
+        req.userID = decoded.id;
+        next();
+      }
+    });
+  }
+};
+//
+app.get("/api/getUserData", verifyJWT, (req, res) => {
+  db.query(
+    "SELECT * FROM users WHERE user_id=$1",
+    [req.userID],
+    (err, result) => {
+      if (err) {
+        console.log("Error");
+      } else {
+        console.log(result.rows);
+        res.json({ auth: true, userData: result.rows[0] });
+      }
+    }
+  );
+});
+
+app.get("/api/isUserAuth", verifyJWT, (req, res) => {
+  res.send("Hey, you're authenticated!");
+});
+
+app.get("/api/login", (req, res) => {
+  if (req.session.user) {
+    res.send({ loggedIn: true, user: req.session.user });
+  } else {
+    res.send({ loggedIn: false });
+  }
 });
 
 app.post("/api/login", (req, res) => {
@@ -160,25 +211,34 @@ app.post("/api/login", (req, res) => {
   const password = req.body.password;
 
   db.query(
-    "SELECT * FROM users WHERE username = $1",
+    "SELECT * FROM users WHERE username=$1",
     [username],
     (err, result) => {
       if (err) {
+        console.log("Error fetching from database!");
         res.send({ err: err });
-      }
-
-      if (result.length > 0) {
-        bcrypt.compare(password, result[0].password, (error, response) => {
-          if (response) {
-            req.session.user = result;
-            console.log(res.session.user);
-            res.send(result);
-          } else {
-            res.send({ message: "Wrong username/password combination!" });
-          }
-        });
       } else {
-        res.send({ message: "User doesn't exist!" });
+        let dbResults = result.rows;
+        if (dbResults.length > 0) {
+          bcrypt.compare(password, dbResults[0].password, (error, response) => {
+            if (response) {
+              req.session.user = dbResults[0];
+
+              const id = dbResults[0].user_id;
+              const token = jwt.sign({ id }, process.env.SECRET, {
+                expiresIn: "300s",
+              });
+              res.json({ auth: true, token: token, result: dbResults[0] });
+            } else {
+              res.send({
+                auth: false,
+                message: "Wrong username/password combination!",
+              });
+            }
+          });
+        } else {
+          res.send({ message: "User doesn't exist!" });
+        }
       }
     }
   );

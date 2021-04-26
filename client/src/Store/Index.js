@@ -1,11 +1,15 @@
 import { createStore } from "redux";
 
-// const initialState = {
-//   counter: 0,
-//   user: null,
-// };
+const initialState = {
+  counter: 0,
+  username: null,
+  loggedIn: false,
+  backdropComponent: "Modal",
+  showBackdrop: false,
+  shows: [],
+};
 
-const reducer = (state = { counter: 0 }, action) => {
+const reducer = (state = initialState, action) => {
   if (action.type === "INCREMENT") {
     return {
       ...state,
@@ -18,12 +22,34 @@ const reducer = (state = { counter: 0 }, action) => {
       ...state,
       counter: state.counter - 1,
     };
-  } else {
-    return state;
   }
+
+  if (action.type === "LOGIN") {
+    return {
+      ...state,
+      loggedIn: true,
+      username: action.username,
+    };
+  }
+
+  if (action.type === "LOGOUT") {
+    return {
+      ...state,
+      loggedIn: false,
+      username: null,
+    };
+  }
+
+  if (action.type === "CLOSE_BACKDROP") {
+    return {
+      ...state,
+      showBackdrop: false,
+    };
+  }
+
+  return state;
 };
 
 const store = createStore(reducer);
-console.log(store);
 
 export default store;
