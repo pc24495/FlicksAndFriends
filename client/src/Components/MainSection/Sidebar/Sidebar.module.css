@@ -1,28 +1,70 @@
 .Sidebar {
   min-height: calc(100vh - 56px);
   height: 100%;
-  position: relative;
+  position: fixed;
   width: 26%;
   left: 0%;
   background-color: yellow;
-  top: 0px;
+  top: 56px;
   margin: 0px;
   border-top: solid purple 3px;
+  overflow: auto;
 }
 
 .Username {
-  max-width: 95%;
   width: fit-content;
   position: relative;
   font: inherit;
   text-decoration: underline;
   font-weight: bold;
-  font-size: 40px;
-  left: 15%;
   top: 20px;
   display: block;
-  margin: 0px;
+  margin: auto;
 }
 
+/* .Username {
+    max-width: 80%;
+    width: fit-content;
+    position: relative;
+    font: inherit;
+    text-decoration: underline;
+    font-weight: bold;
+    left: 15%;
+    top: 20px;
+    display: block;
+    margin: 0px;
+  } */
+
 .ShowTag {
+  width: fit-content;
+  max-width: 70%;
+  font: inherit;
+  font-weight: bold;
+  border-radius: 24px;
+  padding: 10px;
+  background-color: magenta;
+  overflow-wrap: normal;
+  margin: 10px;
+  font-size: 20px;
+  position: relative;
+  top: 20px;
+  left: 30px;
+  box-sizing: border-box;
+  color: white;
+}
+
+@font-face {
+  font-family: "Montserrat", sans-serif;
+  src: url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap");
+}
+
+.Subscriptions {
+  width: fit-content;
+  font-family: "Montserrat", sans-serif;
+  font-size: 20px;
+  color: gray;
+  text-decoration: underline;
+  position: relative;
+  top: 30px;
+  left: 40px;
 }

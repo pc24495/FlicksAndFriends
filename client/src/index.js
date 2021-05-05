@@ -8,7 +8,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./Store/Index";
 
-console.log(store);
+// console.log(store);
 
 const app = (
   <React.StrictMode>

@@ -76,12 +76,12 @@ class Login extends Component {
           password: updatedOrderForm.password.value,
         })
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
 
           if (res.data.auth) {
             localStorage.setItem("token", res.data.token);
             this.props.login(res.data.result.username);
-            console.log(res.data);
+            // console.log(res.data);
             this.props.history.push("/");
           } else {
             updatedOrderForm.password.warningMessages.length = 0;
@@ -98,19 +98,18 @@ class Login extends Component {
         });
       //   console.log(response);
     } else {
-      console.log("Invalid!");
+      // console.log("Invalid!");
       this.setState({ orderForm: updatedOrderForm, isValid: valid });
     }
   };
 
   userAuthenticated = () => {
-    axios
-      .get("http://localhost:3000/api/isUserAuth", {
-        headers: {
-          "x-access-token": localStorage.getItem("token"),
-        },
-      })
-      .then((response) => console.log(response));
+    axios.get("http://localhost:3000/api/isUserAuth", {
+      headers: {
+        "x-access-token": localStorage.getItem("token"),
+      },
+    });
+    // .then((response) => console.log(response));
   };
 
   inputChangedHandler = (event, inputIdentifier) => {

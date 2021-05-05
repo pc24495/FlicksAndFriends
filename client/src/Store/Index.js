@@ -6,7 +6,15 @@ const initialState = {
   loggedIn: false,
   backdropComponent: "Modal",
   showBackdrop: false,
-  shows: [],
+  shows: [
+    // { title: "Breaking Bad" },
+    // { title: "Game of Thrones" },
+    // { title: "Seinfeld" },
+    // {
+    //   title:
+    //     "This Is A Really Long Show Title It's to Test that the show title wrap works",
+    // },
+  ],
 };
 
 const reducer = (state = initialState, action) => {
@@ -37,6 +45,7 @@ const reducer = (state = initialState, action) => {
       ...state,
       loggedIn: false,
       username: null,
+      shows: [],
     };
   }
 
@@ -44,6 +53,14 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       showBackdrop: false,
+    };
+  }
+
+  if (action.type === "UPDATE_SHOWS") {
+    // console.log(action.shows);
+    return {
+      ...state,
+      shows: action.shows,
     };
   }
 

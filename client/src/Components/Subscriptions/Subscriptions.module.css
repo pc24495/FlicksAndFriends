@@ -1,0 +1,15 @@
+.Selector {
+  display: grid;
+  grid-template-columns: 33.3% 33.3% 33.3%;
+  grid-gap: 1em;
+  position: relative;
+  top: 20px;
+  margin-bottom: 50px;
+}
+
+.ShowTags {
+  width: 90%;
+  border-bottom: solid gray 1px;
+  position: relative;
+  min-height: 40px;
+}

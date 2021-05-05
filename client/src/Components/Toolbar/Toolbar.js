@@ -27,7 +27,7 @@ const Toolbar = (props) => {
 
   const dispatch = useDispatch();
 
-  console.log(loggedIn);
+  // console.log(loggedIn);
 
   const logout = () => {
     console.log("LOGGING OUT");
@@ -42,7 +42,6 @@ const Toolbar = (props) => {
           <NavigationItem link="/" exact>
             Home
           </NavigationItem>
-
           {loggedIn ? (
             <div className={classes.Logout} onClick={logout}>
               <p>Logout</p>
