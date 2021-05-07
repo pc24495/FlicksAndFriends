@@ -8,8 +8,66 @@
 }
 
 .ShowTags {
-  width: 90%;
+  width: 94vw;
+  left: 4vw;
   border-bottom: solid gray 1px;
-  position: relative;
+  position: fixed;
   min-height: 40px;
+  position: sticky;
+  z-index: 10;
+  top: 56px;
+  margin-bottom: 10px;
+  background-color: white;
+  display: block;
+}
+
+.ShowTagContainer {
+  position: relative;
+  display: block;
+  top: 15px;
+}
+
+.ShowTag {
+  display: inline-block;
+  border: solid black 1px;
+  border-radius: 19px;
+  padding: 7px;
+  margin-right: 3px;
+  margin-left: 3px;
+  margin-bottom: 6px;
+  margin-top: 0px;
+  background-color: #e7eff9;
+  background-image: linear-gradient(315deg, #e7eff9 0%, #cfd6e6 74%);
+}
+
+.ButtonContainer {
+  display: flex;
+  position: relative;
+  width: 100%;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-top: 0px;
+}
+
+.Button {
+  padding: 0.7em;
+  margin: 0 0.3em 0.3em 0;
+  border-radius: 0.2em;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  color: #ffffff;
+  background-color: #3369ff;
+  box-shadow: inset 0 -0.6em 1em -0.35em rgba(0, 0, 0, 0.17),
+    inset 0 0.6em 2em -0.3em rgba(255, 255, 255, 0.15),
+    inset 0 0 0em 0.05em rgba(255, 255, 255, 0.12);
+  text-align: center;
+  right: 0px;
+  position: relative;
+  right: 20px;
+}
+
+.CloseButton:hover {
+  text-decoration: underline;
 }

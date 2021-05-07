@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import classes from "./ShowBox.module.css";
 
@@ -9,6 +9,31 @@ export default function ShowBox(props) {
   const [currentEpisode, setCurrentEpisode] = useState(
     currentSeason.episodes[0]
   );
+  const [subscription, setSubscription] = useState({
+    show_title: props.show.title,
+    show_id: props.show.tv_id,
+    current_season_name: currentSeason.season_name,
+    current_season_id: currentSeason.season_id,
+    current_episode_name: currentEpisode.title,
+    current_episode_id: currentEpisode.episode_id,
+    current_episode_air_date: currentEpisode.air_date,
+  });
+
+  useEffect(() => {
+    setCurrentEpisode(currentSeason.episodes[0]);
+  }, [currentSeason]);
+
+  useEffect(() => {
+    setSubscription({
+      show_title: props.show.title,
+      show_id: props.show.tv_id,
+      current_season_name: currentSeason.season_name,
+      current_season_id: currentSeason.season_id,
+      current_episode_name: currentEpisode.title,
+      current_episode_id: currentEpisode.episode_id,
+      current_episode_air_date: currentEpisode.air_date,
+    });
+  }, [currentEpisode]);
 
   const changeSeason = (event) => {
     const season_name = event.target.value;
@@ -35,6 +60,7 @@ export default function ShowBox(props) {
       className={classes.ShowBox}
       id={props.id}
       style={{ height: `${props.maxHeight}px` }}
+      data-subscription={JSON.stringify(subscription)}
     >
       <img
         src={"data:image/jpeg;base64," + props.poster}
@@ -45,7 +71,7 @@ export default function ShowBox(props) {
         <h2 style={{ maxWidth: "80%" }}> {props.show.title}</h2>
         <select
           type="select"
-          style={{ position: "relative", maxWidth: "80%" }}
+          style={{ position: "relative", minWidth: "80%", textAlign: "center" }}
           onChange={(event) => changeSeason(event)}
         >
           {props.show.episodes.map((season) => (
@@ -61,9 +87,11 @@ export default function ShowBox(props) {
         <select
           type="select"
           style={{
+            top: "10px",
             position: "relative",
-            maxWidth: "80%",
+            width: "80%",
             wordWrap: "break-word",
+            textOverflow: "ellipsis",
           }}
           onChange={(event) => changeEpisode(event)}
         >

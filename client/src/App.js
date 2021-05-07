@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import MainSection from "./Components/MainSection/MainSection.js";
 import Subscriptions from "./Components/Subscriptions/Subscriptions.js";
 import axios from "axios";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, useHistory } from "react-router-dom";
 import Registration from "./Components/Registration/Registration.js";
 import Login from "./Components/Login/Login.js";
 import { useEffect } from "react";
@@ -12,7 +12,8 @@ import { useEffect } from "react";
 // import TestComponent from "./Components/TestComponent.js";
 // import TestComponent from "./Components/TestComponent.js";
 
-function App() {
+function App(props) {
+  const history = useHistory();
   axios.defaults.withCredentials = true;
 
   const loggedIn = useSelector((state) => state.loggedIn);
@@ -45,10 +46,12 @@ function App() {
             getShows();
           } else {
             dispatch({ type: "LOGOUT" });
+            history.push("/");
           }
         });
     } else {
       dispatch({ type: "LOGOUT" });
+      history.push("/");
     }
   };
 

@@ -41,6 +41,7 @@ const reducer = (state = initialState, action) => {
   }
 
   if (action.type === "LOGOUT") {
+    localStorage.clear();
     return {
       ...state,
       loggedIn: false,
