@@ -21,10 +21,34 @@ function App(props) {
 
   let token = localStorage.getItem("token");
 
+  const resizeWindow = (event) => {
+    dispatch({ type: "SET_WINDOW_WIDTH", windowWidth: window.innerWidth });
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", resizeWindow);
+  }, []);
+
   const getShows = () => {
     axios.get("http://localhost:3000/api/GetAllShows").then((res) => {
       dispatch({ type: "UPDATE_SHOWS", shows: res.data });
     });
+  };
+
+  const getSubscriptions = () => {
+    axios
+      .get("http://localhost:3000/api/GetSubscriptions", {
+        headers: {
+          "x-access-token": token,
+        },
+      })
+      .then((res) => {
+        console.log(res.data.subscriptions);
+        dispatch({
+          type: "UPDATE_SUBSCRIPTIONS",
+          subscriptions: res.data.subscriptions,
+        });
+      });
   };
 
   const updateLogin = () => {
@@ -44,6 +68,7 @@ function App(props) {
           if (res.data.auth) {
             dispatch({ type: "LOGIN", username: res.data.userData.username });
             getShows();
+            getSubscriptions();
           } else {
             dispatch({ type: "LOGOUT" });
             history.push("/");
@@ -58,6 +83,7 @@ function App(props) {
   useEffect(updateLogin, [loggedIn]);
 
   updateLogin();
+  getSubscriptions();
 
   // getShows();
 

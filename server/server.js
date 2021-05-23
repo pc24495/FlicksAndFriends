@@ -136,8 +136,8 @@ app.get("/api/PopulateDatabases", async (req, res, next) => {
           const imgWidth = img.width;
           imgHeight = img.height;
 
-          console.log("imgWidth: ", imgWidth);
-          console.log("imgHeight: ", imgHeight);
+          // console.log("imgWidth: ", imgWidth);
+          // console.log("imgHeight: ", imgHeight);
         };
         img.onload();
         // console.log(image64str.length);
@@ -193,8 +193,8 @@ app.get("/api/getShowPosters", async (req, res, next) => {
   const response = await axios.get(imageURL, { responseType: "arraybuffer" });
   const buffer = Buffer.from(response.data, "utf-8");
   const image64str = base64_arraybuffer.encode(buffer);
-  console.log(image64str);
-  console.log(image64str.length);
+  // console.log(image64str);
+  // console.log(image64str.length);
   res.json({ image: image64str });
 });
 
@@ -220,12 +220,16 @@ app.post("/api/register", async (req, res) => {
 });
 
 const verifyJWT = (req, res, next) => {
-  const token = req.headers["x-access-token"];
+  const token =
+    req.headers["x-access-token"] || req.body.headers["x-access-token"];
+  // console.log(token);
 
   if (!token) {
+    console.log("Hey we need a token");
     res.send("Hey, we need a token");
   } else {
     jwt.verify(token, process.env.SECRET, (err, decoded) => {
+      console.log("verifying....");
       if (err) {
         console.log("Error verifying");
         res.json({ auth: false, message: "You failed to authenticate" });
@@ -245,7 +249,7 @@ app.get("/api/getUserData", verifyJWT, (req, res) => {
       if (err) {
         console.log("Error");
       } else {
-        console.log(result.rows);
+        // console.log(result.rows);
         res.json({ auth: true, userData: result.rows[0] });
       }
     }
@@ -254,6 +258,45 @@ app.get("/api/getUserData", verifyJWT, (req, res) => {
 
 app.get("/api/isUserAuth", verifyJWT, (req, res) => {
   res.send("Hey, you're authenticated!");
+});
+
+app.get("/api/getSubscriptions", verifyJWT, (req, res) => {
+  db.query(
+    "SELECT subscriptions FROM users WHERE user_id=$1",
+    [req.userID],
+    (err, result) => {
+      if (err) {
+        console.log("Error fetching subscriptions");
+      } else {
+        if (result.rows[0].subscriptions === null) {
+          res.json({ auth: true, subscriptions: [] });
+        } else {
+          res.json({
+            auth: true,
+            subscriptions: result.rows[0].subscriptions,
+          });
+        }
+      }
+    }
+  );
+});
+
+app.post("/api/updateSubscriptions", verifyJWT, (req, res) => {
+  console.log("updating subscriptions");
+  db.query(
+    "UPDATE users SET subscriptions = $1 WHERE user_id=$2",
+    [req.body.subscriptions, req.userID],
+    (err, result) => {
+      if (err) {
+        console.log("Error setting subscriptions");
+      } else {
+        res.json({
+          auth: true,
+          subscriptions: JSON.stringify(result.rows[0]),
+        });
+      }
+    }
+  );
 });
 
 app.get("/api/login", (req, res) => {
@@ -301,6 +344,8 @@ app.post("/api/login", (req, res) => {
     }
   );
 });
+
+app.post("/api/updateSubscriptions", (req, res) => {});
 
 const PORT = process.env.port || 5000;
 

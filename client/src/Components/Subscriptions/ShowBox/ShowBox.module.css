@@ -1,9 +1,13 @@
+@import "../../../../node_modules/nord/src/nord.css";
+
 .ShowBox {
-  border: 1px solid #ccc;
-  box-shadow: 0px 0px 7px black;
+  /* border: 1px solid #ccc; */
   display: flex;
   position: relative;
   align-items: center;
+  background-color: var(--nord3);
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .Poster {

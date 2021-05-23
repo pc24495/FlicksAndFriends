@@ -1,9 +1,322 @@
-.Post {
-  height: 200px;
+.PostContainer {
+  display: flex;
+  position: relative;
+  flex-direction: column;
   width: 100%;
-  border: solid purple 3px;
+  margin: 0px;
+  top: 0px;
+  left: 0px;
+  position: relative;
+  border: solid var(--nord0) 1px;
+  box-sizing: border-box;
+}
+
+.Post {
+  min-height: 200px;
+  height: fit-content;
+  width: 100%;
   margin: 0px;
   left: 0px;
   position: relative;
   box-sizing: border-box;
+  background-color: var(--nord1);
+  display: flex;
+  flex-direction: row;
+}
+
+.ProfilePicSection {
+  position: relative;
+  left: 0%;
+  min-height: 100%;
+  padding-top: 20px;
+  padding-bottom: 0px;
+  width: 30%;
+  background-color: var(--nord1);
+  margin: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.ProfilePic {
+  position: relative;
+  width: 160px;
+  margin: 0px;
+  box-sizing: border-box;
+}
+
+.BodySection {
+  position: relative;
+  left: 0%;
+  height: 100%;
+  width: 70%;
+  background-color: var(--nord1);
+  margin: 0px;
+  display: flex;
+  flex-direction: column;
+}
+
+.Title {
+  position: relative;
+  top: 0%;
+  width: 100%;
+  min-height: 30px;
+  height: fit-content;
+  padding: 0px;
+  background-color: var(--nord1);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  align-self: flex-start;
+}
+
+.Username {
+  margin: 10px 10px 10px 0px;
+  font-weight: bold;
+  color: var(--nord5);
+  height: 20px;
+  line-height: 20px;
+}
+
+.Bullet {
+  margin: 0px;
+  font-weight: normal;
+  color: var(--nord4);
+  height: 20px;
+  line-height: 20px;
+  width: 13px;
+}
+
+.Date {
+  margin: 0px;
+  font-weight: normal;
+  color: var(--nord4);
+  height: 20px;
+  line-height: 20px;
+}
+
+.Tags {
+  position: relative;
+  top: 0%;
+  width: 100%;
+  min-height: 30px;
+  max-height: 300px;
+  height: fit-content;
+  padding: 0px;
+  background-color: var(--nord1);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  align-self: flex-start;
+  flex-wrap: wrap;
+  transition: max-height 10s;
+}
+
+.Tag {
+  position: relative;
+  line-height: 20px;
+  font-size: 20px;
+  padding: 5px;
+  border-radius: 15px;
+  color: var(--nord0);
+  background-color: var(--nord14);
+  margin: 0px;
+  margin-left: 3px;
+  margin-bottom: 3px;
+  left: -3px;
+}
+
+.DropTags {
+  color: var(--nord14);
+  background-color: var(--nord1);
+  border-radius: 50%;
+  border: 0px solid green;
+  margin-left: 3px;
+  transition: transform 0.2s;
+}
+
+.DropTags:hover {
+  color: var(--nord8);
+}
+
+.Rotate {
+  transform: rotate(180deg);
+}
+
+.Hashtags {
+  position: relative;
+  top: 0%;
+  width: 100%;
+  min-height: 30px;
+  height: fit-content;
+  padding: 0px;
+  background-color: var(--nord1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* align-self: flex-start; */
+}
+
+.BodyOuter {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: var(--nord1);
+  justify-content: center;
+  align-items: center;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+  top: 0px;
+  display: flex;
+}
+
+.module {
+  margin: 10px 5px 10px 0px;
+  width: 100%;
+  min-height: calc(100% - 40px);
+  background-color: var(--nord1);
+  overflow: hidden;
+}
+
+.module p {
+  margin: 0;
+}
+
+.PostText i {
+  color: var(--nord5);
+}
+
+.PostText i:hover {
+  color: var(--nord8);
+}
+
+.Footer {
+  position: relative;
+  top: 0px;
+  width: 100%;
+  min-height: 50px;
+  background-color: var(--nord1);
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.FooterLeft {
+  position: relative;
+  top: 0px;
+  height: 50px;
+  margin: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.FooterCenter {
+  position: relative;
+  top: 0px;
+  height: 50px;
+  margin: 0px;
+  display: flex;
+  align-items: center;
+  background-color: var(--nord1);
+  margin-right: auto;
+}
+
+.FooterCenter .FriendsLiked {
+  margin-left: -15px;
+}
+
+.FooterCenter .FriendsLiked:first-of-type {
+  margin-left: 0px;
+}
+
+.NumComments {
+  margin: 0px;
+  height: 30px;
+  display: inline-block;
+  padding: 0px;
+  line-height: 30px;
+}
+
+.ThumbsUp {
+  position: relative;
+  width: 30px;
+  height: 30px;
+}
+
+.Thumb {
+  margin: 10px;
+  color: var(--nord5);
+}
+
+.Thumb:hover {
+  color: var(--nord8);
+}
+
+.CommentSection {
+  width: 100%;
+  height: fit-content;
+  background-color: var(--nord1);
+  position: relative;
+  left: 0px;
+  top: 0px;
+}
+
+.AddComment {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  margin: 0px;
+  height: fit-content;
+  box-sizing: border-box;
+}
+
+.CommentInput {
+  flex: 1;
+  min-height: 40px;
+  overflow-wrap: break-word;
+  border: none;
+  border-radius: 10px;
+  margin: 4px;
+  box-sizing: border-box;
+  padding: 4px;
+  font-size: 15px;
+}
+
+.CommentInput:focus {
+  outline: none;
+}
+
+.Comment {
+  width: 100%;
+  position: relative;
+  top: 0px;
+  display: flex;
+  flex-direction: row;
+  background-color: var(--nord1);
+  margin: 0px;
+}
+
+.CommentText {
+  position: relative;
+  top: 0px;
+  flex: 1;
+  min-height: 40px;
+  overflow-wrap: break-word;
+  border: none;
+  border-radius: 10px;
+  margin: 5px;
+  box-sizing: border-box;
+  background-color: var(--nord3);
+  padding: 6px;
+  font-size: 15px;
+  color: var(--nord5);
+}
+
+@media (max-width: 1000px) {
+  .Post {
+    width: 400px;
+  }
 }

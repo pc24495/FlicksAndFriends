@@ -39,7 +39,7 @@ export default function ShowBox(props) {
     const season_name = event.target.value;
     props.show.episodes.forEach((season) => {
       if (season.season_name === season_name) {
-        console.log(season);
+        // console.log(season);
         setCurrentSeason(season);
       }
     });
@@ -49,7 +49,7 @@ export default function ShowBox(props) {
     const episode_name = event.target.value;
     currentSeason.episodes.forEach((episode) => {
       if (episode.title === episode_name) {
-        console.log(episode);
+        // console.log(episode);
         setCurrentEpisode(episode);
       }
     });

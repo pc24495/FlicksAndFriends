@@ -1,10 +1,12 @@
+/* @import "../../../node_modules/nord/src/nord.css"; */
+
 .Toolbar {
   height: 56px;
   width: 100%;
   position: fixed;
   top: 0px;
   left: 0px;
-  background-color: #703b09;
+  background-color: var(--nord1);
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -55,9 +57,9 @@
   }
 
   .Logout p:hover {
-    background-color: #8f5c2c;
-    border-bottom: 4px solid #40a4c8;
-    color: white;
+    background-color: var(--nord3);
+    border-bottom: 4px solid var(--nord8);
+    color: var(--nord5);
   }
 }
 

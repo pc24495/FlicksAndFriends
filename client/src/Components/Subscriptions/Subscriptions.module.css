@@ -1,3 +1,10 @@
+@import "../../../node_modules/nord/src/nord.css";
+
+.Subscriptions {
+  background-color: var(--nord0);
+  color: var(--nord6);
+}
+
 .Selector {
   display: grid;
   grid-template-columns: 33.3% 33.3% 33.3%;
@@ -10,14 +17,14 @@
 .ShowTags {
   width: 94vw;
   left: 4vw;
-  border-bottom: solid gray 1px;
+  border-bottom: var(--nord4);
   position: fixed;
   min-height: 40px;
   position: sticky;
   z-index: 10;
   top: 56px;
   margin-bottom: 10px;
-  background-color: white;
+  background-color: #322d31;
   display: block;
 }
 
@@ -36,8 +43,9 @@
   margin-left: 3px;
   margin-bottom: 6px;
   margin-top: 0px;
-  background-color: #e7eff9;
-  background-image: linear-gradient(315deg, #e7eff9 0%, #cfd6e6 74%);
+  /* background-color: #e7eff9; */
+  background-color: rgba(255, 255, 255, 0.5);
+  /* background-image: linear-gradient(315deg, #e7eff9 0%, #cfd6e6 74%); */
 }
 
 .ButtonContainer {

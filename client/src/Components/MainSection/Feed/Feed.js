@@ -16,21 +16,14 @@ export default class Feed extends Component {
     });
   };
 
+  tags = ["ShadowAndBone", "TestingTag", "TestingTag2"];
+
   render() {
     return (
       <div className={classes.Feed}>
-        <Post></Post>
-        <Post></Post>
-        <Post></Post>
-        <Post></Post>
-        <Post></Post>
-        <Post></Post>
-        <Post></Post>
-        <Post></Post>
-        <Post></Post>
-        <Post></Post>
-        <Post></Post>
-        <Post></Post>
+        <Post tags={this.tags}></Post>
+        <Post tags={this.tags}></Post>
+        <Post tags={this.tags}></Post>
       </div>
     );
   }

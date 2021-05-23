@@ -15,6 +15,8 @@ const initialState = {
     //     "This Is A Really Long Show Title It's to Test that the show title wrap works",
     // },
   ],
+  subscriptions: [],
+  windowWidth: 0,
 };
 
 const reducer = (state = initialState, action) => {
@@ -62,6 +64,22 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       shows: action.shows,
+    };
+  }
+
+  if (action.type === "UPDATE_SUBSCRIPTIONS") {
+    console.log(action.subscriptions);
+    // console.log(action.shows);
+    return {
+      ...state,
+      subscriptions: action.subscriptions,
+    };
+  }
+
+  if (action.type === "SET_WINDOW_WIDTH") {
+    return {
+      ...state,
+      windowWidth: action.windowWidth,
     };
   }
 

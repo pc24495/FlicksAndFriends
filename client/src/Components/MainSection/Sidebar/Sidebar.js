@@ -17,9 +17,14 @@ class Sidebar extends Component {
         <p className={classes.Username} style={{ fontSize: fontSize }}>
           {this.props.username}
         </p>
-        {this.props.shows.map((show) => (
-          <p className={classes.ShowTag}>#{show.title}</p>
-        ))}
+        <div className={classes.ShowTagContainer}>
+          {this.props.subscriptions && this.props.subscriptions.length > 0
+            ? this.props.subscriptions.map((show) => (
+                <p className={classes.ShowTag}>#{show.show_title}</p>
+              ))
+            : null}
+        </div>
+
         {this.props.loggedIn ? (
           <NavLink to="/subscriptions" className={classes.Subscriptions}>
             Subscriptions
@@ -36,6 +41,7 @@ const mapStateToProps = (state) => {
     username: state.username,
     shows: state.shows,
     loggedIn: state.loggedIn,
+    subscriptions: state.subscriptions,
   };
 };
 

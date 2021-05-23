@@ -1,3 +1,5 @@
+@import "../../../../node_modules/nord/src/nord.css";
+
 .Input {
   width: 100%;
   padding: 10px;
@@ -10,12 +12,12 @@
   margin: auto;
   margin-bottom: 8px;
   text-align: center;
+  color: var(--nord5);
 }
 
 .InputElement {
   outline: none;
-  border: 1px solid #ccc;
-  background-color: white;
+  background-color: var(--nord4);
   font: inherit;
   padding: 6px 10px;
   display: block;
@@ -26,7 +28,7 @@
 
 .InputElement:focus {
   outline: none;
-  background-color: #ccc;
+  background-color: var(--nord6);
 }
 
 .Invalid {
@@ -36,5 +38,5 @@
 
 .Warning {
   font-size: small;
-  color: red;
+  color: var(--nord11);
 }

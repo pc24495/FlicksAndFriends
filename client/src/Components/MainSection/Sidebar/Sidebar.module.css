@@ -1,15 +1,22 @@
+@import "../../../../node_modules/nord/src/nord.css";
+
 .Sidebar {
   min-height: calc(100vh - 56px);
   height: 100%;
   position: fixed;
   width: 26%;
   left: 0%;
-  background-color: yellow;
+  /* background-color: var(--nord0); Set back to this when you're done testing*/
+  background-color: olivedrab;
   top: 56px;
   margin: 0px;
-  border-top: solid purple 3px;
+  /* border-top: solid var(--nord3) 3px; */
   overflow: auto;
 }
+
+/* .Sidebar::-webkit-scrollbar {
+  display: none;
+} */
 
 .Username {
   width: fit-content;
@@ -20,6 +27,7 @@
   top: 20px;
   display: block;
   margin: auto;
+  color: var(--nord5);
 }
 
 /* .Username {
@@ -35,22 +43,53 @@
     margin: 0px;
   } */
 
+.ShowTagContainer {
+  max-width: 70%;
+  position: relative;
+  top: 20px;
+  /* background-color: green; */
+  left: 30px;
+  min-height: 320px;
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+.ShowTagContainer::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: var(--nord9);
+}
+
+.ShowTagContainer::-webkit-scrollbar {
+  width: 10px;
+  background-color: yellow;
+}
+
+.ShowTagContainer::-webkit-scrollbar-thumb {
+  background-color: var(--nord8);
+  /* border: 2px solid green; */
+}
+
 .ShowTag {
   width: fit-content;
-  max-width: 70%;
+  max-width: 100%;
   font: inherit;
   font-weight: bold;
   border-radius: 24px;
   padding: 10px;
-  background-color: magenta;
+  background-color: var(--nord15);
   overflow-wrap: normal;
   margin: 10px;
+  margin-bottom: 15px;
   font-size: 20px;
   position: relative;
-  top: 20px;
-  left: 30px;
+  top: 0px;
+  left: 0px;
   box-sizing: border-box;
-  color: white;
+  color: var(--nord5);
+}
+
+.ShowTag:first-of-type {
+  top: 0px;
 }
 
 @font-face {
@@ -62,7 +101,7 @@
   width: fit-content;
   font-family: "Montserrat", sans-serif;
   font-size: 20px;
-  color: gray;
+  color: var(--nord5);
   text-decoration: underline;
   position: relative;
   top: 30px;

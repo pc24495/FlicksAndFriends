@@ -2,11 +2,11 @@
   min-height: calc(100vh - 56px);
   height: 100%;
   position: relative;
-  width: 48%;
+  width: 668px;
   left: 26%;
-  border-left: 2px solid black;
-  border-right: 2px solid black;
-  background-color: green;
+  /* border-left: 2px solid black;
+  border-right: 2px solid black; */
+  background-color: var(--nord0);
   top: 0px;
   margin: 0px;
   overflow: scroll;

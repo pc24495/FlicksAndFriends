@@ -23,11 +23,12 @@ const Toolbar = (props) => {
   //     .then((res) => console.log(res));
   // };
   const loggedIn = useSelector((state) => state.loggedIn);
+  const windowWidth = useSelector((state) => state.windowWidth);
   // const counter = useSelector((state) => state.counter);
 
   const dispatch = useDispatch();
 
-  // console.log(loggedIn);
+  // console.log(loggedIn); //
 
   const logout = () => {
     console.log("LOGGING OUT");
@@ -55,6 +56,7 @@ const Toolbar = (props) => {
             <NavigationItem link="/login">Login</NavigationItem>
           )}
         </NavigationItems>
+        <p>{windowWidth}</p>
       </nav>
     </header>
   );
