@@ -24,6 +24,7 @@ const Toolbar = (props) => {
   // };
   const loggedIn = useSelector((state) => state.loggedIn);
   const windowWidth = useSelector((state) => state.windowWidth);
+  const windowHeight = useSelector((state) => state.windowHeight);
   // const counter = useSelector((state) => state.counter);
 
   const dispatch = useDispatch();
@@ -56,7 +57,9 @@ const Toolbar = (props) => {
             <NavigationItem link="/login">Login</NavigationItem>
           )}
         </NavigationItems>
-        <p>{windowWidth}</p>
+        <p>
+          {windowWidth} {windowHeight}
+        </p>
       </nav>
     </header>
   );

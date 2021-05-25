@@ -22,7 +22,11 @@ function App(props) {
   let token = localStorage.getItem("token");
 
   const resizeWindow = (event) => {
-    dispatch({ type: "SET_WINDOW_WIDTH", windowWidth: window.innerWidth });
+    dispatch({
+      type: "SET_WINDOW_WIDTH",
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight,
+    });
   };
 
   useEffect(() => {

@@ -18,11 +18,13 @@ class Sidebar extends Component {
           {this.props.username}
         </p>
         <div className={classes.ShowTagContainer}>
-          {this.props.subscriptions && this.props.subscriptions.length > 0
-            ? this.props.subscriptions.map((show) => (
-                <p className={classes.ShowTag}>#{show.show_title}</p>
-              ))
-            : null}
+          <div className={classes.ShowTagContainerInner}>
+            {this.props.subscriptions && this.props.subscriptions.length > 0
+              ? this.props.subscriptions.map((show) => (
+                  <p className={classes.ShowTag}>#{show.show_title}</p>
+                ))
+              : null}
+          </div>
         </div>
 
         {this.props.loggedIn ? (

@@ -5,20 +5,20 @@
   flex-direction: row;
   flex-shrink: 2;
   min-height: calc(100vh - 56px);
-  height: fit-content;
+  height: (100% - 56px);
   top: 56px;
   width: 100%;
   background-color: var(--nord0);
-  position: relative;
+  position: fixed;
   margin: 0px;
   position: absolute;
 }
 
 .TestClass {
   background-color: orange;
-  width: 100px;
-  height: 100px;
-  left: 32%;
-  top: 40px;
+  flex: 1;
+  height: (100vh - 56px);
+  left: 0px;
+  top: 0px;
   position: relative;
 }

@@ -1,9 +1,8 @@
 .Feed {
-  min-height: calc(100vh - 56px);
-  height: 100%;
+  height: calc(100vh - 56px);
   position: relative;
   width: 668px;
-  left: 26%;
+  left: 0px;
   /* border-left: 2px solid black;
   border-right: 2px solid black; */
   background-color: var(--nord0);

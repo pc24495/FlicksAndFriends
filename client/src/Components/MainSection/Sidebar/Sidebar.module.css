@@ -1,10 +1,8 @@
 @import "../../../../node_modules/nord/src/nord.css";
 
 .Sidebar {
-  min-height: calc(100vh - 56px);
-  height: 100%;
-  position: fixed;
-  width: 26%;
+  height: calc(100vh - 56px);
+  flex: 1;
   left: 0%;
   /* background-color: var(--nord0); Set back to this when you're done testing*/
   background-color: olivedrab;
@@ -12,6 +10,10 @@
   margin: 0px;
   /* border-top: solid var(--nord3) 3px; */
   overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
 }
 
 /* .Sidebar::-webkit-scrollbar {
@@ -24,10 +26,10 @@
   font: inherit;
   text-decoration: underline;
   font-weight: bold;
-  top: 20px;
+  top: 0px;
   display: block;
-  margin: auto;
   color: var(--nord5);
+  background-color: lightcoral;
 }
 
 /* .Username {
@@ -44,28 +46,47 @@
   } */
 
 .ShowTagContainer {
-  max-width: 70%;
+  width: 260px;
+  max-width: 340px;
   position: relative;
-  top: 20px;
+  top: 0px;
   /* background-color: green; */
-  left: 30px;
   min-height: 320px;
   max-height: 450px;
-  overflow-y: auto;
+  overflow-y: none;
+  background-color: lightblue;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 20px;
 }
 
-.ShowTagContainer::-webkit-scrollbar-track {
+.ShowTagContainerInner {
+  width: 240px;
+  height: 300px;
+  position: relative;
+  top: 0px;
+  left: 0px;
+  max-height: 430px;
+  overflow-y: scroll;
+  background-color: lightblue;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+.ShowTagContainerInner::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background-color: var(--nord9);
+  border-radius: 10px;
 }
 
-.ShowTagContainer::-webkit-scrollbar {
+.ShowTagContainerInner::-webkit-scrollbar {
   width: 10px;
-  background-color: yellow;
+  background-color: lightblue;
 }
 
-.ShowTagContainer::-webkit-scrollbar-thumb {
+.ShowTagContainerInner::-webkit-scrollbar-thumb {
   background-color: var(--nord8);
+  border-radius: 10px;
   /* border: 2px solid green; */
 }
 
@@ -75,12 +96,12 @@
   font: inherit;
   font-weight: bold;
   border-radius: 24px;
-  padding: 10px;
+  padding: 7px;
   background-color: var(--nord15);
   overflow-wrap: normal;
-  margin: 10px;
-  margin-bottom: 15px;
-  font-size: 20px;
+  margin: 6px;
+  margin-bottom: 10px;
+  font-size: 17px;
   position: relative;
   top: 0px;
   left: 0px;
@@ -105,5 +126,4 @@
   text-decoration: underline;
   position: relative;
   top: 30px;
-  left: 40px;
 }

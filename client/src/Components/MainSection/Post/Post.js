@@ -253,7 +253,7 @@ export default function Post(props) {
             }}
             alt=""
           ></img>
-          <input className={classes.CommentInput}></input>
+          <textarea className={classes.CommentInput}></textarea>
         </div>
         <div className={classes.Comment}>
           <img

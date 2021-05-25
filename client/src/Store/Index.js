@@ -16,7 +16,8 @@ const initialState = {
     // },
   ],
   subscriptions: [],
-  windowWidth: 0,
+  windowWidth: 1440,
+  windowHeight: 0,
 };
 
 const reducer = (state = initialState, action) => {
@@ -80,6 +81,7 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       windowWidth: action.windowWidth,
+      windowHeight: action.windowHeight,
     };
   }
 
