@@ -13,9 +13,9 @@ body {
   font-family: "Source Sans Pro", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow: none;
   height: 100%;
   background-color: var(--nord0);
+  overflow: none;
 }
 
 code {

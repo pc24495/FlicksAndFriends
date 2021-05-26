@@ -3,7 +3,7 @@
 .Sidebar {
   height: calc(100vh - 56px);
   flex: 1;
-  left: 0%;
+  left: 0px;
   /* background-color: var(--nord0); Set back to this when you're done testing*/
   background-color: olivedrab;
   top: 56px;
@@ -14,6 +14,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: start;
+  bottom: 0px;
+  position: sticky;
 }
 
 /* .Sidebar::-webkit-scrollbar {
@@ -67,7 +69,7 @@
   top: 0px;
   left: 0px;
   max-height: 430px;
-  overflow-y: scroll;
+  overflow-y: auto;
   background-color: lightblue;
   padding: 0px;
   box-sizing: border-box;

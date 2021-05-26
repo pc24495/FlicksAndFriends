@@ -12,13 +12,24 @@
   position: fixed;
   margin: 0px;
   position: absolute;
+  /* overflow: scroll; */
 }
 
 .TestClass {
   background-color: orange;
   flex: 1;
-  height: (100vh - 56px);
+  height: calc(100vh - 56px);
   left: 0px;
-  top: 0px;
-  position: relative;
+  top: 56px;
+  position: sticky;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.TestInner {
+  background-color: purple;
+  width: 300px;
+  height: 300px;
 }

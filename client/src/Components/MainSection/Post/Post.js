@@ -6,7 +6,7 @@ import HTMLEllipsis from "react-lines-ellipsis/lib/html";
 import smile from "./smile.png";
 import { IoMdThumbsDown, IoMdThumbsUp } from "react-icons/io";
 import { FaChevronCircleDown } from "react-icons/fa";
-
+import TextareaAutosize from "react-textarea-autosize";
 // <p
 //             style={{
 //               margin: "10px",
@@ -33,6 +33,9 @@ export default function Post(props) {
   });
   const postID = "57";
   const [showFullPost, setShowFullPost] = useState(false);
+  // const [commentInputRows, setCommentInputRows] = useState(1);
+  const [commentInputHeight, setCommentInputHeight] = useState("42px");
+  const textAreaRef = React.createRef();
 
   useEffect(() => {
     let newTags = tags.tagList;
@@ -82,6 +85,10 @@ export default function Post(props) {
 
   const showFull = (event) => {
     setShowFullPost(true);
+  };
+
+  const handleTextAreaOnChange = (event) => {
+    console.log(event.target.value);
   };
 
   // console.log(document.getElementById("57-0").getBoundingClientRect());
@@ -253,7 +260,10 @@ export default function Post(props) {
             }}
             alt=""
           ></img>
-          <textarea className={classes.CommentInput}></textarea>
+          <TextareaAutosize
+            className={classes.CommentInput}
+            onChange={handleTextAreaOnChange}
+          ></TextareaAutosize>
         </div>
         <div className={classes.Comment}>
           <img

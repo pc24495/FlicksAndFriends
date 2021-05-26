@@ -12,7 +12,9 @@ export default class MainSection extends Component {
       <div className={classes.MainSection}>
         <Sidebar></Sidebar>
         <Feed></Feed>
-        <div className={classes.TestClass}></div>
+        <div className={classes.TestClass}>
+          <div className={classes.TestInner}></div>
+        </div>
       </div>
     );
   }

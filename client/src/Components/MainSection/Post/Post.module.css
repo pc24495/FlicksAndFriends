@@ -276,7 +276,8 @@
 .CommentInput {
   flex: 1;
   min-height: 40px;
-  overflow-wrap: break-word;
+  /* overflow-wrap: break-word; */
+  overflow: hidden;
   border: none;
   border-radius: 10px;
   margin: 4px;
@@ -284,6 +285,7 @@
   padding: 4px;
   font: inherit;
   font-size: 15px;
+  height: unset;
   resize: none;
 }
 
