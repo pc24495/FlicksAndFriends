@@ -16,7 +16,7 @@ const jwt = require("jsonwebtoken");
 
 const app = express();
 
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
 app.use(
   cors({
     origin: ["http://localhost:3000"],
@@ -25,7 +25,7 @@ app.use(
   })
 );
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 app.use(
   session({
     key: "userID",
@@ -293,6 +293,22 @@ app.post("/api/updateSubscriptions", verifyJWT, (req, res) => {
         res.json({
           auth: true,
           subscriptions: JSON.stringify(result.rows[0]),
+        });
+      }
+    }
+  );
+});
+
+app.post("/api/updateProfilePic", verifyJWT, (req, res) => {
+  db.query(
+    "UPDATE users SET profile_pic = $1 WHERE user_id = $2",
+    [req.body.profile_pic, req.userID],
+    (err, result) => {
+      if (err) {
+        console.log("Error changing profile pic!");
+      } else {
+        res.json({
+          auth: true,
         });
       }
     }

@@ -19,6 +19,7 @@ const initialState = {
   subscriptions: [],
   windowWidth: 1440,
   windowHeight: 0,
+  profilePic: null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -41,6 +42,7 @@ const reducer = (state = initialState, action) => {
       ...state,
       loggedIn: true,
       username: action.username,
+      profilePic: action.profilePic,
     };
   }
 
@@ -51,6 +53,7 @@ const reducer = (state = initialState, action) => {
       loggedIn: false,
       username: null,
       shows: [],
+      profilePic: null,
     };
   }
 
@@ -70,7 +73,7 @@ const reducer = (state = initialState, action) => {
   }
 
   if (action.type === "UPDATE_SUBSCRIPTIONS") {
-    console.log(action.subscriptions);
+    // console.log(action.subscriptions);
     // console.log(action.shows);
     return {
       ...state,
@@ -105,6 +108,13 @@ const reducer = (state = initialState, action) => {
       ...state,
       showBackdrop: false,
       showAlert: false,
+    };
+  }
+
+  if (action.type === "UPDATE_PROFILE_PIC") {
+    return {
+      ...state,
+      profilePic: action.profilePic,
     };
   }
 

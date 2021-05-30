@@ -48,7 +48,7 @@ function App(props) {
         },
       })
       .then((res) => {
-        console.log(res.data.subscriptions);
+        // console.log(res.data.subscriptions);
         dispatch({
           type: "UPDATE_SUBSCRIPTIONS",
           subscriptions: res.data.subscriptions,
@@ -71,7 +71,11 @@ function App(props) {
         })
         .then((res) => {
           if (res.data.auth) {
-            dispatch({ type: "LOGIN", username: res.data.userData.username });
+            dispatch({
+              type: "LOGIN",
+              username: res.data.userData.username,
+              profilePic: res.data.userData.profile_pic,
+            });
             getShows();
             getSubscriptions();
           } else {
@@ -91,8 +95,8 @@ function App(props) {
   getSubscriptions();
 
   // getShows();
-  console.log(Registration);
-  console.log(ProfilePicUpload);
+  // console.log(Registration);
+  // console.log(ProfilePicUpload);
 
   return (
     <div>

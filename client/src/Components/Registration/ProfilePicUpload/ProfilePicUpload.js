@@ -6,6 +6,7 @@ import ReactEasyCrop from "react-easy-crop";
 import Backdrop from "../../Backdrop/Backdrop.js";
 import "react-image-crop/dist/ReactCrop.css";
 import Button from "../../../Components/Button/Button.js";
+import axios from "axios";
 
 const ProfilePicUpload = (props) => {
   // const [src, setSrc] = useState(null);
@@ -26,6 +27,8 @@ const ProfilePicUpload = (props) => {
 
   const [imageCrop, setImageCrop] = useState(null);
   // const [croppedImageSrc, setCroppedImageSrc] = useState(null);
+
+  const dispatch = useDispatch();
 
   const onSelectFile = (event) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -143,6 +146,26 @@ const ProfilePicUpload = (props) => {
     setState({ ...state, zoom: zoom });
   };
 
+  const submitImage = (event) => {
+    let token = localStorage.getItem("token");
+    axios
+      .post("http://localhost:3000/api/updateProfilePic", {
+        profile_pic: state.croppedImageSrc,
+        headers: {
+          "x-access-token": token,
+        },
+      })
+      .then((res) => {
+        if (res.data.auth) {
+          dispatch({
+            type: "UPDATE_PROFILE_PIC",
+            profilePic: state.croppedImageSrc,
+          });
+          props.history.push("/");
+        }
+      });
+  };
+
   return (
     <div className={classes.ProfilePicUpload}>
       <div className={classes.UploadSection}>
@@ -172,7 +195,7 @@ const ProfilePicUpload = (props) => {
           src={state.croppedImageSrc || empty}
           className={classes.ProfilePicture}
         ></img>
-        <Button>Select Image</Button>
+        <Button onClick={submitImage}>Submit</Button>
       </div>
       <Backdrop
         showBackdrop={state.showBackdrop}

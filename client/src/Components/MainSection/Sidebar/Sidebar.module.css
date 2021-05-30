@@ -22,6 +22,14 @@
   display: none;
 } */
 
+.ProfilePic {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin-bottom: 0px;
+  margin-top: 10px;
+}
+
 .Username {
   width: fit-content;
   position: relative;
@@ -32,6 +40,8 @@
   display: block;
   color: var(--nord5);
   background-color: lightcoral;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 /* .Username {
@@ -60,6 +70,7 @@
   padding: 10px;
   box-sizing: border-box;
   border-radius: 20px;
+  margin-top: 5px;
 }
 
 .ShowTagContainerInner {
