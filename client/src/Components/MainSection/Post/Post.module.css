@@ -44,6 +44,7 @@
   width: 160px;
   margin: 0px;
   box-sizing: border-box;
+  clip-path: circle();
 }
 
 .BodySection {

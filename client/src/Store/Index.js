@@ -5,7 +5,8 @@ const initialState = {
   username: null,
   loggedIn: false,
   backdropComponent: "Modal",
-  showBackdrop: false,
+  showBackdrop: true,
+  showAlert: false,
   shows: [
     // { title: "Breaking Bad" },
     // { title: "Game of Thrones" },
@@ -82,6 +83,28 @@ const reducer = (state = initialState, action) => {
       ...state,
       windowWidth: action.windowWidth,
       windowHeight: action.windowHeight,
+    };
+  }
+
+  if (action.type === "SHOW_BACKDROP") {
+    return {
+      ...state,
+      showBackdrop: true,
+    };
+  }
+
+  if (action.type === "SHOW_ALERT") {
+    return {
+      ...state,
+      showAlert: true,
+    };
+  }
+
+  if (action.type === "CLOSE_ALERT") {
+    return {
+      ...state,
+      showBackdrop: false,
+      showAlert: false,
     };
   }
 

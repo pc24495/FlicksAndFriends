@@ -6,6 +6,7 @@ import Subscriptions from "./Components/Subscriptions/Subscriptions.js";
 import axios from "axios";
 import { Route, Switch, useHistory } from "react-router-dom";
 import Registration from "./Components/Registration/Registration.js";
+import ProfilePicUpload from "./Components/Registration/ProfilePicUpload/ProfilePicUpload.js";
 import Login from "./Components/Login/Login.js";
 import { useEffect } from "react";
 // import logo from "./logo.svg";
@@ -90,6 +91,8 @@ function App(props) {
   getSubscriptions();
 
   // getShows();
+  console.log(Registration);
+  console.log(ProfilePicUpload);
 
   return (
     <div>
@@ -97,6 +100,7 @@ function App(props) {
         <Switch>
           <Route path="/subscriptions" component={Subscriptions}></Route>
           <Route path="/registration" component={Registration} />
+          <Route path="/profilepic" component={ProfilePicUpload}></Route>
           <Route path="/login" component={Login} />
           <Route path="/" component={MainSection} />
         </Switch>

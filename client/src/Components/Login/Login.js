@@ -138,7 +138,16 @@ class Login extends Component {
 
     return (
       <div className={classes.Login}>
-        <form onSubmit={(event) => this.submitLogin(event)}>
+        <form
+          onSubmit={(event) => this.submitLogin(event)}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
+            width: "100%",
+          }}
+        >
           {formElementsArray.map((formElement) => (
             <Input
               key={formElement.config.name}

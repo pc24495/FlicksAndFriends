@@ -163,7 +163,7 @@ class Registration extends Component {
                 localStorage.setItem("token", res.data.token);
 
                 this.props.login(res.data);
-                this.props.history.push("/");
+                this.props.history.push("/profilepic");
               });
           }
           for (let key in updatedOrderForm) {
@@ -190,7 +190,16 @@ class Registration extends Component {
     return (
       <div>
         <div className={classes.Registration}>
-          <form onSubmit={(event) => this.submitRegistration(event)}>
+          <form
+            onSubmit={(event) => this.submitRegistration(event)}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+              width: "100%",
+            }}
+          >
             {formElementsArray.map((formElement) => (
               <Input
                 key={formElement.config.name}
@@ -206,6 +215,7 @@ class Registration extends Component {
                 displayWarning={formElement.config.displayWarning}
                 warningMessages={formElement.config.warningMessages}
                 labelName={formElement.config.label}
+                style={{ width: "80%" }}
               />
             ))}
             <Button disabled={this.state.isValid ? "" : "true"}>Submit</Button>

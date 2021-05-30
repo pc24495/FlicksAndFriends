@@ -4,6 +4,7 @@ import classes from "./Post.module.css";
 import LinesEllipsis from "react-lines-ellipsis";
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";
 import smile from "./smile.png";
+import squareTest from "./SquareTestImage.png";
 import { IoMdThumbsDown, IoMdThumbsUp } from "react-icons/io";
 import { FaChevronCircleDown } from "react-icons/fa";
 import TextareaAutosize from "react-textarea-autosize";
@@ -118,7 +119,7 @@ export default function Post(props) {
     <div className={classes.PostContainer}>
       <div className={classes.Post}>
         <div className={classes.ProfilePicSection}>
-          <img src={smile} className={classes.ProfilePic} alt=""></img>
+          <img src={squareTest} className={classes.ProfilePic} alt=""></img>
         </div>
         <div className={classes.BodySection}>
           <div className={classes.Title}>

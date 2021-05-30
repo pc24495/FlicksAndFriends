@@ -1,0 +1,68 @@
+.ProfilePicUpload {
+  position: relative;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: calc(100vh - 56px);
+  background-color: var(--nord0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.UploadSection {
+  height: 500px;
+  width: 500px;
+  background-color: var(--nord1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ProfilePicture {
+  height: 250px;
+  width: 250px;
+  margin: 50px;
+  clip-path: circle();
+}
+
+.PicOverlay {
+  position: absolute;
+  height: 250px;
+  width: 250px;
+  top: calc(50vh - 160px);
+  /* clip-path: circle(); */
+  /* background-color: teal; */
+  display: block;
+  opacity: 0%;
+  z-index: 100;
+  text-justify: center;
+  text-align: center;
+  line-height: 250px;
+  font-weight: 900;
+  font-size: 70px;
+  color: aliceblue;
+  /* text-decoration: underline; */
+}
+
+.PicOverlay:hover {
+  opacity: 100%;
+  cursor: pointer;
+}
+
+.InputPic:hover {
+  cursor: pointer;
+}
+
+.CropBox {
+  position: relative;
+  height: 90%;
+}
+
+.ButtonContainer {
+  height: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
