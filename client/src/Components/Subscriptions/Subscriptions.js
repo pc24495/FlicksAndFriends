@@ -20,19 +20,19 @@ export default function Subscriptions(props) {
     return state.shows;
   });
   let subscriptionsList = useSelector((state) => {
-    console.log(state.subscriptions);
+    // console.log(state.subscriptions);
     return state.subscriptions;
   });
   //   console.log(shows);
   let subscriptions = null;
   if (localStorage.getItem("subscriptions")) {
     subscriptions = JSON.parse(localStorage.getItem("subscriptions"));
-    console.log(subscriptions);
+    // console.log(subscriptions);
     // console.log(localStorage.getItem("subscriptions"));
     // console.log(typeof subscriptions);
   } else {
     subscriptions = subscriptionsList;
-    console.log(subscriptions);
+    // console.log(subscriptions);
   }
   let posterMap = new Map();
   shows.forEach((show) => posterMap.set(show.tv_id, show.poster));
@@ -123,7 +123,7 @@ export default function Subscriptions(props) {
         };
       case ACTIONS.MERGE_SUBSCRIPTIONS: {
         let subscriptionList = action.subscriptions;
-        console.log(subscriptionList);
+        // console.log(subscriptionList);
         if (subscriptionList.length === undefined) {
           subscriptionList = [];
         }
@@ -133,7 +133,7 @@ export default function Subscriptions(props) {
             ...state,
           };
         }
-        console.log(subscriptionList);
+        // console.log(subscriptionList);
         const subscriptionIDs = subscriptionList.map((show) => show.show_id);
         // console.log(subscriptionIDs);
         let selectedShows = state.selectedList;
@@ -238,7 +238,7 @@ export default function Subscriptions(props) {
       });
   };
 
-  console.log(state);
+  // console.log(state);
 
   return state.displayList.length > 0 ? (
     <div className={classes.Subscriptions}>

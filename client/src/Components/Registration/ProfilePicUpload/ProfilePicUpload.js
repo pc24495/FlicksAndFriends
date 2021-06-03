@@ -41,7 +41,7 @@ const ProfilePicUpload = (props) => {
   };
 
   const onBackdropClick = (event) => {
-    console.log(event.target);
+    // console.log(event.target);
     setState({ ...state, showBackdrop: false });
   };
 
@@ -72,7 +72,7 @@ const ProfilePicUpload = (props) => {
 
   const prepareImage = async (event) => {
     const finalImage = await getCroppedImg(state.src, imageCrop);
-    console.log(finalImage);
+    // console.log(finalImage);
     setState({ ...state, croppedImageSrc: finalImage, showBackdrop: false });
   };
 
@@ -137,8 +137,8 @@ const ProfilePicUpload = (props) => {
   };
 
   const onCropComplete = (croppedArea, croppedAreaPixels) => {
-    console.log(croppedArea);
-    console.log(croppedAreaPixels);
+    // console.log(croppedArea);
+    // console.log(croppedAreaPixels);
     setImageCrop(croppedAreaPixels);
   };
 
@@ -161,7 +161,7 @@ const ProfilePicUpload = (props) => {
             type: "UPDATE_PROFILE_PIC",
             profilePic: state.croppedImageSrc,
           });
-          props.history.push("/");
+          props.history.push("/subscriptions");
         }
       });
   };

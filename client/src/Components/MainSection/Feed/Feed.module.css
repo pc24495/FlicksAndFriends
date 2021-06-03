@@ -11,6 +11,43 @@
   overflow: scroll;
 }
 
+.InputPost {
+  position: relative;
+  top: 0px;
+  height: 50px;
+  width: 100%;
+  background-color: green;
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+}
+
+.ProfilePic {
+  height: 40px;
+  width: 40px;
+  margin: 5px;
+}
+
+.InputPostInput {
+  flex: 1;
+  margin: 10px;
+  border-radius: 6px;
+  outline: none;
+  border-top-style: hidden;
+  border-right-style: hidden;
+  border-left-style: hidden;
+  border-bottom-style: hidden;
+  height: 35px;
+  font-size: 20px;
+  line-height: 35px;
+}
+
+.InputPostInput::placeholder {
+  font-size: 20px;
+  line-height: 35px;
+}
+
 .ImageContainer {
   height: 500px;
   width: 100%;

@@ -4,14 +4,14 @@ import Feed from "./Feed/Feed.js";
 import Sidebar from "./Sidebar/Sidebar.js";
 // import Modal from "../MovieSelectorComponents/Modal.js";
 // import Backdrop from "../MovieSelectorComponents/Backdrop.js";
-// import Router, { Route } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
-export default class MainSection extends Component {
+class MainSection extends Component {
   render() {
     return (
       <div className={classes.MainSection}>
         <Sidebar></Sidebar>
-        <Feed></Feed>
+        <Feed history={this.props.history}></Feed>
         <div className={classes.TestClass}>
           <div className={classes.TestInner}></div>
         </div>
@@ -19,5 +19,7 @@ export default class MainSection extends Component {
     );
   }
 }
+
+export default withRouter(MainSection);
 
 // <Modal></Modal>

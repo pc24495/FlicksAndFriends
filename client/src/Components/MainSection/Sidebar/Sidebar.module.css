@@ -34,12 +34,12 @@
   width: fit-content;
   position: relative;
   font: inherit;
-  text-decoration: underline;
+  /* text-decoration: underline; */
   font-weight: bold;
   top: 0px;
   display: block;
   color: var(--nord5);
-  background-color: lightcoral;
+  /* background-color: lightcoral; */
   margin-top: 5px;
   margin-bottom: 5px;
 }

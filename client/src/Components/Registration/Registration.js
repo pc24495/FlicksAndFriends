@@ -137,14 +137,14 @@ class Registration extends Component {
     }
 
     if (valid) {
-      console.log("Valid!");
+      // console.log("Valid!");
       axios
         .post("http://localhost:3000/api/register", {
           username: updatedOrderForm.username.value,
           password: updatedOrderForm.password.value,
         })
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           if (res.data === "User already exists") {
             updatedOrderForm.username.valid = false;
             updatedOrderForm.username.displayWarning = true;
@@ -152,7 +152,7 @@ class Registration extends Component {
               "Username is taken, please select a different one"
             );
           } else {
-            console.log("Username is unique!");
+            // console.log("Username is unique!");
             axios
               .post("http://localhost:3000/api/login", {
                 username: updatedOrderForm.username.value.trim(),

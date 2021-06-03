@@ -47,6 +47,15 @@ app.get("/api/test", (req, res) => {
   res.send("Hey");
 });
 
+const toDate = (dateString) => {
+  let dateArray = dateString.split("-");
+  return new Date(
+    parseInt(dateArray[0]),
+    parseInt(dateArray[1]) - 1,
+    parseInt(dateArray[2])
+  );
+};
+
 app.get("/api/PopulateDatabases", async (req, res, next) => {
   // const results = await db.query("SELECT * FROM shows");
   // res.json(results);
@@ -153,7 +162,60 @@ app.get("/api/PopulateDatabases", async (req, res, next) => {
           posterHeight: imgHeight,
         };
         // console.log(seasonResults);
-        return returnShow;
+
+        //Start of code for putting episodes with order into database
+        let currentEpisodeOrder = 0;
+        let episodes = [];
+        returnShow.seasons.forEach((season) => {
+          season.episodes.forEach((episode) => episodes.push(episode));
+        });
+        episodes.sort((a, b) => {
+          let a_date = toDate(a.air_date);
+          let b_date = toDate(b.air_date);
+
+          if (a_date < b_date) {
+            return -1;
+          } else if (a_date > b_date) {
+            return 1;
+          } else {
+            if (a.episode_number < b.episode_number) {
+              return -1;
+            } else if (a.episode_number > b.episode_number) {
+              return 1;
+            } else {
+              return 0;
+            }
+          }
+        });
+        // console.log(episodes);
+        let episodesMap = new Map(
+          episodes.map((episode) => {
+            currentEpisodeOrder = currentEpisodeOrder + 1;
+            return [episode.episode_id, currentEpisodeOrder];
+          })
+        );
+        console.log(episodesMap);
+        let seasonsWithOrder = seasonResults.map((season) => {
+          let episodesWithOrder = season.episodes.map((episode) => {
+            return {
+              ...episode,
+              episodeOrder: episodesMap.get(episode.episode_id),
+            };
+          });
+          return {
+            ...season,
+            episodes: episodesWithOrder,
+          };
+        });
+
+        const finalShow = {
+          ...returnShow,
+          seasons: seasonsWithOrder,
+        };
+
+        console.log(finalShow.show_name);
+        //End of code for putting episodes with orderinto database
+        return finalShow;
         //
       })
     );
