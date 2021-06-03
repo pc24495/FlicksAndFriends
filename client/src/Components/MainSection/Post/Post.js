@@ -40,7 +40,7 @@ export default function Post(props) {
 
   useEffect(() => {
     let newTags = tags.tagList;
-    let tagsWidth = 0; //should be width of downArrow actually
+    let tagsWidth = 26; //should be width of downArrow actually
     let isOverflowing = false;
     const tagContainerWidth = Math.ceil(
       document.getElementById(postID + "-tags").getBoundingClientRect().width
@@ -173,9 +173,12 @@ export default function Post(props) {
           </div>
           <div className={classes.Footer}>
             <div className={classes.FooterLeft}>
-              <IoMdThumbsUp className={classes.Thumb} size={30}></IoMdThumbsUp>
+              <IoMdThumbsUp
+                className={classes.ThumbUp}
+                size={30}
+              ></IoMdThumbsUp>
               <IoMdThumbsDown
-                className={classes.Thumb}
+                className={classes.ThumbDown}
                 size={30}
               ></IoMdThumbsDown>
             </div>

@@ -216,6 +216,7 @@ class Registration extends Component {
                 warningMessages={formElement.config.warningMessages}
                 labelName={formElement.config.label}
                 style={{ width: "80%" }}
+                className={classes.InputBox}
               />
             ))}
             <Button disabled={this.state.isValid ? "" : "true"}>Submit</Button>

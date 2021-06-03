@@ -5,7 +5,7 @@
   flex: 1;
   left: 0px;
   /* background-color: var(--nord0); Set back to this when you're done testing*/
-  background-color: olivedrab;
+  background-color: var(--nord1);
   top: 56px;
   margin: 0px;
   /* border-top: solid var(--nord3) 3px; */
@@ -16,6 +16,9 @@
   justify-content: start;
   bottom: 0px;
   position: sticky;
+  /* border-top: 1px solid var(--nord0); */
+  box-sizing: border-box;
+  /* display: none; */
 }
 
 /* .Sidebar::-webkit-scrollbar {

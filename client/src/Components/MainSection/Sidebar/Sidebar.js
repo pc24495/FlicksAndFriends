@@ -21,7 +21,15 @@ class Sidebar extends Component {
         <p className={classes.Username} style={{ fontSize: fontSize }}>
           {this.props.username}
         </p>
-        <div className={classes.ShowTagContainer}>
+        <div
+          className={classes.ShowTagContainer}
+          style={{
+            display:
+              this.props.subscriptions && this.props.subscriptions.length > 0
+                ? "block"
+                : "none",
+          }}
+        >
           <div className={classes.ShowTagContainerInner}>
             {this.props.subscriptions && this.props.subscriptions.length > 0
               ? this.props.subscriptions.map((show) => (
@@ -33,7 +41,7 @@ class Sidebar extends Component {
 
         {this.props.loggedIn ? (
           <NavLink to="/subscriptions" className={classes.Subscriptions}>
-            Subscriptions
+            Manage Subscriptions
           </NavLink>
         ) : null}
         <div style={{ height: "100px" }}></div>

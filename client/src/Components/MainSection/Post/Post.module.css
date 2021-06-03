@@ -7,7 +7,7 @@
   top: 0px;
   left: 0px;
   position: relative;
-  border: solid var(--nord0) 1px;
+  border-bottom: solid var(--nord0) 1px;
   box-sizing: border-box;
 }
 
@@ -117,11 +117,11 @@
 .Tag {
   position: relative;
   line-height: 20px;
-  font-size: 20px;
-  padding: 5px;
-  border-radius: 15px;
+  font-size: 17px;
+  padding: 7px;
+  border-radius: 18px;
   color: var(--nord0);
-  background-color: var(--nord14);
+  background-color: var(--nord7);
   margin: 0px;
   margin-left: 3px;
   margin-bottom: 3px;
@@ -129,16 +129,19 @@
 }
 
 .DropTags {
-  color: var(--nord14);
-  background-color: var(--nord1);
+  color: var(--nord7);
+  background-color: var(--nord0);
   border-radius: 50%;
   border: 0px solid green;
   margin-left: 3px;
   transition: transform 0.2s;
+  width: 23px;
+  height: 23px;
 }
 
 .DropTags:hover {
-  color: var(--nord8);
+  color: var(--nord9);
+  cursor: pointer;
 }
 
 .Rotate {
@@ -190,6 +193,7 @@
 
 .PostText i:hover {
   color: var(--nord8);
+  cursor: pointer;
 }
 
 .Footer {
@@ -247,13 +251,24 @@
   height: 30px;
 }
 
-.Thumb {
+.ThumbUp {
   margin: 10px;
   color: var(--nord5);
 }
 
-.Thumb:hover {
-  color: var(--nord8);
+.ThumbDown {
+  margin: 10px;
+  color: var(--nord5);
+}
+
+.ThumbUp:hover {
+  color: var(--nord14);
+  cursor: pointer;
+}
+
+.ThumbDown:hover {
+  color: var(--nord11);
+  cursor: pointer;
 }
 
 .CommentSection {
@@ -288,6 +303,7 @@
   font-size: 15px;
   height: unset;
   resize: none;
+  background-color: var(--nord6);
 }
 
 .CommentInput:focus {

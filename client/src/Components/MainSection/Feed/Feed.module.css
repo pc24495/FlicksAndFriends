@@ -3,12 +3,14 @@
   position: relative;
   width: 668px;
   left: 0px;
-  /* border-left: 2px solid black;
-  border-right: 2px solid black; */
+  border-left: 1px solid var(--nord0);
+  border-right: 1px solid var(--nord0);
   background-color: var(--nord0);
   top: 0px;
   margin: 0px;
   overflow: scroll;
+  box-sizing: border-box;
+  /* display: none; */
 }
 
 .InputPost {
@@ -16,17 +18,21 @@
   top: 0px;
   height: 50px;
   width: 100%;
-  background-color: green;
+  background-color: var(--nord1);
   display: flex;
   flex-direction: row;
   justify-content: start;
   align-items: center;
+  /* border: 1px solid var(--nord0); */
+  border-bottom: 1px solid var(--nord0);
 }
 
 .ProfilePic {
   height: 40px;
   width: 40px;
   margin: 5px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .InputPostInput {
@@ -41,11 +47,16 @@
   height: 35px;
   font-size: 20px;
   line-height: 35px;
+  padding: 10px;
+  box-sizing: border-box;
+  background-color: var(--nord6);
+  margin-left: 0px;
 }
 
 .InputPostInput::placeholder {
   font-size: 20px;
   line-height: 35px;
+  color: var(--nord3);
 }
 
 .ImageContainer {
