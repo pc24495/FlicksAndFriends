@@ -69,3 +69,74 @@
 .Feed::-webkit-scrollbar {
   display: none;
 }
+
+.Modal {
+  position: absolute;
+  top: 20%;
+  left: calc(50vw - 200px);
+  height: 400px;
+  width: 400px;
+  background-color: var(--nord5);
+  border-radius: 30px;
+  padding: 0px;
+}
+
+.ModalTitle {
+  height: 60px;
+  position: relative;
+  top: 0px;
+  border-bottom: 1px solid var(--nord0);
+  text-align: center;
+  vertical-align: middle;
+  line-height: 60px;
+  font-size: 30px;
+  color: var(--nord0);
+}
+
+.PostInput {
+  flex: 1;
+  min-height: 40px;
+  /* overflow-wrap: break-word; */
+  overflow: hidden;
+  border: none;
+  /* border-radius: 10px; */
+  box-sizing: border-box;
+  font: inherit;
+  font-size: 15px;
+  height: unset;
+  resize: none;
+  background-color: var(--nord6);
+  width: 100%;
+  height: 170px;
+  /* background-color: green; */
+  color: var(--nord0);
+  left: 0px;
+  overflow: scroll;
+  margin-bottom: 5px;
+}
+
+.PostInput::-webkit-scrollbar {
+  display: none;
+}
+
+.RadioButtons {
+  display: flex;
+  flex-direction: row;
+  align-items: space-around;
+  justify-content: space-around;
+  margin-bottom: 5px;
+}
+
+.Dropdowns {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  /* background-color: blue; */
+  justify-content: center;
+  align-items: center;
+}
+
+.Dropdown {
+  width: 90%;
+  margin-bottom: 5px;
+}

@@ -7,6 +7,7 @@ export const Backdrop = (props) => {
     <div
       className={classes.Backdrop}
       style={{ display: props.showBackdrop ? "block" : "none" }}
+      onClick={props.onClick}
     >
       {props.children}
     </div>
