@@ -23,6 +23,7 @@ function App(props) {
 
   let token = localStorage.getItem("token");
 
+  console.log("Starting main page");
   const resizeWindow = (event) => {
     dispatch({
       type: "SET_WINDOW_WIDTH",
@@ -50,6 +51,7 @@ function App(props) {
       })
       .then((res) => {
         // console.log(res.data.subscriptions);
+        console.log(res.data);
         dispatch({
           type: "UPDATE_SUBSCRIPTIONS",
           subscriptions: res.data.subscriptions,
@@ -71,7 +73,8 @@ function App(props) {
           },
         })
         .then((res) => {
-          if (res.data.auth) {
+          if (res.data.auth === true) {
+            console.log(res.data);
             dispatch({
               type: "LOGIN",
               username: res.data.userData.username,
@@ -94,6 +97,7 @@ function App(props) {
 
   updateLogin();
   getSubscriptions();
+  getShows();
 
   // getShows();
   // console.log(Registration);

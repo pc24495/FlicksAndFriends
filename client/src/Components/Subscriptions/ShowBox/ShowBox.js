@@ -17,6 +17,7 @@ export default function ShowBox(props) {
     current_episode_name: currentEpisode.title,
     current_episode_id: currentEpisode.episode_id,
     current_episode_air_date: currentEpisode.air_date,
+    current_episode_order: currentEpisode.episodeOrder,
   });
 
   useEffect(() => {

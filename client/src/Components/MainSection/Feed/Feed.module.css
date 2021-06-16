@@ -113,6 +113,7 @@
   left: 0px;
   overflow: scroll;
   margin-bottom: 5px;
+  padding: 8px;
 }
 
 .PostInput::-webkit-scrollbar {
@@ -139,4 +140,15 @@
 .Dropdown {
   width: 90%;
   margin-bottom: 5px;
+}
+
+.SubmitButton {
+  width: 90%;
+}
+
+.SubmitButtonContainer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

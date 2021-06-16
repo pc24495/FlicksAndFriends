@@ -308,7 +308,9 @@ app.get("/api/getUserData", verifyJWT, (req, res) => {
     "SELECT * FROM users WHERE user_id=$1",
     [req.userID],
     (err, result) => {
-      if (err) {
+      if (!(result.rows.length > 0)) {
+        res.json({ auth: false });
+      } else if (err) {
         console.log("Error");
       } else {
         // console.log(result.rows);
@@ -330,7 +332,9 @@ app.get("/api/getSubscriptions", verifyJWT, (req, res) => {
       if (err) {
         console.log("Error fetching subscriptions");
       } else {
-        if (result.rows[0].subscriptions === null) {
+        if (!(result.rows.length > 0)) {
+          res.json({ auth: false, subscriptions: [] });
+        } else if (result.rows[0].subscriptions === null) {
           res.json({ auth: true, subscriptions: [] });
         } else {
           res.json({
@@ -343,6 +347,17 @@ app.get("/api/getSubscriptions", verifyJWT, (req, res) => {
   );
 });
 
+app.get("/api/getShowsFromSubscriptions", verifyJWT, (req, res) => {
+  db.query(
+    "SELECT * FROM shows WHERE show_id = ANY ($1)",
+    [req.body.subscriptions],
+    (err, result) => {
+      if (err) {
+      }
+    }
+  );
+});
+//Hey
 app.post("/api/updateSubscriptions", verifyJWT, (req, res) => {
   console.log("updating subscriptions");
   db.query(

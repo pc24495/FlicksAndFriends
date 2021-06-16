@@ -23,6 +23,7 @@ const ProfilePicUpload = (props) => {
     aspect: 1,
     croppedImageSrc: null,
     showBackdrop: false,
+    inputKey: "Input start",
   });
 
   const [imageCrop, setImageCrop] = useState(null);
@@ -40,9 +41,10 @@ const ProfilePicUpload = (props) => {
     }
   };
 
-  const onBackdropClick = (event) => {
+  const onBackdropClose = (event) => {
     // console.log(event.target);
-    setState({ ...state, showBackdrop: false });
+    let randomString = Math.random().toString(36);
+    setState({ ...state, showBackdrop: false, inputKey: randomString });
   };
 
   // const getCroppedImage = (image, crop) => {
@@ -189,6 +191,7 @@ const ProfilePicUpload = (props) => {
             className={classes.InputPic}
             accept="image/*"
             onChange={onSelectFile}
+            key={state.inputKey}
           />
         </div>
         <img
@@ -197,10 +200,7 @@ const ProfilePicUpload = (props) => {
         ></img>
         <Button onClick={submitImage}>Submit</Button>
       </div>
-      <Backdrop
-        showBackdrop={state.showBackdrop}
-        onClick={(event) => onBackdropClick(event)}
-      >
+      <Backdrop showBackdrop={state.showBackdrop}>
         <div className={classes.CropBox}>
           {state.src && (
             <ReactEasyCrop
@@ -217,7 +217,7 @@ const ProfilePicUpload = (props) => {
           )}
         </div>
         <div className={classes.ButtonContainer}>
-          <Button onClick={onBackdropClick}>Close</Button>
+          <Button onClick={onBackdropClose}>Close</Button>
           <Button onClick={prepareImage}>Done</Button>
         </div>
       </Backdrop>
