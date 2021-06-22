@@ -316,6 +316,16 @@
   position: relative;
   top: 0px;
   display: flex;
+  flex-direction: column;
+  background-color: var(--nord1);
+  margin: 0px;
+}
+
+.CommentInner {
+  width: 100%;
+  position: relative;
+  top: 0px;
+  display: flex;
   flex-direction: row;
   background-color: var(--nord1);
   margin: 0px;
@@ -341,4 +351,32 @@
   .Post {
     width: 400px;
   }
+}
+
+.Options {
+  display: flex;
+  margin: 0;
+  flex-direction: row;
+  background-color: ;
+  height: fit-content;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.Option {
+  font-size: 15px;
+  line-height: 15px;
+  height: 15px;
+  /* background-color: purple; */
+  margin: 0px;
+  margin-left: 5px;
+  margin-right: 6px;
+  margin-bottom: 4px;
+  text-decoration: underline;
+  color: var(--nord5);
+}
+
+.Option:hover {
+  cursor: pointer;
+  color: var(--nord7);
 }

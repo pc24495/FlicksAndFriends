@@ -84,6 +84,59 @@ export default function Post(props) {
     });
   };
 
+  const likesToText = (numLikes) => {
+    if (numLikes < 1000) {
+      return numLikes.toString();
+    } else if (numLikes >= 1000 && numLikes < 1000000) {
+      return (numLikes / 1000).toFixed(1) + "k";
+    } else if (numLikes >= 1000000 && numLikes < 1000000000) {
+      return (numLikes / 1000000).toFixed(1) + "m";
+    }
+  };
+
+  const timeSince = (date) => {
+    const seconds = Math.floor((new Date() - date) / 1000);
+
+    let interval = seconds / 31536000;
+
+    if (interval > 1) {
+      return Math.floor(interval) === 1
+        ? "1 year ago"
+        : Math.floor(interval) + " years ago";
+    }
+    interval = seconds / 2592000;
+    if (interval > 1) {
+      return Math.floor(interval) === 1
+        ? "1 month ago"
+        : Math.floor(interval) + " months ago";
+    }
+    interval = seconds / 86400;
+    if (interval > 1) {
+      return Math.floor(interval) === 1
+        ? "1 day ago"
+        : Math.floor(interval) + " days ago";
+    }
+    interval = seconds / 3600;
+    if (interval > 1) {
+      return Math.floor(interval) === 1
+        ? "1 hour ago"
+        : Math.floor(interval) + " hours ago";
+    }
+    interval = seconds / 60;
+    if (interval > 1) {
+      return Math.floor(interval) === 1
+        ? "1 minute ago"
+        : Math.floor(interval) + " minutes ago";
+    }
+    interval = seconds;
+    if (interval >= 1) {
+      return Math.floor(interval) === 1
+        ? "1 second ago"
+        : Math.floor(interval) + " seconds ago";
+    }
+    return "Just now";
+  };
+
   const showFull = (event) => {
     setShowFullPost(true);
   };
@@ -94,27 +147,17 @@ export default function Post(props) {
 
   // console.log(document.getElementById("57-0").getBoundingClientRect());
 
-  const stringToTest =
-    "Lorem ipsum dolor, sit amet consectetur adipisicing elit.  Quidem inventore aut dicta non eaque dolorem iste quis praesentium, ipsa suscipit? Nihil quibusdam amet rerum possimus mollitia tempore, eligendi rem deserunt ea labore maxime qui officia totam pariatur veniam voluptates aliquam aliquid. Cum magnam animi cupiditate et quidem eum hic veniam? s";
-
+  const stringToTest = props.body;
   // const toggleTags = () => {
   //   if (tagDisplay) {
   //   } else {
   //   }
   // };
 
-  const HTMLToTest = (
-    <p>
-      Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quidem inventore
-      aut dicta non eaque dolorem iste quis praesentium, ipsa suscipit? Nihil
-      quibusdam amet rerum possimus mollitia tempore, eligendi rem deserunt ea
-      labore maxime qui officia totam pariatur veniam voluptates aliquam
-      aliquid. Cum magnam animi cupiditate et quidem eum hic veniam? s
-    </p>
-  );
+  const HTMLToTest = <p>{props.body}</p>;
 
   const seeMore = "<i>...see more</i>";
-
+  // timeSince(props.post_date)
   return (
     <div className={classes.PostContainer}>
       <div className={classes.Post}>
@@ -123,11 +166,13 @@ export default function Post(props) {
         </div>
         <div className={classes.BodySection}>
           <div className={classes.Title}>
-            <p className={classes.Username}>JohnSmith</p>
+            <p className={classes.Username}>{props.username}</p>
             <li className={classes.Bullet}>
               <ul></ul>
             </li>
-            <p className={classes.Date}> 2 days ago</p>
+            <p className={classes.Date}>
+              {timeSince(Date.parse(props.post_date))}
+            </p>
           </div>
 
           <div className={classes.Tags} id={postID + "-tags"}>
@@ -188,7 +233,7 @@ export default function Post(props) {
                 className={classes.FriendsLiked}
                 style={{
                   position: "relative",
-                  width: "30px",
+                  width: "40px",
                   boxSizing: "content-box",
                   borderRadius: "50%",
                   border: "3px solid white",
@@ -200,8 +245,7 @@ export default function Post(props) {
                 className={classes.FriendsLiked}
                 style={{
                   position: "relative",
-                  width: "30px",
-
+                  width: "40px",
                   boxSizing: "content-box",
                   borderRadius: "50%",
                   border: "3px solid white",
@@ -213,7 +257,7 @@ export default function Post(props) {
                 className={classes.FriendsLiked}
                 style={{
                   position: "relative",
-                  width: "30px",
+                  width: "40px",
                   boxSizing: "content-box",
                   borderRadius: "50%",
                   border: "3px solid white",
@@ -223,18 +267,18 @@ export default function Post(props) {
               <div
                 style={{
                   position: "relative",
-                  width: "30px",
-                  height: "30px",
-                  lineHeight: "30px",
+                  width: "40px",
+                  height: "40px",
+                  lineHeight: "40px",
                   backgroundColor: "yellow",
                   borderRadius: "50%",
-                  fontSize: "12px",
+                  fontSize: "15px",
                   textAlign: "center",
                   border: "3px solid white",
                   marginLeft: "-15px",
                 }}
               >
-                4.5k
+                {"+" + likesToText(props.likes.length)}
               </div>
               <p
                 style={{
@@ -269,29 +313,37 @@ export default function Post(props) {
             onChange={handleTextAreaOnChange}
           ></TextareaAutosize>
         </div>
-        <div className={classes.Comment}>
-          <img
-            src={smile}
-            style={{
-              position: "relative",
-              width: "30px",
-              height: "30px",
-              padding: "10px",
-              top: "0px",
-              left: "0px",
-            }}
-            alt=""
-          ></img>
-          <div className={classes.CommentText}>
-            orem ipsum dolor, sit amet consectetur adipisicing elit. Quidem
-            inventore aut dicta non eaque dolorem iste quis praesentium, ipsa
-            suscipit? Nihil quibusdam amet rerum possimus mollitia tempore,
-            eligendi rem deserunt ea labore maxime qui officia totam pariatur
-            veniam voluptates aliquam aliquid. Cum magnam animi cupiditate et
-            quidem eum hic v
+        {props.comments.map((comment) => (
+          <div className={classes.Comment}>
+            <div className={classes.CommentInner}>
+              <img
+                src={smile}
+                style={{
+                  position: "relative",
+                  width: "30px",
+                  height: "30px",
+                  padding: "10px",
+                  top: "0px",
+                  left: "0px",
+                }}
+                alt=""
+              ></img>
+              <div className={classes.CommentText}>{comment.commentBody}</div>
+            </div>
+            <div className={classes.Options}>
+              <p className={classes.Option}>Like</p>
+              <p className={classes.Option}>Edit</p>
+              <p className={classes.Option}>Delete</p>
+            </div>
           </div>
-        </div>
+        ))}
       </div>
     </div>
   );
 }
+
+// <div className={classes.Options}>
+//             <p className={classes.Option}>Like</p>
+//             <p className={classes.Option}>Edit</p>
+//             <p className={classes.Option}>Delete</p>
+//           </div>

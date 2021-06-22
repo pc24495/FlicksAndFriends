@@ -68,6 +68,7 @@ app.get("/api/PopulateDatabases", async (req, res, next) => {
     const showJSONS = await axios
       .get(popularString)
       .then((res) => res.data.results);
+    // console.log(showJSONS);
     const showsData = showJSONS.map((el) => {
       const data = {
         tv_id: el.id,
@@ -127,28 +128,50 @@ app.get("/api/PopulateDatabases", async (req, res, next) => {
         //Here is where code to get posters starts
         const title = show.show_name;
         const encodedTitle = encodeURIComponent(title);
-        const POSTER_API_KEY = "f8858b47";
+        // console.log(encodedTitle);
+        // res.send(encodedTitle);
+        const POSTER_API_KEY = "5d06af2a";
         const posterAPI_URL = `http://www.omdbapi.com/?apikey=${POSTER_API_KEY}&t=${encodedTitle}`;
-        const posterJSON = await axios.get(posterAPI_URL);
-        let posterURL = posterJSON.data.Poster;
-        posterURL = posterURL.replace("SX300", "SX220");
-        const imageResponse = await axios.get(posterURL, {
-          responseType: "arraybuffer",
-        });
-        const buffer = Buffer.from(imageResponse.data, "utf-8");
-        const image64str = base64_arraybuffer.encode(buffer);
-        // console.log(image64str);
-        const img = new canvas.Image();
-        img.src = "data:image/jpeg;base64," + image64str;
+        try {
+          let posterJSON = await axios.get(posterAPI_URL);
+          console.log(posterJSON);
+          if (encodedTitle === "Lucifer") {
+            console.log(posterJSON);
+          }
+        } catch {
+          posterJSON = null;
+          // console.log(encodedTitle);
+        }
+        // const posterJSON = await axios.get(posterAPI_URL);
+        // console.log(posterJSON);
+        let image64str = null;
         let imgHeight = 0;
-        img.onload = function () {
-          const imgWidth = img.width;
-          imgHeight = img.height;
+        if (posterJSON) {
+          let posterURL = posterJSON.data.Poster;
+          posterURL = posterURL.replace("SX300", "SX220");
+          const imageResponse = await axios.get(posterURL, {
+            responseType: "arraybuffer",
+          });
+          const buffer = Buffer.from(imageResponse.data, "utf-8");
+          image64str = base64_arraybuffer.encode(buffer);
+          // console.log(image64str);
+          const img = new canvas.Image();
+          img.src = "data:image/jpeg;base64," + image64str;
+          // let imgHeight = 0;
+          img.onload = function () {
+            const imgWidth = img.width;
+            imgHeight = img.height;
 
-          // console.log("imgWidth: ", imgWidth);
-          // console.log("imgHeight: ", imgHeight);
-        };
-        img.onload();
+            // console.log("imgWidth: ", imgWidth);
+            // console.log("imgHeight: ", imgHeight);
+          };
+          img.onload();
+        } else {
+          imgHeight = 250;
+
+          image64str =
+            "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";
+        }
         // console.log(image64str.length);
         // res.json({ image: image64str });
         //Code to get posters ends
@@ -174,6 +197,8 @@ app.get("/api/PopulateDatabases", async (req, res, next) => {
           let b_date = toDate(b.air_date);
 
           if (a_date < b_date) {
+            // console.log("A date: " + a_date);
+            // console.log("B date: " + b_date);
             return -1;
           } else if (a_date > b_date) {
             return 1;
@@ -188,13 +213,16 @@ app.get("/api/PopulateDatabases", async (req, res, next) => {
           }
         });
         // console.log(episodes);
+        if (show.show_name === "Game of Thrones") {
+          // console.log(episodes);
+        }
         let episodesMap = new Map(
           episodes.map((episode) => {
             currentEpisodeOrder = currentEpisodeOrder + 1;
             return [episode.episode_id, currentEpisodeOrder];
           })
         );
-        console.log(episodesMap);
+        // console.log(episodesMap);
         let seasonsWithOrder = seasonResults.map((season) => {
           let episodesWithOrder = season.episodes.map((episode) => {
             return {
@@ -213,7 +241,7 @@ app.get("/api/PopulateDatabases", async (req, res, next) => {
           seasons: seasonsWithOrder,
         };
 
-        console.log(finalShow.show_name);
+        // console.log(finalShow.show_name);
         //End of code for putting episodes with orderinto database
         return finalShow;
         //
@@ -242,7 +270,7 @@ app.get("/api/PopulateDatabases", async (req, res, next) => {
 });
 //
 
-app.get("/api/getShowPosters", async (req, res, next) => {
+app.post("/api/getShowPosters", async (req, res, next) => {
   const API_KEY = "f8858b47";
   const url = `http://www.omdbapi.com/?apikey=${API_KEY}&t=Game+of+Thrones`;
 
@@ -291,7 +319,7 @@ const verifyJWT = (req, res, next) => {
     res.send("Hey, we need a token");
   } else {
     jwt.verify(token, process.env.SECRET, (err, decoded) => {
-      console.log("verifying....");
+      // console.log("verifying....");
       if (err) {
         console.log("Error verifying");
         res.json({ auth: false, message: "You failed to authenticate" });
@@ -347,16 +375,34 @@ app.get("/api/getSubscriptions", verifyJWT, (req, res) => {
   );
 });
 
-app.get("/api/getShowsFromSubscriptions", verifyJWT, (req, res) => {
+app.post("/api/getShowsFromSubscriptions", verifyJWT, (req, res) => {
+  // console.log(req.body.subscriptionIDs);
   db.query(
-    "SELECT * FROM shows WHERE show_id = ANY ($1)",
-    [req.body.subscriptions],
+    "SELECT * FROM shows WHERE tv_id = ANY ($1)",
+    [req.body.subscriptionIDs],
     (err, result) => {
       if (err) {
+        console.log("Error getting shows from subscription IDs");
+      } else {
+        if (result.rows.length > 0) {
+          // console.log("Sending!");
+          console.log({ ...result.rows[0], poster: null });
+          res.json({
+            auth: true,
+            shows: result.rows,
+          });
+        } else {
+          res.json({
+            auth: true,
+          });
+        }
       }
     }
   );
 });
+
+app.post("", verifyJWT, (req, res) => {});
+
 //Hey
 app.post("/api/updateSubscriptions", verifyJWT, (req, res) => {
   console.log("updating subscriptions");
@@ -433,6 +479,27 @@ app.post("/api/login", (req, res) => {
         } else {
           res.send({ message: "User doesn't exist!" });
         }
+      }
+    }
+  );
+});
+
+app.post("/api/postPost", (req, res) => {
+  db.query(
+    "INSERT INTO posts(post_date, user_id, post_text, episode_air_date, episode_order, tv_id) values($1, $2, $3, $4, $5)",
+    [
+      new Date(),
+      req.userID,
+      req.body.post_text,
+      toDate(req.body.episode_air_date),
+      req.body.episode_order,
+      req.body.tv_id,
+    ],
+    (err, result) => {
+      if (err) {
+        console.log("Error inserting post!");
+        res.send({ err: err });
+      } else {
       }
     }
   );
