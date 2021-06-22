@@ -134,9 +134,9 @@ app.get("/api/PopulateDatabases", async (req, res, next) => {
         const posterAPI_URL = `http://www.omdbapi.com/?apikey=${POSTER_API_KEY}&t=${encodedTitle}`;
         try {
           let posterJSON = await axios.get(posterAPI_URL);
-          console.log(posterJSON);
+          // console.log("bloop");
           if (encodedTitle === "Lucifer") {
-            console.log(posterJSON);
+            // console.log("blap");
           }
         } catch {
           posterJSON = null;
@@ -386,7 +386,7 @@ app.post("/api/getShowsFromSubscriptions", verifyJWT, (req, res) => {
       } else {
         if (result.rows.length > 0) {
           // console.log("Sending!");
-          console.log({ ...result.rows[0], poster: null });
+          // console.log({ ...result.rows[0], poster: null });
           res.json({
             auth: true,
             shows: result.rows,
@@ -485,24 +485,45 @@ app.post("/api/login", (req, res) => {
 });
 
 app.post("/api/postPost", (req, res) => {
-  db.query(
-    "INSERT INTO posts(post_date, user_id, post_text, episode_air_date, episode_order, tv_id) values($1, $2, $3, $4, $5)",
-    [
-      new Date(),
-      req.userID,
-      req.body.post_text,
-      toDate(req.body.episode_air_date),
-      req.body.episode_order,
-      req.body.tv_id,
-    ],
-    (err, result) => {
-      if (err) {
-        console.log("Error inserting post!");
-        res.send({ err: err });
-      } else {
+  if (req.body.type === "spoiler") {
+    db.query(
+      "INSERT INTO posts(post_date, user_id, post_text, episode_air_date, episode_order, tv_id, type) values($1, $2, $3, $4, $5, $6, $7)",
+      [
+        new Date(),
+        req.userID,
+        req.body.post_text,
+        toDate(req.body.episode_air_date),
+        req.body.episode_order,
+        req.body.tv_id,
+        req.body.type,
+      ],
+      (err, result) => {
+        if (err) {
+          console.log("Error inserting post!");
+          res.send({ err: err });
+        } else {
+        }
       }
-    }
-  );
+    );
+  } else {
+    db.query(
+      "INSERT INTO posts(post_date, user_id, post_text, tv_id, type) values($1, $2, $3, $4, $5)",
+      [
+        new Date(),
+        req.userID,
+        req.body.post_text,
+        req.body.tv_id,
+        req.body.type,
+      ],
+      (err, result) => {
+        if (err) {
+          console.log("Error inserting post!");
+          res.send({ err: err });
+        } else {
+        }
+      }
+    );
+  }
 });
 
 app.post("/api/updateSubscriptions", (req, res) => {});

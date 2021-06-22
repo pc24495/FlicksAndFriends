@@ -230,15 +230,30 @@ export default function Feed(props) {
 
     const token = localStorage.getItem("token");
     // console.log();
-    axios.post("http://localhost:3000/api/postPost", {
-      headers: {
-        "x-access-token": localStorage.getItem("token"),
-      },
-      post_text: text,
-      episode_air_date: currentEpisode.air_date,
-      episode_order: currentEpisode.episodeOrder,
-      tv_id: currentShow.tv_id,
-    });
+    if (state.showDropdowns) {
+      axios.post("http://localhost:3000/api/postPost", {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+        post_text: text,
+        episode_air_date: currentEpisode.air_date,
+        episode_order: currentEpisode.episodeOrder,
+        tv_id: currentShow.tv_id,
+        type: "spoiler",
+      });
+    } else {
+      axios.post("http://localhost:3000/api/postPost", {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+        post_text: text,
+        episode_air_date: currentEpisode.air_date,
+        episode_order: currentEpisode.episodeOrder,
+        tv_id: currentShow.tv_id,
+        type: "announcement",
+      });
+    }
+    setState({ ...state, showBackdrop: false });
   };
 
   // let profilePicBase64 = null;
@@ -313,14 +328,14 @@ export default function Feed(props) {
               </div>
             </div>
 
-            {state.showDropdowns && shows.length > 0 ? (
-              <div className={classes.Dropdowns}>
-                <select className={classes.Dropdown} onChange={onShowSelect}>
-                  {shows.map((show) => {
-                    // console.log("Show11");
-                    return <option id={show.show_id}>{show.title}</option>;
-                  })}
-                </select>
+            <div className={classes.Dropdowns}>
+              <select className={classes.Dropdown} onChange={onShowSelect}>
+                {shows.map((show) => {
+                  // console.log("Show11");
+                  return <option id={show.show_id}>{show.title}</option>;
+                })}
+              </select>
+              {state.showDropdowns && shows.length > 0 ? (
                 <select className={classes.Dropdown} onChange={onSeasonSelect}>
                   {currentShow.episodes.map((season) => {
                     return (
@@ -330,6 +345,8 @@ export default function Feed(props) {
                     );
                   })}
                 </select>
+              ) : null}
+              {state.showDropdowns && shows.length > 0 ? (
                 <select className={classes.Dropdown} onChange={onEpisodeSelect}>
                   {currentSeason.episodes.map((episode) => {
                     return (
@@ -337,8 +354,8 @@ export default function Feed(props) {
                     );
                   })}
                 </select>
-              </div>
-            ) : null}
+              ) : null}
+            </div>
 
             <div className={classes.SubmitButtonContainer}>
               <button className={classes.SubmitButton} onClick={submitPost}>
