@@ -206,6 +206,7 @@ export default function Subscriptions(props) {
     const subscription = JSON.parse(
       document.getElementById(tv_id).dataset.subscription
     );
+    console.log(subscription);
     // console.log(subscription);
     // console.log("Clicked");
     dispatch({

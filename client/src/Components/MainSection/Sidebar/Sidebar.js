@@ -12,7 +12,7 @@ class Sidebar extends Component {
     if (this.props.username) {
       fontSize = this.props.username.length >= 18 ? "26px" : "30px";
     }
-    // console.log(this.props.profilePic);
+    console.log(this.props.profilePic);
     return (
       <div className={classes.Sidebar}>
         {this.props.profilePic && (

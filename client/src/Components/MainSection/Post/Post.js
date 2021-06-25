@@ -156,13 +156,19 @@ export default function Post(props) {
 
   const HTMLToTest = <p>{props.body}</p>;
 
+  // "data:image/png;base64," + props.user_pic_map.get(props.user_id)
+  props.user_pic_map.get(props.user_id);
   const seeMore = "<i>...see more</i>";
   // timeSince(props.post_date)
   return (
     <div className={classes.PostContainer}>
       <div className={classes.Post}>
         <div className={classes.ProfilePicSection}>
-          <img src={squareTest} className={classes.ProfilePic} alt=""></img>
+          <img
+            src={props.user_pic_map.get(props.user_id)}
+            className={classes.ProfilePic}
+            alt=""
+          ></img>
         </div>
         <div className={classes.BodySection}>
           <div className={classes.Title}>

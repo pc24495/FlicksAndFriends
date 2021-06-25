@@ -51,7 +51,7 @@ function App(props) {
       })
       .then((res) => {
         // console.log(res.data.subscriptions);
-        console.log(res.data);
+        // console.log(res.data);
         dispatch({
           type: "UPDATE_SUBSCRIPTIONS",
           subscriptions: res.data.subscriptions,
@@ -74,7 +74,7 @@ function App(props) {
         })
         .then((res) => {
           if (res.data.auth === true) {
-            console.log(res.data);
+            // console.log(res.data);
             dispatch({
               type: "LOGIN",
               username: res.data.userData.username,

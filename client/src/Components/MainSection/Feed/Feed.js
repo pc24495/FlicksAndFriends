@@ -12,10 +12,12 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function Feed(props) {
   //STATE VARIABLES
+  // console.log(props.initPosts);
   const showList = useSelector((state) => {
     return state.shows;
   });
   const subscriptions = useSelector((state) => {
+    // console.log(state.subscriptions);
     return state.subscriptions;
   });
 
@@ -23,6 +25,7 @@ export default function Feed(props) {
 
   const [shows, setShows] = useState([]);
   // console.log(shows);
+
   useEffect(() => {
     const subscriptionIDs =
       subscriptions && subscriptions.length > 0
@@ -66,33 +69,12 @@ export default function Feed(props) {
   const commentBody =
     "orem ipsum dolor, sit amet consectetur adipisicing elit. Quidem inventore aut dicta non eaque dolorem iste quis praesentium, ipsa suscipit? Nihil quibusdam amet rerum possimus mollitia tempore, eligendi rem deserunt ea labore maxime qui officia totam pariatur veniam voluptates aliquam aliquid. Cum magnam animi cupiditate et quidem eum hic v";
   const comments = [{ commentBody: commentBody }];
-  const [postState, setPostState] = useState({
-    posts: [
-      {
-        body: loremText,
-        username: "JohnSmith",
-        tags: tags,
-        comments: comments,
-        likes: likes,
-      },
-      {
-        body: loremText,
-        username: "JohnSmith",
-        tags: tags,
-        comments: comments,
-        likes: likes,
-      },
-      {
-        body: loremText,
-        username: "JohnSmith",
-        tags: tags,
-        comments: comments,
-        likes: likes,
-      },
-    ],
-    userPics: new Map(),
-  }); //userPics entries are of the form [userID, picture]
-
+  console.log(props.initPosts);
+  const [postState, setPostState] = useState(props.initPosts); //userPics entries are of the form [userID, picture]
+  console.log(postState);
+  useEffect(() => {
+    setPostState(props.initPosts);
+  }, [props.initPosts]);
   const loggedIn = useSelector((state) => state.loggedIn);
   // console.log(subscriptions);
   // console.log(shows[0]);
@@ -258,42 +240,52 @@ export default function Feed(props) {
 
   // let profilePicBase64 = null;
 
-  const getMorePosts = () => {
-    setTimeout(() => {
-      const blankArray = [
-        {
-          body: loremText,
-          username: "JohnSmith",
-          tags: tags,
-          comments: comments,
-          likes: likes,
-        },
-        {
-          body: loremText,
-          username: "JohnSmith",
-          tags: tags,
-          comments: comments,
-          likes: likes,
-        },
-        {
-          body: loremText,
-          username: "JohnSmith",
-          tags: tags,
-          comments: comments,
-          likes: likes,
-        },
-      ];
-      setPostState((prevState) => ({
-        ...prevState,
-        posts: prevState.posts.concat(blankArray),
-      }));
-    }, 2000);
+  const getMorePosts = async () => {
+    console.log("Fetching posts");
+    setTimeout(async () => {
+      const subscriptionIDs =
+        subscriptions && subscriptions.length > 0
+          ? subscriptions.map((sub) => {
+              return sub.show_id;
+            })
+          : null;
+      if (subscriptionIDs) {
+        await axios
+          .post("http://localhost:3000/api/getPosts", {
+            postIDs: postState.posts.map((post) => post.post_id),
+            userIDs: Array.from(postState.userPics.keys()),
+            subscriptionIDs: subscriptionIDs,
+            headers: {
+              "x-access-token": localStorage.getItem("token"),
+            },
+          })
+          .then((res) => {
+            console.log("Fetched posts");
+            // const { posts, userPics } = { ...res.data };
+            // console.log(posts);
+            const posts = res.data.posts;
+            const userPics = new Map(JSON.parse(res.data.userPics));
+            // console.log(posts);
+            setPostState((prevState) => ({
+              ...prevState,
+              posts: prevState.posts.concat(posts),
+              userPics: new Map([...prevState.userPics, ...userPics]),
+              loadMore: true,
+            }));
+          });
+      }
+      // setPostState((prevState) => ({
+      //   ...prevState,
+      //   posts: prevState.posts.concat(blankArray),
+      // }));
+    }, 200);
   };
 
   // console.log(shows);
   // console.log(currentShow);
   // console.log(currentSeason);
   //RETURN
+  console.log(postState.loadMore);
   return (
     <div className={classes.Feed}>
       {state.showBackdrop ? (
@@ -374,50 +366,29 @@ export default function Feed(props) {
           onClick={inputClickHandler}
         ></input>
       </div>
-      <InfiniteScroll
-        dataLength={postState.posts.length}
-        loader={<PostSpinner></PostSpinner>}
-        next={getMorePosts}
-        hasMore={true}
-      >
-        {postState.posts.map((post) => (
-          <Post
-            tags={post.tags}
-            body={post.body}
-            username={post.username}
-            post_date={new Date(2021, 5, 19, 17, 42, 30, 500).toString()}
-            likes={post.likes}
-            comments={post.comments}
-          ></Post>
-        ))}
-      </InfiniteScroll>
+      {postState.loadMore ? (
+        <InfiniteScroll
+          dataLength={postState.posts.length}
+          loader={<PostSpinner></PostSpinner>}
+          next={getMorePosts}
+          hasMore={postState.loadMore}
+          scrollThreshold={0}
+        >
+          {postState.posts.map((post) => (
+            <Post
+              tags={post.tags}
+              body={post.body}
+              username={post.username}
+              post_date={post.post_date.toString()}
+              likes={post.likes}
+              comments={post.comments}
+              user_liked_post={post.user_liked_post}
+              user_id={post.user_id}
+              user_pic_map={postState.userPics}
+            ></Post>
+          ))}
+        </InfiniteScroll>
+      ) : null}
     </div>
   );
 }
-
-// {state.showDropdowns && shows.length > 0 ? (
-//   <div className={classes.Dropdowns}>
-//     <select className={classes.Dropdown} onChange={onShowSelect}>
-//       {shows.map((show) => {
-//         // console.log("Show11");
-//         return <option id={show.show_id}>{show.title}</option>;
-//       })}
-//     </select>
-//     <select className={classes.Dropdown} onChange={onSeasonSelect}>
-//       {currentShow.episodes.map((season) => {
-//         return (
-//           <option id={season.season_id}>
-//             {season.season_name}
-//           </option>
-//         );
-//       })}
-//     </select>
-//     <select className={classes.Dropdown}>
-//       {currentSeason.episodes.map((episode) => {
-//         return (
-//           <option id={episode.episode_id}>{episode.title}</option>
-//         );
-//       })}
-//     </select>
-//   </div>
-// ) : null}

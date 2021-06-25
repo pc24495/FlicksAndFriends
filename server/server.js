@@ -466,7 +466,7 @@ app.post("/api/login", (req, res) => {
 
               const id = dbResults[0].user_id;
               const token = jwt.sign({ id }, process.env.SECRET, {
-                expiresIn: "3600s",
+                expiresIn: "10800s",
               });
               res.json({ auth: true, token: token, result: dbResults[0] });
             } else {
@@ -484,7 +484,8 @@ app.post("/api/login", (req, res) => {
   );
 });
 
-app.post("/api/postPost", (req, res) => {
+app.post("/api/postPost", verifyJWT, (req, res) => {
+  // console.log(req.userID);
   if (req.body.type === "spoiler") {
     db.query(
       "INSERT INTO posts(post_date, user_id, post_text, episode_air_date, episode_order, tv_id, type) values($1, $2, $3, $4, $5, $6, $7)",
@@ -525,6 +526,121 @@ app.post("/api/postPost", (req, res) => {
     );
   }
 });
+
+app.post("/api/getPosts", verifyJWT, async (req, res) => {
+  const subscribedShowIDs = req.body.subscriptionIDs;
+  const subscriptionsMap = new Map();
+  const userPicsMap = new Map();
+  const subscriptions = await db
+    .query("SELECT subscriptions FROM users WHERE user_id = $1", [req.userID])
+    .then((response) => {
+      if (response.rows.length > 0) {
+        return response.rows[0].subscriptions;
+      } else {
+        res.json({ message: "No subscriptions" });
+      }
+    });
+  subscriptions.forEach((subscription) =>
+    subscriptionsMap.set(subscription.show_id, subscription)
+  );
+  // console.log(subscriptionsMap);
+  const alreadyLoadedPostIDs = req.body.postIDs;
+  console.log(alreadyLoadedPostIDs);
+  let posts = [];
+  //
+  await Promise.all(
+    //Iterating through shows
+    subscribedShowIDs.map(async (showID) => {
+      const postsAboutShow = await db
+        .query(
+          "SELECT * FROM posts WHERE ((NOT post_id = ANY($1))) AND (tv_id = $2) AND ( (type = $3) OR ( (type = $4 ) AND ( episode_order <= $5) )) ORDER BY num_likes DESC LIMIT 6",
+          [
+            alreadyLoadedPostIDs,
+            showID,
+            "announcement",
+            "spoiler",
+            subscriptionsMap.get(showID).current_episode_order,
+          ]
+        )
+        .then((res) => {
+          // console.log("Rows");
+          // console.log(res.rows);
+          return res.rows;
+        });
+      posts = posts.concat(postsAboutShow);
+    })
+    //Done iterating through shows
+  );
+  // console.log(posts);
+  posts = posts
+    .sort((el1, el2) => {
+      if (el1.num_likes < el2.num_likes) {
+        return -1;
+      } else if (el1.num_likes > el2.num_likes) {
+        return 1;
+      } else {
+        return 0;
+      }
+    })
+    .slice(0, 6);
+  // console.log(posts);
+  posts = await Promise.all(
+    posts.map(async (post) => {
+      if (!req.body.userIDs.includes(post.user_id)) {
+        const userProfilePic = await db
+          .query("SELECT profile_pic FROM users WHERE user_id = $1", [
+            post.user_id,
+          ])
+          .then((res) => res.rows[0].profile_pic);
+        userPicsMap.set(post.user_id, userProfilePic);
+      }
+      let username = await db
+        .query("SELECT username FROM users WHERE user_id = $1", [req.userID])
+        .then((res) => res.rows[0].username);
+      let postLikes = [];
+      let userLikedPost = 0;
+      let comments = [];
+      await db
+        .query("SELECT * FROM post_likes WHERE user_id = $1", [req.userID])
+        .then((res) => {
+          res.rows.forEach(async (row) => {
+            if (row.user_id === req.userID) {
+              userLikedPost = row.is_like ? 1 : -1;
+            }
+            if (!userPicsMap.has(req.userID)) {
+              await db
+                .query(
+                  "SELECT (profile_pic, username) FROM users WHERE user_id = $1",
+                  [req.userID]
+                )
+                .then((res) => {
+                  userPicsMap.set(req.userID, res.rows[0].profile_pic);
+                });
+            }
+          });
+          postLikes = postLikes.concat(res.rows);
+        });
+
+      return {
+        ...post,
+        post_id: parseInt(post.post_id),
+        user_liked_post: userLikedPost,
+        comments: comments,
+        likes: postLikes,
+        username: username,
+        post_date: post.post_date,
+        likes: postLikes,
+        body: post.post_text,
+        user_id: post.user_id,
+      };
+    })
+  );
+  //
+  res.json({ posts: posts, userPics: JSON.stringify([...userPicsMap]) });
+  console.log(posts);
+  // console.log(userPicsMap);
+});
+//
 
 app.post("/api/updateSubscriptions", (req, res) => {});
 
