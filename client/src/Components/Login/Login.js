@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import Input from "../Registration/Input/Input.js";
 import classes from "./Login.module.css";
 import Button from "../Button/Button.js";
-import axios from "axios";
+import axios from "../../axiosConfig.js";
 
 class Login extends Component {
   state = {
@@ -71,7 +71,7 @@ class Login extends Component {
     if (valid) {
       //   console.log("Valid");
       axios
-        .post("http://localhost:3000/api/login", {
+        .post("/api/login", {
           username: updatedOrderForm.username.value.trim(),
           password: updatedOrderForm.password.value,
         })
@@ -104,7 +104,7 @@ class Login extends Component {
   };
 
   userAuthenticated = () => {
-    axios.get("http://localhost:3000/api/isUserAuth", {
+    axios.get("/api/isUserAuth", {
       headers: {
         "x-access-token": localStorage.getItem("token"),
       },

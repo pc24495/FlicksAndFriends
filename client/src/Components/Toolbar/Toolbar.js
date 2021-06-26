@@ -3,20 +3,20 @@ import classes from "./Toolbar.module.css";
 import NavigationItems from "../NavigationItems/NavigationItems.js";
 import NavigationItem from "../NavigationItems/NavigationItem/NavigationItem.js";
 import { useSelector, useDispatch } from "react-redux";
-// import axios from "axios";
+// import axios from "../../axiosConfig.js";
 
 const Toolbar = (props) => {
   // const getShowsData = async () => {
   //   console.log("Hey");
   //   axios
-  //     .get("http://localhost:3000/api/GetAllShows")
+  //     .get("/api/GetAllShows")
   //     .then((res) => console.log(res.data));
   // };
 
   // const testRegistration = async () => {
   //   console.log("Testing registration: ");
   //   axios
-  //     .post("http://localhost:3000/api/register", {
+  //     .post("/api/register", {
   //       username: "PrajwalUsername",
   //       password: "BLA31!",
   //     })

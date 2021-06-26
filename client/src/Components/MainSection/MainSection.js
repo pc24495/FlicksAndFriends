@@ -6,7 +6,7 @@ import Sidebar from "./Sidebar/Sidebar.js";
 // import Modal from "../MovieSelectorComponents/Modal.js";
 // import Backdrop from "../MovieSelectorComponents/Backdrop.js";
 import { withRouter, useHistory } from "react-router-dom";
-import axios from "axios";
+import axios from "../../axiosConfig.js";
 
 export default function MainSection(props) {
   const history = useHistory();
@@ -36,7 +36,7 @@ export default function MainSection(props) {
             : null;
         if (subscriptionIDs) {
           axios
-            .post("http://localhost:3000/api/getPosts", {
+            .post("/api/getPosts", {
               postIDs: [],
               userIDs: [],
               subscriptionIDs: subscriptionIDs,

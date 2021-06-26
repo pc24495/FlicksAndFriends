@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import classes from "./Feed.module.css";
 import Post from "../Post/Post.js";
 import PostSpinner from "../Post/PostSpinner.js";
-import axios from "axios";
+import axios from "../../../axiosConfig.js";
 import smile from "./smile.png";
 import squareTest from "./SquareTestImage.png";
 import Backdrop from "../../Backdrop/Backdrop.js";
@@ -35,7 +35,7 @@ export default function Feed(props) {
         : null;
     if (subscriptions && subscriptions.length > 0) {
       axios
-        .post("http://localhost:3000/api/getShowsFromSubscriptions", {
+        .post("/api/getShowsFromSubscriptions", {
           headers: {
             "x-access-token": localStorage.getItem("token"),
           },
@@ -140,7 +140,7 @@ export default function Feed(props) {
   }, [currentSeason]);
 
   // const showImageClick = () => {
-  //   axios.get("http://localhost:3000/api/getShowPosters").then((res) => {
+  //   axios.get("/api/getShowPosters").then((res) => {
   //     console.log(res.data.image);
   //     this.setState({ showImage: true, imageArray: res.data.image });
   //   });
@@ -213,7 +213,7 @@ export default function Feed(props) {
     const token = localStorage.getItem("token");
     // console.log();
     if (state.showDropdowns) {
-      axios.post("http://localhost:3000/api/postPost", {
+      axios.post("/api/postPost", {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
@@ -224,7 +224,7 @@ export default function Feed(props) {
         type: "spoiler",
       });
     } else {
-      axios.post("http://localhost:3000/api/postPost", {
+      axios.post("/api/postPost", {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
@@ -251,7 +251,7 @@ export default function Feed(props) {
           : null;
       if (subscriptionIDs) {
         await axios
-          .post("http://localhost:3000/api/getPosts", {
+          .post("/api/getPosts", {
             postIDs: postState.posts.map((post) => post.post_id),
             userIDs: Array.from(postState.userPics.keys()),
             subscriptionIDs: subscriptionIDs,

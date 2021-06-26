@@ -6,7 +6,7 @@ import ReactEasyCrop from "react-easy-crop";
 import Backdrop from "../../Backdrop/Backdrop.js";
 import "react-image-crop/dist/ReactCrop.css";
 import Button from "../../../Components/Button/Button.js";
-import axios from "axios";
+import axios from "../../../axiosConfig.js";
 
 const ProfilePicUpload = (props) => {
   // const [src, setSrc] = useState(null);
@@ -151,7 +151,7 @@ const ProfilePicUpload = (props) => {
   const submitImage = (event) => {
     let token = localStorage.getItem("token");
     axios
-      .post("http://localhost:3000/api/updateProfilePic", {
+      .post("/api/updateProfilePic", {
         profile_pic: state.croppedImageSrc,
         headers: {
           "x-access-token": token,

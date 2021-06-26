@@ -3,7 +3,7 @@ import Layout from "./Components/Layout/Layout.js";
 import { useSelector, useDispatch } from "react-redux";
 import MainSection from "./Components/MainSection/MainSection.js";
 import Subscriptions from "./Components/Subscriptions/Subscriptions.js";
-import axios from "axios";
+import axios from "./axiosConfig.js";
 import { Route, Switch, useHistory } from "react-router-dom";
 import Registration from "./Components/Registration/Registration.js";
 import ProfilePicUpload from "./Components/Registration/ProfilePicUpload/ProfilePicUpload.js";
@@ -37,14 +37,14 @@ function App(props) {
   }, []);
 
   const getShows = () => {
-    axios.get("http://localhost:3000/api/GetAllShows").then((res) => {
+    axios.get("/api/GetAllShows").then((res) => {
       dispatch({ type: "UPDATE_SHOWS", shows: res.data });
     });
   };
 
   const getSubscriptions = () => {
     axios
-      .get("http://localhost:3000/api/GetSubscriptions", {
+      .get("/api/GetSubscriptions", {
         headers: {
           "x-access-token": token,
         },
@@ -67,7 +67,7 @@ function App(props) {
       // console.log("Token valid!");
       // console.log(token);
       axios
-        .get("http://localhost:3000/api/getUserData", {
+        .get("/api/getUserData", {
           headers: {
             "x-access-token": token,
           },

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import classes from "./Registration.module.css";
 import Input from "./Input/Input.js";
 import Button from "../../Components/Button/Button.js";
-import axios from "../../../../server/node_modules/axios";
+import axios from "../../axiosConfig.js";
 import { connect } from "react-redux";
 
 class Registration extends Component {
@@ -139,7 +139,7 @@ class Registration extends Component {
     if (valid) {
       // console.log("Valid!");
       axios
-        .post("http://localhost:3000/api/register", {
+        .post("/api/register", {
           username: updatedOrderForm.username.value,
           password: updatedOrderForm.password.value,
         })
@@ -154,7 +154,7 @@ class Registration extends Component {
           } else {
             // console.log("Username is unique!");
             axios
-              .post("http://localhost:3000/api/login", {
+              .post("/api/login", {
                 username: updatedOrderForm.username.value.trim(),
                 password: updatedOrderForm.password.value,
               })

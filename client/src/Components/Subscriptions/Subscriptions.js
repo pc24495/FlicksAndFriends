@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import ShowBox from "./ShowBox/ShowBox.js";
 import classes from "./Subscriptions.module.css";
 import Button from "../Button/Button.js";
-import axios from "axios";
+import axios from "../../axiosConfig.js";
 
 export default function Subscriptions(props) {
   const dispatchRedux = useDispatch();
@@ -224,7 +224,7 @@ export default function Subscriptions(props) {
     let token = localStorage.getItem("token");
     // console.log(state.subscriptions);
     axios
-      .post("http://localhost:3000/api/updateSubscriptions", {
+      .post("/api/updateSubscriptions", {
         subscriptions: JSON.stringify(state.subscriptions),
         headers: {
           "x-access-token": token,
