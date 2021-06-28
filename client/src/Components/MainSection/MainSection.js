@@ -16,6 +16,8 @@ export default function MainSection(props) {
     return state.subscriptions;
   });
 
+  const loggedIn = useSelector((state) => state.loggedIn);
+
   const ref = useRef(0);
 
   const [initPosts, setInitPosts] = useState({
@@ -70,7 +72,7 @@ export default function MainSection(props) {
       <Sidebar></Sidebar>
       <Feed history={history} initPosts={initPosts}></Feed>
       <div className={classes.TestClass}>
-        <div className={classes.TestInner}></div>
+        {loggedIn ? <div className={classes.TestInner}></div> : null}
       </div>
     </div>
   );

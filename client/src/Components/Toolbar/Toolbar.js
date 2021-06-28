@@ -57,12 +57,12 @@ const Toolbar = (props) => {
             <NavigationItem link="/login">Login</NavigationItem>
           )}
         </NavigationItems>
-        <p>
-          {windowWidth} {windowHeight}
-        </p>
       </nav>
     </header>
   );
 };
 
+// <p>
+//           {windowWidth} {windowHeight}
+//         </p>
 export default Toolbar;

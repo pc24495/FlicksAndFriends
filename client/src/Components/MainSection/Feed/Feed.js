@@ -8,6 +8,7 @@ import smile from "./smile.png";
 import squareTest from "./SquareTestImage.png";
 import Backdrop from "../../Backdrop/Backdrop.js";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useHistory } from "react-router-dom";
 // import TextareaAutosize from "react-textarea-autosize";
 
 export default function Feed(props) {
@@ -16,6 +17,9 @@ export default function Feed(props) {
   const showList = useSelector((state) => {
     return state.shows;
   });
+
+  const history = useHistory();
+
   const subscriptions = useSelector((state) => {
     // console.log(state.subscriptions);
     return state.subscriptions;
@@ -281,6 +285,13 @@ export default function Feed(props) {
     }, 200);
   };
 
+  const linkto = (link) => {
+    if (link === "login") {
+      history.push("/login");
+    } else {
+      history.push("/register");
+    }
+  };
   // console.log(shows);
   // console.log(currentShow);
   // console.log(currentSeason);
@@ -358,15 +369,35 @@ export default function Feed(props) {
         </Backdrop>
       ) : null}
 
-      <div className={classes.InputPost}>
-        <img src={smile} className={classes.ProfilePic}></img>
-        <input
-          className={classes.InputPostInput}
-          placeholder="Submit a post..."
-          onClick={inputClickHandler}
-        ></input>
-      </div>
-      {postState.loadMore ? (
+      {loggedIn ? (
+        <div className={classes.InputPost}>
+          <img src={smile} className={classes.ProfilePic}></img>
+          <input
+            className={classes.InputPostInput}
+            placeholder="Submit a post..."
+            onClick={inputClickHandler}
+          ></input>
+        </div>
+      ) : null}
+      {loggedIn ? null : (
+        <div className={classes.NotLoggedIn}>
+          <p>
+            {" "}
+            <span className={classes.Redirect} onClick={() => linkto("login")}>
+              Log in{" "}
+            </span>
+            or{" "}
+            <span
+              className={classes.Redirect}
+              onClick={() => linkto("register")}
+            >
+              register
+            </span>{" "}
+            to post and view posts
+          </p>
+        </div>
+      )}
+      {loggedIn ? (
         <InfiniteScroll
           dataLength={postState.posts.length}
           loader={<PostSpinner></PostSpinner>}

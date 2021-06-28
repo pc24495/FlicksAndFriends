@@ -1,4 +1,4 @@
-@import "../../../node_modules/nord/src/nord.css";
+/* @import "../../../node_modules/nord/src/nord.css"; */
 
 .MainSection {
   display: flex;
@@ -12,11 +12,12 @@
   position: fixed;
   margin: 0px;
   position: absolute;
+
   /* overflow: scroll; */
 }
 
 .TestClass {
-  background-color: orange;
+  background-color: var(--nord1);
   flex: 1;
   height: calc(100vh - 56px);
   left: 0px;
@@ -29,7 +30,30 @@
 }
 
 .TestInner {
-  background-color: purple;
-  width: 300px;
+  width: 260px;
+  max-width: 340px;
+  position: relative;
+  top: 0px;
+  /* background-color: green; */
+  min-height: 320px;
+  max-height: 450px;
+  overflow-y: none;
+  background-color: lightblue;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 20px;
+  margin-top: 5px;
+}
+
+.TestInnerInner {
+  width: 240px;
   height: 300px;
+  position: relative;
+  top: 0px;
+  left: 0px;
+  max-height: 430px;
+  overflow-y: auto;
+  background-color: lightblue;
+  padding: 0px;
+  box-sizing: border-box;
 }
