@@ -71,7 +71,7 @@ export default function ShowBox(props) {
         alt="Image not found"
       ></img>
       <div className={classes.Menu}>
-        <h2 style={{ maxWidth: "80%" }}> {props.show.title}</h2>
+        <h2 style={{ maxWidth: "80%", margin: "3px" }}> {props.show.title}</h2>
         <select
           type="select"
           style={{ position: "relative", minWidth: "80%", textAlign: "center" }}

@@ -484,11 +484,12 @@ app.post("/api/login", (req, res) => {
   );
 });
 
-app.post("/api/postPost", verifyJWT, (req, res) => {
+app.post("/api/postPost", verifyJWT, async (req, res) => {
   // console.log(req.userID);
+  // let newPostID;
   if (req.body.type === "spoiler") {
-    db.query(
-      "INSERT INTO posts(post_date, user_id, post_text, episode_air_date, episode_order, tv_id, type) values($1, $2, $3, $4, $5, $6, $7)",
+    newPostID = await db.query(
+      "INSERT INTO posts(post_date, user_id, post_text, episode_air_date, episode_order, tv_id, type, episode_number, season_number, show_title) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
       [
         new Date(),
         req.userID,
@@ -497,24 +498,29 @@ app.post("/api/postPost", verifyJWT, (req, res) => {
         req.body.episode_order,
         req.body.tv_id,
         req.body.type,
+        req.body.episode_number,
+        req.body.season_number,
+        req.body.title,
       ],
       (err, result) => {
         if (err) {
           console.log("Error inserting post!");
           res.send({ err: err });
         } else {
+          // return result.rows[0].post_id;
         }
       }
     );
   } else {
     db.query(
-      "INSERT INTO posts(post_date, user_id, post_text, tv_id, type) values($1, $2, $3, $4, $5)",
+      "INSERT INTO posts(post_date, user_id, post_text, tv_id, type, show_title) values($1, $2, $3, $4, $5, $6)",
       [
         new Date(),
         req.userID,
         req.body.post_text,
         req.body.tv_id,
         req.body.type,
+        req.body.title,
       ],
       (err, result) => {
         if (err) {
@@ -545,7 +551,7 @@ app.post("/api/getPosts", verifyJWT, async (req, res) => {
   );
   // console.log(subscriptionsMap);
   const alreadyLoadedPostIDs = req.body.postIDs;
-  console.log(alreadyLoadedPostIDs);
+  // console.log(alreadyLoadedPostIDs);
   let posts = [];
   //
   await Promise.all(
@@ -595,7 +601,7 @@ app.post("/api/getPosts", verifyJWT, async (req, res) => {
         userPicsMap.set(post.user_id, userProfilePic);
       }
       let username = await db
-        .query("SELECT username FROM users WHERE user_id = $1", [req.userID])
+        .query("SELECT username FROM users WHERE user_id = $1", [post.user_id])
         .then((res) => res.rows[0].username);
       let postLikes = [];
       let userLikedPost = 0;
@@ -621,6 +627,15 @@ app.post("/api/getPosts", verifyJWT, async (req, res) => {
           postLikes = postLikes.concat(res.rows);
         });
 
+      const episodeTag =
+        post.type === "spoiler"
+          ? `S${post.season_number}E${post.episode_number}`
+          : null;
+      const tags = [
+        { type: "type", text: post.type[0].toUpperCase() + post.type.slice(1) },
+        { type: "title", text: post.show_title },
+        { type: "episode_tag", text: episodeTag },
+      ];
       return {
         ...post,
         post_id: parseInt(post.post_id),
@@ -632,12 +647,16 @@ app.post("/api/getPosts", verifyJWT, async (req, res) => {
         likes: postLikes,
         body: post.post_text,
         user_id: post.user_id,
+        episode_tag: episodeTag,
+        type: post.type,
+        show_title: post.show_title,
+        tags: tags,
       };
     })
   );
   //
   res.json({ posts: posts, userPics: JSON.stringify([...userPicsMap]) });
-  console.log(posts);
+  // console.log(posts);
   // console.log(userPicsMap);
 });
 //

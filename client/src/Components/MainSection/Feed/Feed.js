@@ -25,6 +25,8 @@ export default function Feed(props) {
     return state.subscriptions;
   });
 
+  const profilePic = useSelector((state) => state.profilePic);
+
   // console.log(subscriptionIDs);
 
   const [shows, setShows] = useState([]);
@@ -67,15 +69,17 @@ export default function Feed(props) {
 
   const likes = [];
   likes.length = 43;
-  const tags = ["ShadowAndBone", "TestingTag", "TestingTag2"];
+  const tags = [
+    // "ShadowAndBone", "TestingTag", "TestingTag2"
+  ];
   const loremText =
     "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quidem inventore aut dicta non eaque dolorem iste quis praesentium, ipsa suscipit? Nihil quibusdam amet rerum possimus mollitia tempore, eligendi rem deserunt ea labore maxime qui officia totam pariatur veniam voluptates aliquam aliquid. Cum magnam animi cupiditate et quidem eum hic veniam? s";
   const commentBody =
     "orem ipsum dolor, sit amet consectetur adipisicing elit. Quidem inventore aut dicta non eaque dolorem iste quis praesentium, ipsa suscipit? Nihil quibusdam amet rerum possimus mollitia tempore, eligendi rem deserunt ea labore maxime qui officia totam pariatur veniam voluptates aliquam aliquid. Cum magnam animi cupiditate et quidem eum hic v";
   const comments = [{ commentBody: commentBody }];
-  console.log(props.initPosts);
+  // console.log(props.initPosts);
   const [postState, setPostState] = useState(props.initPosts); //userPics entries are of the form [userID, picture]
-  console.log(postState);
+  // console.log(postState);
   useEffect(() => {
     setPostState(props.initPosts);
   }, [props.initPosts]);
@@ -215,7 +219,7 @@ export default function Feed(props) {
     // console.log(currentShow);
 
     const token = localStorage.getItem("token");
-    // console.log();
+    // console.log(currentShow);
     if (state.showDropdowns) {
       axios.post("/api/postPost", {
         headers: {
@@ -226,6 +230,9 @@ export default function Feed(props) {
         episode_order: currentEpisode.episodeOrder,
         tv_id: currentShow.tv_id,
         type: "spoiler",
+        episode_number: currentEpisode.episode_number,
+        season_number: currentEpisode.season_number,
+        title: currentShow.title,
       });
     } else {
       axios.post("/api/postPost", {
@@ -237,6 +244,9 @@ export default function Feed(props) {
         episode_order: currentEpisode.episodeOrder,
         tv_id: currentShow.tv_id,
         type: "announcement",
+        episode_number: currentEpisode.episode_number,
+        season_number: currentEpisode.season_number,
+        title: currentShow.title,
       });
     }
     setState({ ...state, showBackdrop: false });
@@ -245,7 +255,7 @@ export default function Feed(props) {
   // let profilePicBase64 = null;
 
   const getMorePosts = async () => {
-    console.log("Fetching posts");
+    // console.log("Fetching posts");
     setTimeout(async () => {
       const subscriptionIDs =
         subscriptions && subscriptions.length > 0
@@ -264,7 +274,7 @@ export default function Feed(props) {
             },
           })
           .then((res) => {
-            console.log("Fetched posts");
+            // console.log("Fetched posts");
             // const { posts, userPics } = { ...res.data };
             // console.log(posts);
             const posts = res.data.posts;
@@ -289,14 +299,14 @@ export default function Feed(props) {
     if (link === "login") {
       history.push("/login");
     } else {
-      history.push("/register");
+      history.push("/registration");
     }
   };
   // console.log(shows);
   // console.log(currentShow);
   // console.log(currentSeason);
   //RETURN
-  console.log(postState.loadMore);
+  // console.log(postState.loadMore);
   return (
     <div className={classes.Feed}>
       {state.showBackdrop ? (
@@ -371,7 +381,7 @@ export default function Feed(props) {
 
       {loggedIn ? (
         <div className={classes.InputPost}>
-          <img src={smile} className={classes.ProfilePic}></img>
+          <img src={profilePic} className={classes.ProfilePic}></img>
           <input
             className={classes.InputPostInput}
             placeholder="Submit a post..."
@@ -416,6 +426,9 @@ export default function Feed(props) {
               user_liked_post={post.user_liked_post}
               user_id={post.user_id}
               user_pic_map={postState.userPics}
+              type={post.type}
+              episode_tag={post.episode}
+              tags={post.tags}
             ></Post>
           ))}
         </InfiniteScroll>

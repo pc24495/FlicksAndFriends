@@ -39,15 +39,19 @@
   max-height: 450px;
   overflow-y: none;
   background-color: lightblue;
-  padding: 10px;
+  padding: 20px;
   box-sizing: border-box;
   border-radius: 20px;
   margin-top: 5px;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  word-wrap: break-word;
 }
 
 .TestInnerInner {
-  width: 240px;
-  height: 300px;
+  width: 220px;
+  height: 280px;
   position: relative;
   top: 0px;
   left: 0px;
@@ -56,4 +60,8 @@
   background-color: lightblue;
   padding: 0px;
   box-sizing: border-box;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  word-wrap: break-word;
 }

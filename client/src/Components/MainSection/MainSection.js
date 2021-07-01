@@ -47,7 +47,7 @@ export default function MainSection(props) {
               },
             })
             .then((res) => {
-              console.log("Fetched posts");
+              // console.log("Fetched posts");
               // const { posts, userPics } = { ...res.data };
               // console.log(posts);
               const posts = res.data.posts;
@@ -64,15 +64,17 @@ export default function MainSection(props) {
       }
     }
   }, [subscriptions]);
-  console.log(subscriptions);
+  // console.log(subscriptions);
 
-  console.log(initPosts);
+  // console.log(initPosts);
   return (
     <div className={classes.MainSection}>
       <Sidebar></Sidebar>
       <Feed history={history} initPosts={initPosts}></Feed>
       <div className={classes.TestClass}>
-        {loggedIn ? <div className={classes.TestInner}></div> : null}
+        {loggedIn ? (
+          <div className={classes.TestInner}>Friends: coming soon!</div>
+        ) : null}
       </div>
     </div>
   );

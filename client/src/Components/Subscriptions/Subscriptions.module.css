@@ -6,9 +6,13 @@
 }
 
 .Selector {
-  display: grid;
+  /* display: grid;
   grid-template-columns: 33.3% 33.3% 33.3%;
-  grid-gap: 1em;
+  grid-gap: 1em; */
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-around;
   position: relative;
   top: 20px;
   margin-bottom: 50px;

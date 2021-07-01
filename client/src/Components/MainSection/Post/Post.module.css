@@ -121,7 +121,7 @@
   font-size: 17px;
   padding: 7px;
   border-radius: 18px;
-  color: var(--nord0);
+  color: var(--nord6);
   background-color: var(--nord7);
   margin: 0px;
   margin-left: 3px;
@@ -228,6 +228,11 @@
   align-items: center;
   background-color: var(--nord1);
   margin-right: auto;
+  margin-left: 10px;
+}
+
+.FriendsLiked {
+  border-radius: 50%;
 }
 
 .FooterCenter .FriendsLiked {

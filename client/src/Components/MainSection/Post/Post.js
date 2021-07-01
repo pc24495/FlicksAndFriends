@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import classes from "./Post.module.css";
 // import ClampLines from "react-clamp-lines";
 import LinesEllipsis from "react-lines-ellipsis";
@@ -24,19 +25,28 @@ import TextareaAutosize from "react-textarea-autosize";
 export default function Post(props) {
   const [tags, setTags] = useState({
     display: false,
-    tagList: [
-      { text: "ShadowAndBone", doesOverflow: false },
-      { text: "TestingTag", doesOverflow: false },
-      { text: "TestingTag2", doesOverflow: false },
-      { text: "TestingTag9", doesOverflow: false },
-      { text: "TestingTag123", doesOverflow: false },
-    ],
+    // tagList: [
+    // { text: "ShadowAndBone", doesOverflow: false },
+    // { text: "TestingTag", doesOverflow: false },
+    // { text: "TestingTag2", doesOverflow: false },
+    // { text: "TestingTag9", doesOverflow: false },
+    // { text: "TestingTag123", doesOverflow: false },
+
+    // ],
+    tagList: props.tags.map((tag) => {
+      return { ...tag, doesOverflow: false };
+    }),
   });
   const postID = "57";
   const [showFullPost, setShowFullPost] = useState(false);
   // const [commentInputRows, setCommentInputRows] = useState(1);
   const [commentInputHeight, setCommentInputHeight] = useState("42px");
   const textAreaRef = React.createRef();
+
+  const friendsLikedIDs = useState([]);
+  const profilePic = useSelector((state) => state.profilePic);
+
+  const likes = [];
 
   useEffect(() => {
     let newTags = tags.tagList;
@@ -160,6 +170,7 @@ export default function Post(props) {
   props.user_pic_map.get(props.user_id);
   const seeMore = "<i>...see more</i>";
   // timeSince(props.post_date)
+  console.log(tags.tagList);
   return (
     <div className={classes.PostContainer}>
       <div className={classes.Post}>
@@ -184,29 +195,63 @@ export default function Post(props) {
           <div className={classes.Tags} id={postID + "-tags"}>
             {tags.display
               ? tags.tagList.map((tag, index) => {
+                  console.log(tag);
+                  let backgroundColor;
+                  if (tag.type === "type") {
+                    backgroundColor = "var(--nord11)";
+                  } else if (tag.type === "episode_tag") {
+                    backgroundColor = "var(--nord13)";
+                  } else if (tag.type === "title") {
+                    backgroundColor = "var(--nord15)";
+                  }
                   const id = [postID, "-", index.toString()].join("");
                   return (
-                    <p className={classes.Tag} id={id}>
+                    <p
+                      className={classes.Tag}
+                      id={id}
+                      style={{ backgroundColor: backgroundColor }}
+                    >
                       {tag.text}
                     </p>
                   );
                 })
               : tags.tagList
-                  .filter((tag) => !tag.doesOverflow)
+                  .filter((tag) => {
+                    return !tag.doesOverflow && tag.text;
+                  })
                   .map((tag, index) => {
+                    console.log(tag);
+                    let backgroundColor;
+                    if (tag.type === "type") {
+                      if (tag.text === "Spoiler") {
+                        backgroundColor = "var(--nord11)";
+                      } else {
+                        backgroundColor = "var(--nord12)";
+                      }
+                    } else if (tag.type === "episode_tag") {
+                      backgroundColor = "var(--nord8)";
+                    } else if (tag.type === "title") {
+                      backgroundColor = "var(--nord15)";
+                    }
                     const id = [postID, "-", index.toString()].join("");
                     return (
-                      <p className={classes.Tag} id={id}>
+                      <p
+                        className={classes.Tag}
+                        id={id}
+                        style={{ backgroundColor: backgroundColor }}
+                      >
                         {tag.text}
                       </p>
                     );
                   })}
-            <FaChevronCircleDown
-              className={`${classes.DropTags} ${
-                tags.display ? classes.Rotate : ""
-              }`}
-              onClick={openTags}
-            ></FaChevronCircleDown>
+            {tags.length > 0 ? (
+              <FaChevronCircleDown
+                className={`${classes.DropTags} ${
+                  tags.display ? classes.Rotate : ""
+                }`}
+                onClick={openTags}
+              ></FaChevronCircleDown>
+            ) : null}
           </div>
 
           <div className={classes.BodyOuter}>
@@ -234,58 +279,24 @@ export default function Post(props) {
               ></IoMdThumbsDown>
             </div>
             <div className={classes.FooterCenter}>
-              <img
-                src={smile}
-                className={classes.FriendsLiked}
-                style={{
-                  position: "relative",
-                  width: "40px",
-                  boxSizing: "content-box",
-                  borderRadius: "50%",
-                  border: "3px solid white",
-                }}
-                alt=""
-              ></img>
-              <img
-                src={smile}
-                className={classes.FriendsLiked}
-                style={{
-                  position: "relative",
-                  width: "40px",
-                  boxSizing: "content-box",
-                  borderRadius: "50%",
-                  border: "3px solid white",
-                }}
-                alt=""
-              ></img>
-              <img
-                src={smile}
-                className={classes.FriendsLiked}
-                style={{
-                  position: "relative",
-                  width: "40px",
-                  boxSizing: "content-box",
-                  borderRadius: "50%",
-                  border: "3px solid white",
-                }}
-                alt=""
-              ></img>
-              <div
-                style={{
-                  position: "relative",
-                  width: "40px",
-                  height: "40px",
-                  lineHeight: "40px",
-                  backgroundColor: "yellow",
-                  borderRadius: "50%",
-                  fontSize: "15px",
-                  textAlign: "center",
-                  border: "3px solid white",
-                  marginLeft: "-15px",
-                }}
-              >
-                {"+" + likesToText(props.likes.length)}
-              </div>
+              {likes.length === 0 ? null : (
+                <div
+                  style={{
+                    position: "relative",
+                    width: "40px",
+                    height: "40px",
+                    lineHeight: "40px",
+                    backgroundColor: "yellow",
+                    borderRadius: "50%",
+                    fontSize: "15px",
+                    textAlign: "center",
+                    border: "3px solid white",
+                    marginLeft: "-15px",
+                  }}
+                >
+                  {"+" + likesToText(props.likes.length)}
+                </div>
+              )}
               <p
                 style={{
                   fontSize: "10px",
@@ -293,7 +304,7 @@ export default function Post(props) {
                   color: "var(--nord5)",
                 }}
               >
-                HHHHHHHHHHHHHHHHHHHH
+                {likes.length === 0 ? null : "HHHHHHHHHHHHHHHHHHHH"}
               </p>
             </div>
           </div>
@@ -302,7 +313,7 @@ export default function Post(props) {
       <div className={classes.CommentSection}>
         <div className={classes.AddComment}>
           <img
-            src={smile}
+            src={profilePic}
             className={classes.FriendsLiked}
             style={{
               position: "relative",
@@ -323,7 +334,7 @@ export default function Post(props) {
           <div className={classes.Comment}>
             <div className={classes.CommentInner}>
               <img
-                src={smile}
+                src={profilePic}
                 style={{
                   position: "relative",
                   width: "30px",
@@ -353,3 +364,40 @@ export default function Post(props) {
 //             <p className={classes.Option}>Edit</p>
 //             <p className={classes.Option}>Delete</p>
 //           </div>
+
+// <img
+//                 src={smile}
+//                 className={classes.FriendsLiked}
+//                 style={{
+//                   position: "relative",
+//                   width: "40px",
+//                   boxSizing: "content-box",
+//                   borderRadius: "50%",
+//                   border: "3px solid white",
+//                 }}
+//                 alt=""
+//               ></img>
+//               <img
+//                 src={smile}
+//                 className={classes.FriendsLiked}
+//                 style={{
+//                   position: "relative",
+//                   width: "40px",
+//                   boxSizing: "content-box",
+//                   borderRadius: "50%",
+//                   border: "3px solid white",
+//                 }}
+//                 alt=""
+//               ></img>
+//               <img
+//                 src={smile}
+//                 className={classes.FriendsLiked}
+//                 style={{
+//                   position: "relative",
+//                   width: "40px",
+//                   boxSizing: "content-box",
+//                   borderRadius: "50%",
+//                   border: "3px solid white",
+//                 }}
+//                 alt=""
+//               ></img>
