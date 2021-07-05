@@ -24,6 +24,7 @@ const ProfilePicUpload = (props) => {
     croppedImageSrc: null,
     showBackdrop: false,
     inputKey: "Input start",
+    emptySrc: null,
   });
 
   const [imageCrop, setImageCrop] = useState(null);
@@ -31,10 +32,18 @@ const ProfilePicUpload = (props) => {
 
   const dispatch = useDispatch();
 
+  // const toBase64 = file => new Promise((resolve, reject) => {
+  //   const reader = new FileReader();
+  //   reader.readAsDataURL(file);
+  //   reader.onload = () => resolve(reader.result);
+  //   reader.onerror = error => reject(error);
+  // });
+
   const onSelectFile = (event) => {
     if (event.target.files && event.target.files.length > 0) {
       const reader = new FileReader();
       reader.addEventListener("load", () => {
+        console.log(reader.result);
         setState({ ...state, src: reader.result, showBackdrop: true });
       });
       reader.readAsDataURL(event.target.files[0]);
@@ -72,6 +81,27 @@ const ProfilePicUpload = (props) => {
   //   }, "image/jpeg");
   // };
 
+  useEffect(async () => {
+    // const canvas = document.createElement("canvas");
+    // const context = canvas.getContext("2d");
+
+    // const base_image = new Image();
+    // base_image.src = empty;
+    // base_image.onload = function () {
+    //   context.drawImage(base_image, 100, 100);
+    // };
+
+    let blob = await fetch(empty).then((r) => r.blob());
+    let dataUrl = await new Promise((resolve) => {
+      let reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.readAsDataURL(blob);
+    });
+    // var jpegUrl = canvas.toDataURL();
+    console.log(dataUrl);
+    setState({ ...state, emptySrc: dataUrl });
+  }, []);
+
   const prepareImage = async (event) => {
     const finalImage = await getCroppedImg(state.src, imageCrop);
     // console.log(finalImage);
@@ -92,6 +122,7 @@ const ProfilePicUpload = (props) => {
     });
 
   const getCroppedImg = async (imageSrc, pixelCrop, rotation = 0) => {
+    console.log(pixelCrop);
     const image = await createImage(imageSrc);
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
@@ -134,6 +165,56 @@ const ProfilePicUpload = (props) => {
     // return canvas;
   };
 
+  const getCroppedEmpty = async (imageSrc, rotation = 0) => {
+    const image = await createImage(imageSrc);
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const maxSize = Math.max(image.width, image.height);
+    const safeArea = 2 * ((maxSize / 2) * Math.sqrt(2));
+
+    // set each dimensions to double largest dimension to allow for a safe area for the
+    // image to rotate in without being clipped by canvas context
+    canvas.width = safeArea;
+    canvas.height = safeArea;
+
+    // translate canvas context to a central location on image to allow rotating around the center.
+    ctx.translate(safeArea / 2, safeArea / 2);
+    ctx.rotate(getRadianAngle(rotation));
+    ctx.translate(-safeArea / 2, -safeArea / 2);
+
+    // draw rotated image and store data.
+    ctx.drawImage(
+      image,
+      safeArea / 2 - image.width * 0.5,
+      safeArea / 2 - image.height * 0.5
+    );
+
+    const data = ctx.getImageData(0, 0, safeArea, safeArea);
+
+    const pixelCrop = {
+      width: image.width,
+      height: image.height,
+    };
+    console.log(pixelCrop);
+
+    // set canvas width to final desired crop size - this will clear existing context
+    canvas.width = pixelCrop.width;
+    canvas.height = pixelCrop.height;
+
+    console.log(ctx);
+    // paste generated rotate image with correct offsets for x,y crop values.
+    ctx.putImageData(
+      data,
+      0 - safeArea / 2 + image.width * 0.5 - pixelCrop.x,
+      0 - safeArea / 2 + image.height * 0.5 - pixelCrop.y
+    );
+
+    // As Base64 string
+    return canvas.toDataURL("image/jpeg");
+    // return canvas;
+  };
+
   const onCropChange = (crop) => {
     setState({ ...state, crop: crop });
   };
@@ -148,11 +229,14 @@ const ProfilePicUpload = (props) => {
     setState({ ...state, zoom: zoom });
   };
 
-  const submitImage = (event) => {
+  const submitImage = async (event) => {
+    console.log(state.emptySrc);
     let token = localStorage.getItem("token");
+    console.log(state.croppedImageSrc);
+    // console.log(emptySrc);
     axios
       .post("/api/updateProfilePic", {
-        profile_pic: state.croppedImageSrc,
+        profile_pic: state.croppedImageSrc || state.emptySrc,
         headers: {
           "x-access-token": token,
         },
@@ -161,7 +245,7 @@ const ProfilePicUpload = (props) => {
         if (res.data.auth) {
           dispatch({
             type: "UPDATE_PROFILE_PIC",
-            profilePic: state.croppedImageSrc,
+            profilePic: state.croppedImageSrc || state.emptySrc,
           });
           props.history.push("/subscriptions");
         }

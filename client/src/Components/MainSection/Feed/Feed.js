@@ -9,6 +9,7 @@ import squareTest from "./SquareTestImage.png";
 import Backdrop from "../../Backdrop/Backdrop.js";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useHistory } from "react-router-dom";
+
 // import TextareaAutosize from "react-textarea-autosize";
 
 export default function Feed(props) {
@@ -63,7 +64,7 @@ export default function Feed(props) {
   const [state, setState] = useState({
     imageArray: null,
     showImage: false,
-    showBackdrop: false,
+    // showBackdrop: false,
     showDropdowns: false,
   });
 
@@ -78,10 +79,14 @@ export default function Feed(props) {
     "orem ipsum dolor, sit amet consectetur adipisicing elit. Quidem inventore aut dicta non eaque dolorem iste quis praesentium, ipsa suscipit? Nihil quibusdam amet rerum possimus mollitia tempore, eligendi rem deserunt ea labore maxime qui officia totam pariatur veniam voluptates aliquam aliquid. Cum magnam animi cupiditate et quidem eum hic v";
   const comments = [{ commentBody: commentBody }];
   // console.log(props.initPosts);
-  const [postState, setPostState] = useState(props.initPosts); //userPics entries are of the form [userID, picture]
+  const [postState, setPostState] = useState({
+    ...props.initPosts,
+    showBackdrop: false,
+  }); //userPics entries are of the form [userID, picture]
   // console.log(postState);
+  const [newPosts, setNewPosts] = useState({ posts: [], userPics: new Map() });
   useEffect(() => {
-    setPostState(props.initPosts);
+    setPostState({ ...props.initPosts, showBackdrop: false });
   }, [props.initPosts]);
   const loggedIn = useSelector((state) => state.loggedIn);
   // console.log(subscriptions);
@@ -160,13 +165,13 @@ export default function Feed(props) {
     if (!loggedIn) {
       props.history.push("/login");
     } else {
-      setState({ ...state, showBackdrop: true });
+      setPostState({ ...postState, showBackdrop: true });
     }
   };
 
   const handleBackdropClick = (event) => {
     if (event.target.className.includes("Backdrop_Backdrop")) {
-      setState({ ...state, showBackdrop: false });
+      setPostState({ ...postState, showBackdrop: false });
     }
   };
   //
@@ -221,35 +226,73 @@ export default function Feed(props) {
     const token = localStorage.getItem("token");
     // console.log(currentShow);
     if (state.showDropdowns) {
-      axios.post("/api/postPost", {
-        headers: {
-          "x-access-token": localStorage.getItem("token"),
-        },
-        post_text: text,
-        episode_air_date: currentEpisode.air_date,
-        episode_order: currentEpisode.episodeOrder,
-        tv_id: currentShow.tv_id,
-        type: "spoiler",
-        episode_number: currentEpisode.episode_number,
-        season_number: currentEpisode.season_number,
-        title: currentShow.title,
-      });
+      axios
+        .post("/api/postPost", {
+          headers: {
+            "x-access-token": localStorage.getItem("token"),
+          },
+          post_text: text,
+          episode_air_date: currentEpisode.air_date,
+          episode_order: currentEpisode.episodeOrder,
+          tv_id: currentShow.tv_id,
+          type: "spoiler",
+          episode_number: currentEpisode.episode_number,
+          season_number: currentEpisode.season_number,
+          title: currentShow.title,
+        })
+        .then((res) => {
+          console.log(res.data);
+          const posts = res.data.posts;
+          console.log(posts);
+          let newUserPics;
+          const profilePicLoaded = newPosts.userPics.has(res.data.user_id);
+          console.log(profilePicLoaded);
+          if (!profilePicLoaded) {
+            newUserPics = new Map([[res.data.user_id, res.data.profile_pic]]);
+          }
+          setNewPosts((prevState) => ({
+            ...prevState,
+            posts: posts.concat(prevState.posts),
+            userPics: profilePicLoaded
+              ? prevState.userPics
+              : new Map([...newUserPics, ...prevState.userPics]),
+          }));
+          setCurrentShow(shows[0]);
+        });
     } else {
-      axios.post("/api/postPost", {
-        headers: {
-          "x-access-token": localStorage.getItem("token"),
-        },
-        post_text: text,
-        episode_air_date: currentEpisode.air_date,
-        episode_order: currentEpisode.episodeOrder,
-        tv_id: currentShow.tv_id,
-        type: "announcement",
-        episode_number: currentEpisode.episode_number,
-        season_number: currentEpisode.season_number,
-        title: currentShow.title,
-      });
+      axios
+        .post("/api/postPost", {
+          headers: {
+            "x-access-token": localStorage.getItem("token"),
+          },
+          post_text: text,
+          episode_air_date: currentEpisode.air_date,
+          episode_order: currentEpisode.episodeOrder,
+          tv_id: currentShow.tv_id,
+          type: "announcement",
+          episode_number: currentEpisode.episode_number,
+          season_number: currentEpisode.season_number,
+          title: currentShow.title,
+        })
+        .then((res) => {
+          console.log(res.data);
+          const posts = res.data.posts;
+          let newUserPics;
+          const profilePicLoaded = newPosts.userPics.has(res.data.user_id);
+          if (!profilePicLoaded) {
+            newUserPics = new Map([[res.data.user_id, res.data.profile_pic]]);
+          }
+          setNewPosts((prevState) => ({
+            ...prevState,
+            posts: posts.concat(prevState.posts),
+            userPics: profilePicLoaded
+              ? prevState.userPics
+              : new Map([...newUserPics, ...prevState.userPics]),
+          }));
+          setCurrentShow(shows[0]);
+        });
     }
-    setState({ ...state, showBackdrop: false });
+    setPostState({ ...postState, showBackdrop: false });
   };
 
   // let profilePicBase64 = null;
@@ -266,7 +309,9 @@ export default function Feed(props) {
       if (subscriptionIDs) {
         await axios
           .post("/api/getPosts", {
-            postIDs: postState.posts.map((post) => post.post_id),
+            postIDs: postState.posts
+              .map((post) => post.post_id)
+              .concat(newPosts.posts.map((post) => post.post_id)),
             userIDs: Array.from(postState.userPics.keys()),
             subscriptionIDs: subscriptionIDs,
             headers: {
@@ -306,12 +351,12 @@ export default function Feed(props) {
   // console.log(currentShow);
   // console.log(currentSeason);
   //RETURN
-  // console.log(postState.loadMore);
+  // console.log(postState.posts);
   return (
     <div className={classes.Feed}>
-      {state.showBackdrop ? (
+      {postState.showBackdrop ? (
         <Backdrop
-          showBackdrop={state.showBackdrop}
+          showBackdrop={postState.showBackdrop}
           onClick={handleBackdropClick}
         >
           <div className={classes.Modal}>
@@ -407,6 +452,26 @@ export default function Feed(props) {
           </p>
         </div>
       )}
+      {loggedIn
+        ? newPosts.posts.map((post) => {
+            console.log(post.tags);
+            return (
+              <Post
+                body={post.body}
+                username={post.username}
+                post_date={post.post_date.toString()}
+                likes={post.likes}
+                comments={post.comments}
+                user_liked_post={post.user_liked_post}
+                user_id={post.user_id}
+                user_pic_map={newPosts.userPics}
+                type={post.type}
+                episode_tag={post.episode}
+                tags={post.tags}
+              ></Post>
+            );
+          })
+        : null}
       {loggedIn ? (
         <InfiniteScroll
           dataLength={postState.posts.length}
@@ -415,22 +480,24 @@ export default function Feed(props) {
           hasMore={postState.loadMore}
           scrollThreshold={0}
         >
-          {postState.posts.map((post) => (
-            <Post
-              tags={post.tags}
-              body={post.body}
-              username={post.username}
-              post_date={post.post_date.toString()}
-              likes={post.likes}
-              comments={post.comments}
-              user_liked_post={post.user_liked_post}
-              user_id={post.user_id}
-              user_pic_map={postState.userPics}
-              type={post.type}
-              episode_tag={post.episode}
-              tags={post.tags}
-            ></Post>
-          ))}
+          {postState.posts.map((post) => {
+            // console.log(post.tags);
+            return (
+              <Post
+                body={post.body}
+                username={post.username}
+                post_date={post.post_date.toString()}
+                likes={post.likes}
+                comments={post.comments}
+                user_liked_post={post.user_liked_post}
+                user_id={post.user_id}
+                user_pic_map={postState.userPics}
+                type={post.type}
+                episode_tag={post.episode}
+                tags={post.tags}
+              ></Post>
+            );
+          })}
         </InfiniteScroll>
       ) : null}
     </div>

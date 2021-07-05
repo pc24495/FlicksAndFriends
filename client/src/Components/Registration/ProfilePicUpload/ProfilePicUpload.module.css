@@ -35,7 +35,7 @@
   /* clip-path: circle(); */
   /* background-color: teal; */
   display: block;
-  opacity: 0%;
+  opacity: 0;
   z-index: 100;
   text-justify: center;
   text-align: center;
@@ -47,7 +47,7 @@
 }
 
 .PicOverlay:hover {
-  opacity: 100%;
+  opacity: 100;
   cursor: pointer;
 }
 

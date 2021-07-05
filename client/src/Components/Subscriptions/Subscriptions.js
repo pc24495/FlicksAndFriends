@@ -4,6 +4,7 @@ import ShowBox from "./ShowBox/ShowBox.js";
 import classes from "./Subscriptions.module.css";
 import Button from "../Button/Button.js";
 import axios from "../../axiosConfig.js";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function Subscriptions(props) {
   const dispatchRedux = useDispatch();
@@ -15,24 +16,16 @@ export default function Subscriptions(props) {
   };
 
   let shows = useSelector((state) => {
-    // console.log(state.shows);
-    // console.log(state.shows);
     return state.shows;
   });
   let subscriptionsList = useSelector((state) => {
-    // console.log(state.subscriptions);
     return state.subscriptions;
   });
-  //   console.log(shows);
   let subscriptions = null;
   if (localStorage.getItem("subscriptions")) {
     subscriptions = JSON.parse(localStorage.getItem("subscriptions"));
-    // console.log(subscriptions);
-    // console.log(localStorage.getItem("subscriptions"));
-    // console.log(typeof subscriptions);
   } else {
     subscriptions = subscriptionsList;
-    // console.log(subscriptions);
   }
   let posterMap = new Map();
   shows.forEach((show) => posterMap.set(show.tv_id, show.poster));
@@ -46,8 +39,7 @@ export default function Subscriptions(props) {
   displayList = displayList.map((show) => {
     return { ...show, display: true };
   });
-  //   console.log(displayList);
-  //   console.log(localStorage.getItem("shows"));
+
   let initState = {
     displayList: displayList,
     selectedList: selectedList,
@@ -283,7 +275,11 @@ export default function Subscriptions(props) {
           justifyContent: "center",
         }}
       >
-        <div className={classes.Selector}>
+        <InfiniteScroll
+          dataLength={state.displayList.filter((show) => show.display).length}
+          className={classes.Selector}
+          loader={<h1>Loading!</h1>}
+        >
           {state.displayList
             .filter((show) => show.display)
             .map((show, index) => (
@@ -299,7 +295,7 @@ export default function Subscriptions(props) {
                 }
               ></ShowBox>
             ))}
-        </div>
+        </InfiniteScroll>
       </div>
     </div>
   ) : (

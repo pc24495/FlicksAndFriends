@@ -49,39 +49,44 @@ export default function Post(props) {
   const likes = [];
 
   useEffect(() => {
+    // console.log(postID);
     let newTags = tags.tagList;
+    // console.log(newTags);
     let tagsWidth = 26; //should be width of downArrow actually
     let isOverflowing = false;
     const tagContainerWidth = Math.ceil(
       document.getElementById(postID + "-tags").getBoundingClientRect().width
     );
-    newTags = newTags.map((tag, index) => {
-      const width = Math.ceil(
-        document
-          .getElementById(postID + "-" + index.toString())
-          .getBoundingClientRect().width
-      );
-      if (!isOverflowing) {
-        tagsWidth += width + 3;
-        if (tagsWidth > tagContainerWidth) {
-          isOverflowing = true;
+    newTags = newTags
+      .filter((tag) => tag.text !== null)
+      .map((tag, index) => {
+        // console.log(postID + "-" + index.toString());
+        const width = Math.ceil(
+          document
+            .getElementById(postID + "-" + index.toString())
+            .getBoundingClientRect().width
+        );
+        if (!isOverflowing) {
+          tagsWidth += width + 3;
+          if (tagsWidth > tagContainerWidth) {
+            isOverflowing = true;
+            return {
+              ...tag,
+              doesOverflow: true,
+            };
+          } else {
+            return {
+              ...tag,
+              doesOverflow: false,
+            };
+          }
+        } else {
           return {
             ...tag,
             doesOverflow: true,
           };
-        } else {
-          return {
-            ...tag,
-            doesOverflow: false,
-          };
         }
-      } else {
-        return {
-          ...tag,
-          doesOverflow: true,
-        };
-      }
-    });
+      });
     setTags({ ...tags, tagList: newTags });
   }, []);
 
@@ -170,7 +175,7 @@ export default function Post(props) {
   props.user_pic_map.get(props.user_id);
   const seeMore = "<i>...see more</i>";
   // timeSince(props.post_date)
-  console.log(tags.tagList);
+  // console.log(tags.tagList);
   return (
     <div className={classes.PostContainer}>
       <div className={classes.Post}>
@@ -220,7 +225,7 @@ export default function Post(props) {
                     return !tag.doesOverflow && tag.text;
                   })
                   .map((tag, index) => {
-                    console.log(tag);
+                    // console.log(tag);
                     let backgroundColor;
                     if (tag.type === "type") {
                       if (tag.text === "Spoiler") {

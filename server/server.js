@@ -484,12 +484,19 @@ app.post("/api/login", (req, res) => {
   );
 });
 
-app.post("/api/postPost", verifyJWT, async (req, res) => {
-  // console.log(req.userID);
-  // let newPostID;
+app.post("/api/postPost", verifyJWT, async (req, result) => {
+  console.log(req.body.type);
+  const [
+    username,
+    userProfilepic,
+  ] = await db
+    .query("SELECT * FROM users WHERE user_id = $1", [req.userID])
+    .then((res) => {
+      return [res.rows[0].username, res.rows[0].profile_pic];
+    });
   if (req.body.type === "spoiler") {
-    newPostID = await db.query(
-      "INSERT INTO posts(post_date, user_id, post_text, episode_air_date, episode_order, tv_id, type, episode_number, season_number, show_title) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
+    db.query(
+      "INSERT INTO posts(post_date, user_id, post_text, episode_air_date, episode_order, tv_id, type, episode_number, season_number, show_title) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *",
       [
         new Date(),
         req.userID,
@@ -501,19 +508,51 @@ app.post("/api/postPost", verifyJWT, async (req, res) => {
         req.body.episode_number,
         req.body.season_number,
         req.body.title,
-      ],
-      (err, result) => {
-        if (err) {
-          console.log("Error inserting post!");
-          res.send({ err: err });
-        } else {
-          // return result.rows[0].post_id;
-        }
-      }
-    );
+      ]
+    ).then((res) => {
+      const userLikedPost = 0;
+      const comments = [];
+      const postLikes = [];
+      const episodeTag =
+        res.rows[0].type === "spoiler"
+          ? `S${res.rows[0].season_number === 0 ? "SP" : 0}E${
+              res.rows[0].episode_number
+            }`
+          : null;
+      const tags = [
+        {
+          type: "type",
+          text: res.rows[0].type[0].toUpperCase() + res.rows[0].type.slice(1),
+        },
+        { type: "title", text: res.rows[0].show_title },
+        { type: "episode_tag", text: episodeTag },
+      ];
+      console.log(tags);
+      result.json({
+        posts: [
+          {
+            ...res.rows[0],
+            post_id: parseInt(res.rows[0].post_id),
+            user_liked_post: userLikedPost,
+            comments: comments,
+            likes: postLikes,
+            username: username,
+            post_date: res.rows[0].post_date,
+            body: res.rows[0].post_text,
+            user_id: res.rows[0].user_id,
+            episode_tag: episodeTag,
+            type: res.rows[0].type,
+            show_title: res.rows[0].show_title,
+            tags: tags,
+          },
+        ],
+        profile_pic: userProfilepic,
+        user_id: req.userID,
+      });
+    });
   } else {
     db.query(
-      "INSERT INTO posts(post_date, user_id, post_text, tv_id, type, show_title) values($1, $2, $3, $4, $5, $6)",
+      "INSERT INTO posts(post_date, user_id, post_text, tv_id, type, show_title) values($1, $2, $3, $4, $5, $6) RETURNING *",
       [
         new Date(),
         req.userID,
@@ -521,15 +560,49 @@ app.post("/api/postPost", verifyJWT, async (req, res) => {
         req.body.tv_id,
         req.body.type,
         req.body.title,
-      ],
-      (err, result) => {
-        if (err) {
-          console.log("Error inserting post!");
-          res.send({ err: err });
-        } else {
-        }
-      }
-    );
+      ]
+    ).then((res) => {
+      const userLikedPost = 0;
+      const comments = [];
+      const postLikes = [];
+      const episodeTag =
+        res.rows[0].type === "spoiler"
+          ? `S${res.rows[0].season_number === 0 ? "SP" : 0}E${
+              res.rows[0].episode_number
+            }`
+          : null;
+      const tags = [
+        {
+          type: "type",
+          text: res.rows[0].type[0].toUpperCase() + res.rows[0].type.slice(1),
+        },
+        { type: "title", text: res.rows[0].show_title },
+        { type: "episode_tag", text: episodeTag },
+      ];
+      console.log(tags);
+      result.json({
+        posts: [
+          {
+            ...res.rows[0],
+            post_id: parseInt(res.rows[0].post_id),
+            user_liked_post: userLikedPost,
+            comments: comments,
+            likes: postLikes,
+            username: username,
+            post_date: res.rows[0].post_date,
+            likes: postLikes,
+            body: res.rows[0].post_text,
+            user_id: res.rows[0].user_id,
+            episode_tag: episodeTag,
+            type: res.rows[0].type,
+            show_title: res.rows[0].show_title,
+            tags: tags,
+          },
+        ],
+        profile_pic: userProfilepic,
+        user_id: req.userID,
+      });
+    });
   }
 });
 
@@ -629,7 +702,7 @@ app.post("/api/getPosts", verifyJWT, async (req, res) => {
 
       const episodeTag =
         post.type === "spoiler"
-          ? `S${post.season_number}E${post.episode_number}`
+          ? `S${post.season_number === 0 ? "SP" : 0}E${post.episode_number}`
           : null;
       const tags = [
         { type: "type", text: post.type[0].toUpperCase() + post.type.slice(1) },
@@ -644,7 +717,6 @@ app.post("/api/getPosts", verifyJWT, async (req, res) => {
         likes: postLikes,
         username: username,
         post_date: post.post_date,
-        likes: postLikes,
         body: post.post_text,
         user_id: post.user_id,
         episode_tag: episodeTag,
