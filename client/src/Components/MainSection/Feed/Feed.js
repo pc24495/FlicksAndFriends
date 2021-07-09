@@ -15,6 +15,7 @@ import { useHistory } from "react-router-dom";
 export default function Feed(props) {
   //STATE VARIABLES
   // console.log(props.initPosts);
+  // console.log("Rendering feed");
   const showList = useSelector((state) => {
     return state.shows;
   });
@@ -241,22 +242,28 @@ export default function Feed(props) {
           title: currentShow.title,
         })
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           const posts = res.data.posts;
-          console.log(posts);
+          // console.log(posts);
           let newUserPics;
           const profilePicLoaded = newPosts.userPics.has(res.data.user_id);
-          console.log(profilePicLoaded);
+          // console.log(profilePicLoaded);
           if (!profilePicLoaded) {
             newUserPics = new Map([[res.data.user_id, res.data.profile_pic]]);
           }
-          setNewPosts((prevState) => ({
-            ...prevState,
-            posts: posts.concat(prevState.posts),
-            userPics: profilePicLoaded
-              ? prevState.userPics
-              : new Map([...newUserPics, ...prevState.userPics]),
-          }));
+          // window.location.reload();
+          // console.log(posts.concat(newPosts.posts));
+          setNewPosts((prevState) => {
+            // console.log(posts.concat(prevState.posts));
+            return {
+              ...prevState,
+              posts: posts.concat(prevState.posts),
+              userPics: profilePicLoaded
+                ? prevState.userPics
+                : new Map([...newUserPics, ...prevState.userPics]),
+            };
+          });
+          setPostState({ ...postState, showBackdrop: false });
           setCurrentShow(shows[0]);
         });
     } else {
@@ -275,24 +282,31 @@ export default function Feed(props) {
           title: currentShow.title,
         })
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           const posts = res.data.posts;
+          // console.log(posts);
           let newUserPics;
           const profilePicLoaded = newPosts.userPics.has(res.data.user_id);
           if (!profilePicLoaded) {
             newUserPics = new Map([[res.data.user_id, res.data.profile_pic]]);
           }
-          setNewPosts((prevState) => ({
-            ...prevState,
-            posts: posts.concat(prevState.posts),
-            userPics: profilePicLoaded
-              ? prevState.userPics
-              : new Map([...newUserPics, ...prevState.userPics]),
-          }));
+          // window.location.reload();
+          // console.log(posts.concat(newPosts.posts));
+          setNewPosts((prevState) => {
+            // console.log(posts.concat(prevState.posts));
+            return {
+              ...prevState,
+              posts: posts.concat(prevState.posts),
+              userPics: profilePicLoaded
+                ? prevState.userPics
+                : new Map([...newUserPics, ...prevState.userPics]),
+            };
+          });
+          setPostState({ ...postState, showBackdrop: false });
           setCurrentShow(shows[0]);
         });
     }
-    setPostState({ ...postState, showBackdrop: false });
+    // setPostState({ ...postState, showBackdrop: false });
   };
 
   // let profilePicBase64 = null;
@@ -352,6 +366,7 @@ export default function Feed(props) {
   // console.log(currentSeason);
   //RETURN
   // console.log(postState.posts);
+  // console.log(newPosts.posts.forEach((post) => console.log(post.tags)));
   return (
     <div className={classes.Feed}>
       {postState.showBackdrop ? (
@@ -454,7 +469,7 @@ export default function Feed(props) {
       )}
       {loggedIn
         ? newPosts.posts.map((post) => {
-            console.log(post.tags);
+            // console.log(post.tags);
             return (
               <Post
                 body={post.body}

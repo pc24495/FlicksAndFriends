@@ -23,6 +23,7 @@ import TextareaAutosize from "react-textarea-autosize";
 //           </p>
 
 export default function Post(props) {
+  // console.log(props.body + " " + props.tags[0].text);
   const [tags, setTags] = useState({
     display: false,
     // tagList: [
@@ -33,10 +34,9 @@ export default function Post(props) {
     // { text: "TestingTag123", doesOverflow: false },
 
     // ],
-    tagList: props.tags.map((tag) => {
-      return { ...tag, doesOverflow: false };
-    }),
+    tagList: [],
   });
+  // console.log(tags.tagList[0].text);
   const postID = "57";
   const [showFullPost, setShowFullPost] = useState(false);
   // const [commentInputRows, setCommentInputRows] = useState(1);
@@ -49,46 +49,58 @@ export default function Post(props) {
   const likes = [];
 
   useEffect(() => {
-    // console.log(postID);
-    let newTags = tags.tagList;
-    // console.log(newTags);
-    let tagsWidth = 26; //should be width of downArrow actually
-    let isOverflowing = false;
-    const tagContainerWidth = Math.ceil(
-      document.getElementById(postID + "-tags").getBoundingClientRect().width
+    // console.log(props.body);
+    console.log(
+      props.tags.map((tag) => {
+        return { ...tag, doesOverflow: false };
+      })
     );
-    newTags = newTags
-      .filter((tag) => tag.text !== null)
-      .map((tag, index) => {
-        // console.log(postID + "-" + index.toString());
-        const width = Math.ceil(
-          document
-            .getElementById(postID + "-" + index.toString())
-            .getBoundingClientRect().width
-        );
-        if (!isOverflowing) {
-          tagsWidth += width + 3;
-          if (tagsWidth > tagContainerWidth) {
-            isOverflowing = true;
-            return {
-              ...tag,
-              doesOverflow: true,
-            };
-          } else {
-            return {
-              ...tag,
-              doesOverflow: false,
-            };
-          }
-        } else {
-          return {
-            ...tag,
-            doesOverflow: true,
-          };
-        }
-      });
-    setTags({ ...tags, tagList: newTags });
-  }, []);
+    setTags({
+      ...tags,
+      tagList: props.tags.map((tag) => {
+        return { ...tag, doesOverflow: false };
+      }),
+    });
+    // console.log(postID);
+    // let newTags = tags.tagList;
+    // console.log(newTags);
+    // let tagsWidth = 26; //should be width of downArrow actually
+    // let isOverflowing = false;
+    // const tagContainerWidth = Math.ceil(
+    //   document.getElementById(postID + "-tags").getBoundingClientRect().width
+    // );
+    // newTags = newTags
+    //   .filter((tag) => tag.text !== null)
+    //   .map((tag, index) => {
+    //     // console.log(postID + "-" + index.toString());
+    //     const width = Math.ceil(
+    //       document
+    //         .getElementById(postID + "-" + index.toString())
+    //         .getBoundingClientRect().width
+    //     );
+    //     if (!isOverflowing) {
+    //       tagsWidth += width + 3;
+    //       if (tagsWidth > tagContainerWidth) {
+    //         isOverflowing = true;
+    //         return {
+    //           ...tag,
+    //           doesOverflow: true,
+    //         };
+    //       } else {
+    //         return {
+    //           ...tag,
+    //           doesOverflow: false,
+    //         };
+    //       }
+    //     } else {
+    //       return {
+    //         ...tag,
+    //         doesOverflow: true,
+    //       };
+    //     }
+    //   });
+    // setTags({ ...tags, tagList: newTags });
+  }, [props]);
 
   const openTags = (event) => {
     setTags((prevState) => {
@@ -175,7 +187,8 @@ export default function Post(props) {
   props.user_pic_map.get(props.user_id);
   const seeMore = "<i>...see more</i>";
   // timeSince(props.post_date)
-  // console.log(tags.tagList);
+  // console.log(tags.tagList[0].text);
+  // console.log(props.body + " " + props.tags[0].text);
   return (
     <div className={classes.PostContainer}>
       <div className={classes.Post}>

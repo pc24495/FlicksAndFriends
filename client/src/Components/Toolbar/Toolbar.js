@@ -3,6 +3,7 @@ import classes from "./Toolbar.module.css";
 import NavigationItems from "../NavigationItems/NavigationItems.js";
 import NavigationItem from "../NavigationItems/NavigationItem/NavigationItem.js";
 import { useSelector, useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
 // import axios from "../../axiosConfig.js";
 
 const Toolbar = (props) => {
@@ -30,6 +31,8 @@ const Toolbar = (props) => {
   const dispatch = useDispatch();
 
   // console.log(loggedIn); //
+  const pathname = useLocation().pathname;
+  console.log(pathname);
 
   const logout = () => {
     console.log("LOGGING OUT");
@@ -41,6 +44,12 @@ const Toolbar = (props) => {
     <header className={classes.Toolbar}>
       <nav className={classes.DesktopOnly}>
         <NavigationItems>
+          <input
+            className={classes.SearchBar}
+            style={{
+              display: pathname === "/subscriptions" ? "block" : "none",
+            }}
+          ></input>
           <NavigationItem link="/" exact>
             Home
           </NavigationItem>
