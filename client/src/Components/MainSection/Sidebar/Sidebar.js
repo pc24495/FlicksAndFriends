@@ -53,7 +53,6 @@ class Sidebar extends Component {
 const mapStateToProps = (state) => {
   return {
     username: state.username,
-    shows: state.shows,
     loggedIn: state.loggedIn,
     subscriptions: state.subscriptions,
     profilePic: state.profilePic,

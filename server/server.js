@@ -60,9 +60,10 @@ app.get("/api/PopulateDatabases", async (req, res, next) => {
   // const results = await db.query("SELECT * FROM shows");
   // res.json(results);
   const API_KEY = "eec78094013670a1ba1d6365a09d8caf";
-  const numPages = 1;
+  const numPages = 300;
   let showData = [];
-  for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+  for (let pageNum = 201; pageNum <= numPages; pageNum++) {
+    console.log("Page number " + pageNum);
     let counter = 0;
     const popularString = `https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}&language=en-US&page=${pageNum}`;
     const showJSONS = await axios
@@ -126,55 +127,109 @@ app.get("/api/PopulateDatabases", async (req, res, next) => {
         // console.log(seasonResults);
 
         //Here is where code to get posters starts
-        const title = show.show_name;
-        const encodedTitle = encodeURIComponent(title);
+        // const title = show.show_name;
+        // const encodedTitle = encodeURIComponent(title);
         // console.log(encodedTitle);
         // res.send(encodedTitle);
-        const POSTER_API_KEY = "5d06af2a";
-        const posterAPI_URL = `http://www.omdbapi.com/?apikey=${POSTER_API_KEY}&t=${encodedTitle}`;
-        try {
-          let posterJSON = await axios.get(posterAPI_URL);
-          // console.log("bloop");
-          if (encodedTitle === "Lucifer") {
-            // console.log("blap");
-          }
-        } catch {
-          posterJSON = null;
-          // console.log(encodedTitle);
-        }
+        // const POSTER_API_KEY = "5d06af2a";
+        // const posterAPI_URL = `http://www.omdbapi.com/?apikey=${POSTER_API_KEY}&t=${encodedTitle}`;
+        // try {
+        // let posterJSON = await axios.get(posterAPI_URL);
+        // console.log("bloop");
+        // if (encodedTitle === "Lucifer") {
+        // console.log("blap");
+        //   }
+        // } catch {
+        //   posterJSON = null;
+        // console.log(encodedTitle);
+        // }
         // const posterJSON = await axios.get(posterAPI_URL);
         // console.log(posterJSON);
-        let image64str = null;
-        let imgHeight = 0;
-        if (posterJSON) {
-          let posterURL = posterJSON.data.Poster;
-          posterURL = posterURL.replace("SX300", "SX220");
-          const imageResponse = await axios.get(posterURL, {
-            responseType: "arraybuffer",
-          });
-          const buffer = Buffer.from(imageResponse.data, "utf-8");
-          image64str = base64_arraybuffer.encode(buffer);
-          // console.log(image64str);
-          const img = new canvas.Image();
-          img.src = "data:image/jpeg;base64," + image64str;
-          // let imgHeight = 0;
-          img.onload = function () {
-            const imgWidth = img.width;
-            imgHeight = img.height;
+        // let image64str = null;
+        // let imgHeight = 0;
+        // if (posterJSON) {
+        //   let posterURL = posterJSON.data.Poster;
+        //   posterURL = posterURL.replace("SX300", "SX220");
+        //   const imageResponse = await axios.get(posterURL, {
+        //     responseType: "arraybuffer",
+        //   });
+        //   const buffer = Buffer.from(imageResponse.data, "utf-8");
+        //   image64str = base64_arraybuffer.encode(buffer);
+        // console.log(image64str);
+        // const img = new canvas.Image();
+        // img.src = "data:image/jpeg;base64," + image64str;
+        // // let imgHeight = 0;
+        // img.onload = function () {
+        //   const imgWidth = img.width;
+        //   imgHeight = img.height;
 
-            // console.log("imgWidth: ", imgWidth);
-            // console.log("imgHeight: ", imgHeight);
-          };
-          img.onload();
-        } else {
-          imgHeight = 250;
+        // console.log("imgWidth: ", imgWidth);
+        // console.log("imgHeight: ", imgHeight);
+        //   };
+        //   img.onload();
+        // } else {
+        //   imgHeight = 250;
 
-          image64str =
-            "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";
-        }
+        //   image64str =
+        //     "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";
+        // }
         // console.log(image64str.length);
         // res.json({ image: image64str });
         //Code to get posters ends
+
+        //Code to get posters take 2
+        const title = show.show_name;
+        const posterURL_API = `https://api.themoviedb.org/3/tv/${show.tv_id}?api_key=${API_KEY}&language=en-US`;
+        let posterJSON = null;
+        try {
+          posterJSON = await axios.get(posterURL_API);
+          console.log("Line 186 - " + posterJSON.data.backdrop_path);
+          // console.log(posterJSON);
+        } catch {
+          posterJSON = null;
+        }
+
+        let image64str = null;
+        let imgHeight = 0;
+        if (posterJSON && posterJSON.data.backdrop_path) {
+          try {
+            console.log(posterJSON.data.backdrop_path);
+            let posterURL = `http://image.tmdb.org/t/p/w342${posterJSON.data.backdrop_path}`;
+            console.log(posterURL);
+            const imageResponse = await axios.get(posterURL, {
+              responseType: "arraybuffer",
+            });
+            const buffer = Buffer.from(imageResponse.data, "utf-8");
+            image64str = base64_arraybuffer.encode(buffer);
+            const img = new canvas.Image();
+            img.src = "data:image/jpeg;base64," + image64str;
+            let imgHeight = 0;
+            img.onload = function () {
+              imgHeight = img.height;
+
+              // console.log("imgWidth: ", imgWidth);
+              console.log("imgHeight: ", imgHeight);
+            };
+            img.onload();
+          } catch (error) {
+            console.log(error);
+            console.log(
+              "Error getting poster for " +
+                show.show_name +
+                " tv_id: " +
+                show.tv_id
+            );
+            imgHeight = 192;
+            image64str =
+              "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";
+          }
+        } else {
+          console.log("Error getting poster for" + show.show_name);
+          imgHeight = 192;
+          image64str =
+            "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";
+        }
+        //Code to get posters take 2 ends
 
         const returnShow = {
           tv_id: show.tv_id,
@@ -266,9 +321,31 @@ app.get("/api/PopulateDatabases", async (req, res, next) => {
     );
   });
 
-  res.json(showData);
+  res.json({ finished: "page " + 1 + " finished" });
 });
 //
+
+app.get("/api/test-poster", async (req, res) => {
+  console.log("test poster");
+  let posterURL = `http://image.tmdb.org/t/p/w342/jm3VtQRbxLysEEYcUSwuj67LvXS.jpg`;
+  const imageResponse = await axios.get(posterURL, {
+    responseType: "arraybuffer",
+  });
+  const buffer = Buffer.from(imageResponse.data, "utf-8");
+  image64str = base64_arraybuffer.encode(buffer);
+  const img = new canvas.Image();
+  img.src = "data:image/jpeg;base64," + image64str;
+  console.log(img.src);
+  // let imgHeight = null;
+  // img.onload = function () {
+  //   imgHeight = img.height;
+
+  // console.log("imgWidth: ", imgWidth);
+  // console.log("imgHeight: ", imgHeight);
+  // };
+  // img.onload();
+  res.json({ src: img.src });
+});
 
 app.post("/api/getShowPosters", async (req, res, next) => {
   const API_KEY = "f8858b47";
@@ -331,6 +408,7 @@ const verifyJWT = (req, res, next) => {
   }
 };
 //
+
 app.get("/api/getUserData", verifyJWT, (req, res) => {
   db.query(
     "SELECT * FROM users WHERE user_id=$1",
@@ -352,7 +430,7 @@ app.get("/api/isUserAuth", verifyJWT, (req, res) => {
   res.send("Hey, you're authenticated!");
 });
 
-app.get("/api/getSubscriptions", verifyJWT, (req, res) => {
+app.get("/api/users/subscriptions", verifyJWT, (req, res) => {
   db.query(
     "SELECT subscriptions FROM users WHERE user_id=$1",
     [req.userID],
@@ -373,6 +451,42 @@ app.get("/api/getSubscriptions", verifyJWT, (req, res) => {
       }
     }
   );
+});
+
+app.get("/api/users/subscriptions-and-shows", verifyJWT, async (req, res) => {
+  const limit = req.query.limit || null;
+  const user_id = req.userID;
+  const subscriptions = await db
+    .query("SELECT * FROM users WHERE user_id=$1", [user_id])
+    .then((result) => result.rows[0].subscriptions);
+  const subscribedShowIDs = subscriptions.map(
+    (subscription) => subscription.show_id
+  );
+  const subscribedShows = await db
+    .query("SELECT * FROM shows WHERE tv_id=ANY($1)", [subscribedShowIDs])
+    .then((result) => result.rows);
+  const shows = await db
+    .query(
+      "SELECT * FROM shows WHERE NOT tv_id=ANY($1) ORDER BY popularity DESC LIMIT $2",
+      [subscribedShowIDs, limit]
+    )
+    .then((result) => result.rows);
+  res.json({
+    shows: [...shows, ...subscribedShows],
+    displayShows: shows,
+    subscriptions,
+  });
+});
+
+app.get("/api/shows/", async (req, res) => {
+  const limit = req.query.limit || null;
+  const exclude = req.query.exclude || null;
+  console.log(req.query);
+  const shows = await db
+    .query("SELECT * FROM shows ORDER BY popularity DESC LIMIT $1", [limit])
+    .then((result) => result.rows);
+  // console.log(shows);
+  res.json({ shows });
 });
 
 app.post("/api/getShowsFromSubscriptions", verifyJWT, (req, res) => {

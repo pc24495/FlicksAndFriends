@@ -16,9 +16,9 @@ export default function Feed(props) {
   //STATE VARIABLES
   // console.log(props.initPosts);
   // console.log("Rendering feed");
-  const showList = useSelector((state) => {
-    return state.shows;
-  });
+  // const showList = useSelector((state) => {
+  //   return state.shows;
+  // });
 
   const history = useHistory();
 

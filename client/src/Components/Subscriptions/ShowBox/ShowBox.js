@@ -4,7 +4,7 @@ import classes from "./ShowBox.module.css";
 
 export default function ShowBox(props) {
   //   console.log(props.maxHeight);
-
+  //
   const [currentSeason, setCurrentSeason] = useState(props.show.episodes[0]);
   const [currentEpisode, setCurrentEpisode] = useState(
     currentSeason.episodes[0]
@@ -69,6 +69,8 @@ export default function ShowBox(props) {
         src={"data:image/jpeg;base64," + props.poster}
         className={classes.Poster}
         alt="Image not found"
+        height="192px"
+        width="342px"
       ></img>
       <div className={classes.Menu}>
         <h2 style={{ maxWidth: "80%", margin: "3px" }}> {props.show.title}</h2>

@@ -21,9 +21,9 @@
   /* display: none; */
 }
 
-/* .Sidebar::-webkit-scrollbar {
+.Sidebar::-webkit-scrollbar {
   display: none;
-} */
+}
 
 .ProfilePic {
   width: 150px;

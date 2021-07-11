@@ -2,7 +2,7 @@ import "./App.css";
 import Layout from "./Components/Layout/Layout.js";
 import { useSelector, useDispatch } from "react-redux";
 import MainSection from "./Components/MainSection/MainSection.js";
-import Subscriptions from "./Components/Subscriptions/Subscriptions.js";
+import Subscriptions from "./Components/Subscriptions/Subscriptions2.js";
 import axios from "./axiosConfig.js";
 import { Route, Switch, useHistory } from "react-router-dom";
 import Registration from "./Components/Registration/Registration.js";
@@ -36,15 +36,15 @@ function App(props) {
     window.addEventListener("resize", resizeWindow);
   }, []);
 
-  const getShows = () => {
-    axios.get("/api/GetAllShows").then((res) => {
-      dispatch({ type: "UPDATE_SHOWS", shows: res.data });
-    });
-  };
+  // const getShows = () => {
+  //   axios.get("/api/GetAllShows").then((res) => {
+  //     dispatch({ type: "UPDATE_SHOWS", shows: res.data });
+  //   });
+  // };
 
   const getSubscriptions = () => {
     axios
-      .get("/api/GetSubscriptions", {
+      .get("/api/users/subscriptions", {
         headers: {
           "x-access-token": token,
         },
@@ -80,7 +80,7 @@ function App(props) {
               username: res.data.userData.username,
               profilePic: res.data.userData.profile_pic,
             });
-            getShows();
+            // getShows();
             getSubscriptions();
           } else {
             dispatch({ type: "LOGOUT" });
@@ -97,7 +97,7 @@ function App(props) {
 
   updateLogin();
   getSubscriptions();
-  getShows();
+  // getShows();
 
   // getShows();
   // console.log(Registration);
