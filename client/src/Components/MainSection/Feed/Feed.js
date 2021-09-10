@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import classes from "./Feed.module.css";
 import Post from "../Post/Post.js";
 import PostSpinner from "../Post/PostSpinner.js";
@@ -28,6 +28,9 @@ export default function Feed(props) {
   });
 
   const profilePic = useSelector((state) => state.profilePic);
+  const showFriendsDropdown = useSelector((state) => state.showFriendsDropdown);
+  const newFriendStatus = useSelector((state) => state.newFriendStatus);
+  const dispatch = useDispatch();
 
   // console.log(subscriptionIDs);
 
@@ -59,6 +62,26 @@ export default function Feed(props) {
         });
     }
   }, [subscriptions]);
+
+  useEffect(() => {
+    // if (newFriendStatus) {
+    //   setPostState((prevState) => {
+    //     return {
+    //       ...prevState,
+    //       posts: prevState.posts.map((post) => {
+    //         if (newFriendStatus.user_id === post.user_id) {
+    //           return {
+    //             ...post,
+    //             friend_status: newFriendStatus.friend_status,
+    //           };
+    //         } else {
+    //           return post;
+    //         }
+    //       }),
+    //     };
+    //   });
+    // }
+  }, [newFriendStatus]);
 
   // const
 
@@ -244,7 +267,7 @@ export default function Feed(props) {
         .then((res) => {
           // console.log(res.data);
           const posts = res.data.posts;
-          // console.log(posts);
+          console.log(posts);
           let newUserPics;
           const profilePicLoaded = newPosts.userPics.has(res.data.user_id);
           // console.log(profilePicLoaded);
@@ -284,7 +307,7 @@ export default function Feed(props) {
         .then((res) => {
           // console.log(res.data);
           const posts = res.data.posts;
-          // console.log(posts);
+          console.log(posts);
           let newUserPics;
           const profilePicLoaded = newPosts.userPics.has(res.data.user_id);
           if (!profilePicLoaded) {
@@ -309,6 +332,35 @@ export default function Feed(props) {
     // setPostState({ ...postState, showBackdrop: false });
   };
 
+  const deletePosts = (event, postID) => {
+    axios.delete(`/api/posts/${postID}`, {
+      headers: {
+        "x-access-token": localStorage.getItem("token"),
+      },
+    });
+    newPosts.posts.every((post) => {
+      if (parseInt(post.post_id) === parseInt(postID)) {
+        const newNewPosts = newPosts.posts.filter(
+          (post) => parseInt(post.post_id) !== parseInt(postID)
+        );
+        setNewPosts({ ...newPosts, posts: newNewPosts });
+        return false;
+      } else {
+        return true;
+      }
+    });
+    postState.posts.every((post) => {
+      if (parseInt(post.post_id) === parseInt(postID)) {
+        const newPostStatePosts = postState.posts.filter(
+          (post) => parseInt(post.post_id) !== parseInt(postID)
+        );
+        setPostState({ ...postState, posts: newPostStatePosts });
+        return false;
+      } else {
+        return true;
+      }
+    });
+  };
   // let profilePicBase64 = null;
 
   const getMorePosts = async () => {
@@ -337,7 +389,11 @@ export default function Feed(props) {
             // const { posts, userPics } = { ...res.data };
             // console.log(posts);
             const posts = res.data.posts;
+            console.log(posts);
             const userPics = new Map(JSON.parse(res.data.userPics));
+            // console.log(userPics);
+            // console.log(postState);
+            // console.log(posts);
             // console.log(posts);
             setPostState((prevState) => ({
               ...prevState,
@@ -352,6 +408,36 @@ export default function Feed(props) {
       //   posts: prevState.posts.concat(blankArray),
       // }));
     }, 200);
+  };
+
+  const friendRequestHandler = (friend_status, user_id) => {
+    // const token = localStorage.getItem("token");
+    // console.log(tags.friendStatus);
+    // if (friend_status === "Add Friend") {
+    //   axios
+    //     .post(`/api/friend-requests/${user_id}`, {
+    //       headers: {
+    //         "x-access-token": token,
+    //       },
+    //     })
+    //     .then((res) => {
+    //       if (res.data.success) {
+    //         setPostState({
+    //           ...postState,
+    //           posts: postState.posts.map((post) => {
+    //             if (post.user_id === user_id) {
+    //               return {
+    //                 ...post,
+    //                 friend_status: "Unsend Friend Request",
+    //               };
+    //             } else {
+    //               return post;
+    //             }
+    //           }),
+    //         });
+    //       }
+    //     });
+    // }
   };
 
   const linkto = (link) => {
@@ -380,7 +466,7 @@ export default function Feed(props) {
               className={classes.PostInput}
               onChange={onTextAreaChange}
             ></textarea>
-            <div className={classes.RadioButtons}>
+            <form className={classes.RadioButtons}>
               <div style={{ display: "inline-block" }}>
                 <input
                   name="Spoilers"
@@ -396,10 +482,11 @@ export default function Feed(props) {
                   type="radio"
                   id="two"
                   onChange={onSpoilerSelect}
+                  defaultChecked
                 ></input>
                 <label for="two">Spoilers</label>
               </div>
-            </div>
+            </form>
 
             <div className={classes.Dropdowns}>
               <select className={classes.Dropdown} onChange={onShowSelect}>
@@ -444,29 +531,12 @@ export default function Feed(props) {
           <img src={profilePic} className={classes.ProfilePic}></img>
           <input
             className={classes.InputPostInput}
-            placeholder="Submit a post..."
+            placeholder="Create a post..."
             onClick={inputClickHandler}
           ></input>
         </div>
       ) : null}
-      {loggedIn ? null : (
-        <div className={classes.NotLoggedIn}>
-          <p>
-            {" "}
-            <span className={classes.Redirect} onClick={() => linkto("login")}>
-              Log in{" "}
-            </span>
-            or{" "}
-            <span
-              className={classes.Redirect}
-              onClick={() => linkto("register")}
-            >
-              register
-            </span>{" "}
-            to post and view posts
-          </p>
-        </div>
-      )}
+      {loggedIn ? null : <PostSpinner></PostSpinner>}
       {loggedIn
         ? newPosts.posts.map((post) => {
             // console.log(post.tags);
@@ -483,6 +553,10 @@ export default function Feed(props) {
                 type={post.type}
                 episode_tag={post.episode}
                 tags={post.tags}
+                friend_status={post.friend_status}
+                post_id={post.post_id}
+                num_likes={post.num_likes}
+                delete_posts={deletePosts}
               ></Post>
             );
           })
@@ -496,7 +570,7 @@ export default function Feed(props) {
           scrollThreshold={0}
         >
           {postState.posts.map((post) => {
-            // console.log(post.tags);
+            // console.log(post.comments);
             return (
               <Post
                 body={post.body}
@@ -510,6 +584,13 @@ export default function Feed(props) {
                 type={post.type}
                 episode_tag={post.episode}
                 tags={post.tags}
+                post_id={post.post_id}
+                friend_request_handler={() =>
+                  friendRequestHandler(post.friend_status, post.user_id)
+                }
+                friend_status={post.friend_status}
+                num_likes={post.num_likes}
+                delete_posts={deletePosts}
               ></Post>
             );
           })}

@@ -124,67 +124,12 @@ app.get("/api/PopulateDatabases", async (req, res, next) => {
           })
         );
 
-        // console.log(seasonResults);
-
-        //Here is where code to get posters starts
-        // const title = show.show_name;
-        // const encodedTitle = encodeURIComponent(title);
-        // console.log(encodedTitle);
-        // res.send(encodedTitle);
-        // const POSTER_API_KEY = "5d06af2a";
-        // const posterAPI_URL = `http://www.omdbapi.com/?apikey=${POSTER_API_KEY}&t=${encodedTitle}`;
-        // try {
-        // let posterJSON = await axios.get(posterAPI_URL);
-        // console.log("bloop");
-        // if (encodedTitle === "Lucifer") {
-        // console.log("blap");
-        //   }
-        // } catch {
-        //   posterJSON = null;
-        // console.log(encodedTitle);
-        // }
-        // const posterJSON = await axios.get(posterAPI_URL);
-        // console.log(posterJSON);
-        // let image64str = null;
-        // let imgHeight = 0;
-        // if (posterJSON) {
-        //   let posterURL = posterJSON.data.Poster;
-        //   posterURL = posterURL.replace("SX300", "SX220");
-        //   const imageResponse = await axios.get(posterURL, {
-        //     responseType: "arraybuffer",
-        //   });
-        //   const buffer = Buffer.from(imageResponse.data, "utf-8");
-        //   image64str = base64_arraybuffer.encode(buffer);
-        // console.log(image64str);
-        // const img = new canvas.Image();
-        // img.src = "data:image/jpeg;base64," + image64str;
-        // // let imgHeight = 0;
-        // img.onload = function () {
-        //   const imgWidth = img.width;
-        //   imgHeight = img.height;
-
-        // console.log("imgWidth: ", imgWidth);
-        // console.log("imgHeight: ", imgHeight);
-        //   };
-        //   img.onload();
-        // } else {
-        //   imgHeight = 250;
-
-        //   image64str =
-        //     "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";
-        // }
-        // console.log(image64str.length);
-        // res.json({ image: image64str });
-        //Code to get posters ends
-
         //Code to get posters take 2
         const title = show.show_name;
         const posterURL_API = `https://api.themoviedb.org/3/tv/${show.tv_id}?api_key=${API_KEY}&language=en-US`;
         let posterJSON = null;
         try {
           posterJSON = await axios.get(posterURL_API);
-          console.log("Line 186 - " + posterJSON.data.backdrop_path);
-          // console.log(posterJSON);
         } catch {
           posterJSON = null;
         }
@@ -252,8 +197,6 @@ app.get("/api/PopulateDatabases", async (req, res, next) => {
           let b_date = toDate(b.air_date);
 
           if (a_date < b_date) {
-            // console.log("A date: " + a_date);
-            // console.log("B date: " + b_date);
             return -1;
           } else if (a_date > b_date) {
             return 1;
@@ -323,29 +266,6 @@ app.get("/api/PopulateDatabases", async (req, res, next) => {
 
   res.json({ finished: "page " + 1 + " finished" });
 });
-//
-
-app.get("/api/test-poster", async (req, res) => {
-  console.log("test poster");
-  let posterURL = `http://image.tmdb.org/t/p/w342/jm3VtQRbxLysEEYcUSwuj67LvXS.jpg`;
-  const imageResponse = await axios.get(posterURL, {
-    responseType: "arraybuffer",
-  });
-  const buffer = Buffer.from(imageResponse.data, "utf-8");
-  image64str = base64_arraybuffer.encode(buffer);
-  const img = new canvas.Image();
-  img.src = "data:image/jpeg;base64," + image64str;
-  console.log(img.src);
-  // let imgHeight = null;
-  // img.onload = function () {
-  //   imgHeight = img.height;
-
-  // console.log("imgWidth: ", imgWidth);
-  // console.log("imgHeight: ", imgHeight);
-  // };
-  // img.onload();
-  res.json({ src: img.src });
-});
 
 app.post("/api/getShowPosters", async (req, res, next) => {
   const API_KEY = "f8858b47";
@@ -355,19 +275,50 @@ app.post("/api/getShowPosters", async (req, res, next) => {
   const imageURL = showJSON.data.Poster;
   const imageData = await axios.get(imageURL);
   const image = base64_arraybuffer.decode(imageData.data);
-  // console.log(showJSON.data.Poster);
 
   const response = await axios.get(imageURL, { responseType: "arraybuffer" });
   const buffer = Buffer.from(response.data, "utf-8");
   const image64str = base64_arraybuffer.encode(buffer);
-  // console.log(image64str);
-  // console.log(image64str.length);
+
   res.json({ image: image64str });
 });
 
 app.post("/api/register", async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
+
+  const newRegisterErrors = {
+    usernameErrors: [],
+    passwordErrors: [],
+    confirmPasswordErrors: [],
+  };
+
+  if (password === null || password === "") {
+    newRegisterErrors.passwordErrors.push("Please enter a password");
+  } else if (
+    !(password.length >= 10) ||
+    !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(password) ||
+    !/\d/.test(password)
+  ) {
+    newRegisterErrors.passwordErrors.push(
+      "Passwords must be at least 10 characters long and contain at least one number and one special character"
+    );
+  }
+
+  if (username === null || username === "") {
+    newRegisterErrors.usernameErrors.push("Please enter a username");
+  } else if (username.length > 20) {
+    newRegisterErrors.usernameErrors.push(
+      "Usernames must be less than 20 characters long"
+    );
+  }
+
+  if (
+    newRegisterErrors.usernameErrors.length != 0 ||
+    newRegisterErrors.passwordErrors.length != 0
+  ) {
+    res.json({ success: false, errors: newRegisterErrors });
+  }
 
   bcrypt.hash(password, saltRounds, (err, hash) => {
     db.query(
@@ -376,9 +327,12 @@ app.post("/api/register", async (req, res) => {
       (err, result) => {
         if (err) {
           console.log(err);
-          res.send("User already exists");
+          newRegisterErrors.usernameErrors.push(
+            "Username is already taken, please select a different one"
+          );
+          res.json({ success: false, errors: newRegisterErrors });
         } else {
-          res.send("Valid!");
+          res.json({ success: true });
         }
         //
       }
@@ -458,7 +412,7 @@ app.get("/api/users/subscriptions-and-shows", verifyJWT, async (req, res) => {
   const user_id = req.userID;
   const subscriptions = await db
     .query("SELECT * FROM users WHERE user_id=$1", [user_id])
-    .then((result) => result.rows[0].subscriptions);
+    .then((result) => result.rows[0].subscriptions || []);
   const subscribedShowIDs = subscriptions.map(
     (subscription) => subscription.show_id
   );
@@ -480,17 +434,41 @@ app.get("/api/users/subscriptions-and-shows", verifyJWT, async (req, res) => {
 
 app.get("/api/shows/", async (req, res) => {
   const limit = req.query.limit || null;
-  const exclude = req.query.exclude || null;
-  console.log(req.query);
-  const shows = await db
-    .query("SELECT * FROM shows ORDER BY popularity DESC LIMIT $1", [limit])
-    .then((result) => result.rows);
-  // console.log(shows);
-  res.json({ shows });
+  const excludeIDs = Array.isArray(req.query.excludeIDs)
+    ? req.query.excludeIDs
+    : null;
+  const searchTerm = req.query.searchTerm;
+
+  if (searchTerm && limit) {
+    await db
+      .query(
+        "SELECT * FROM shows WHERE position(lower($1) in lower(title))>0 ORDER BY popularity DESC LIMIT $2",
+        [searchTerm, limit]
+      )
+      .then((result) => res.json({ shows: result.rows }));
+  } else if (excludeIDs) {
+    await db
+      .query(
+        "SELECT * FROM shows WHERE NOT show_id = ANY($1) ORDER BY popularity DESC LIMIT $2",
+        [excludeIDs, limit]
+      )
+      .then((result) => {
+        res.json({ shows: result.rows });
+      });
+  } else {
+    await db
+      .query("SELECT * FROM shows ORDER BY popularity DESC LIMIT $1", [limit])
+      .then((result) => res.json({ shows: result.rows }));
+  }
+});
+
+app.get("/api/shows/:id", async (req, res) => {
+  db.query("SELECT * FROM shows WHERE tv_id=$1", [
+    req.params.id,
+  ]).then((result) => res.json({ shows: result.rows[0] }));
 });
 
 app.post("/api/getShowsFromSubscriptions", verifyJWT, (req, res) => {
-  // console.log(req.body.subscriptionIDs);
   db.query(
     "SELECT * FROM shows WHERE tv_id = ANY ($1)",
     [req.body.subscriptionIDs],
@@ -499,8 +477,6 @@ app.post("/api/getShowsFromSubscriptions", verifyJWT, (req, res) => {
         console.log("Error getting shows from subscription IDs");
       } else {
         if (result.rows.length > 0) {
-          // console.log("Sending!");
-          // console.log({ ...result.rows[0], poster: null });
           res.json({
             auth: true,
             shows: result.rows,
@@ -515,11 +491,99 @@ app.post("/api/getShowsFromSubscriptions", verifyJWT, (req, res) => {
   );
 });
 
-app.post("", verifyJWT, (req, res) => {});
-
+app.delete("/api/shows/", async (req, res) => {
+  const showIDs = await db
+    .query("SELECT tv_id FROM shows")
+    .then((result) => result.rows);
+  await Promise.all(
+    showIDs.map(async (showID) => {
+      const tv_id = showID.tv_id;
+      const show = await db
+        .query("SELECT * FROM shows WHERE tv_id=$1", [tv_id])
+        .then((result) => {
+          return result.rows[0];
+        });
+      if (show.episodes.length === 0) {
+        console.log(show.title);
+        await db.query("DELETE FROM shows WHERE tv_id=$1", [tv_id]);
+      } else {
+        const seasons = show.episodes.filter(
+          (season) => !(season.episodes.length === 0)
+        );
+        await db.query("UPDATE shows SET episodes = $1 WHERE tv_id =  $2", [
+          JSON.stringify(seasons),
+          show.tv_id,
+        ]);
+      }
+    })
+  );
+  res.send("Done updating");
+});
 //Hey
+
+app.post("/api/posts/:id/likes", verifyJWT, async (req, res) => {
+  const type = req.body.params.type;
+  const id = req.params.id;
+  await db.query(
+    "DELETE FROM post_likes WHERE (user_id = $1) AND (post_id = $2)",
+    [req.userID, id]
+  );
+  await db.query(
+    "INSERT INTO post_likes(user_id, post_id, is_like) values($1, $2, $3)",
+    [req.userID, id, type === "like"]
+  );
+});
+
+app.patch("/api/posts/:id", verifyJWT, async (request, response) => {
+  if (!request.body.post_text) {
+    return response.status(400).json({ success: false });
+  }
+  if (request.params.id) {
+    console.log(request.params.id);
+    const post = await db
+      .query("SELECT * FROM posts WHERE post_id = $1", [request.params.id])
+      .then((result) => {
+        if (result.rows.length > 0) {
+          return result.rows[0];
+        } else {
+          return response.status(404).json({ success: false });
+        }
+      });
+    console.log(post);
+    if (post.user_id === request.userID) {
+      await db
+        .query("UPDATE posts SET post_text = $1 WHERE post_id = $2", [
+          request.body.post_text,
+          post.post_id,
+        ])
+        .then((result) => {
+          return response.status(200).json({ success: true });
+        });
+    } else {
+      return response.status(403).json({ success: false });
+    }
+  } else {
+    return response.status(400).json({ success: false });
+  }
+});
+
+app.delete("/api/posts/:id", verifyJWT, async (request, response) => {
+  const id = parseInt(request.params.id);
+  await db.query("DELETE FROM posts WHERE (user_id = $1) AND (post_id = $2)", [
+    request.userID,
+    id,
+  ]);
+});
+
+app.delete("/api/posts/:id/likes", verifyJWT, async (req, res) => {
+  const id = req.params.id;
+  await db.query(
+    "DELETE FROM post_likes WHERE (user_id = $1) AND (post_id = $2)",
+    [req.userID, id]
+  );
+});
+
 app.post("/api/updateSubscriptions", verifyJWT, (req, res) => {
-  console.log("updating subscriptions");
   db.query(
     "UPDATE users SET subscriptions = $1 WHERE user_id=$2",
     [req.body.subscriptions, req.userID],
@@ -564,42 +628,76 @@ app.post("/api/login", (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
 
-  db.query(
-    "SELECT * FROM users WHERE username=$1",
-    [username],
-    (err, result) => {
-      if (err) {
-        console.log("Error fetching from database!");
-        res.send({ err: err });
-      } else {
-        let dbResults = result.rows;
-        if (dbResults.length > 0) {
-          bcrypt.compare(password, dbResults[0].password, (error, response) => {
-            if (response) {
-              req.session.user = dbResults[0];
+  const newLoginErrors = {
+    usernameErrors: [],
+    passwordErrors: [],
+  };
 
-              const id = dbResults[0].user_id;
-              const token = jwt.sign({ id }, process.env.SECRET, {
-                expiresIn: "10800s",
-              });
-              res.json({ auth: true, token: token, result: dbResults[0] });
-            } else {
-              res.send({
-                auth: false,
-                message: "Wrong username/password combination!",
-              });
-            }
-          });
+  if (username === null || username === "") {
+    newLoginErrors.usernameErrors.push("Please enter a password");
+  }
+  if (password === null || password === "") {
+    newLoginErrors.passwordErrors.push("Please enter a password");
+  }
+
+  if (
+    newLoginErrors.usernameErrors.length == 0 &&
+    newLoginErrors.passwordErrors.length == 0
+  ) {
+    db.query(
+      "SELECT * FROM users WHERE username=$1",
+      [username],
+      (err, result) => {
+        if (err) {
+          console.log("Error fetching from database!");
+          res.send({ err: err });
         } else {
-          res.send({ message: "User doesn't exist!" });
+          let dbResults = result.rows;
+          if (dbResults.length > 0) {
+            bcrypt.compare(
+              password,
+              dbResults[0].password,
+              (error, response) => {
+                if (response) {
+                  req.session.user = dbResults[0];
+
+                  const id = dbResults[0].user_id;
+                  const token = jwt.sign({ id }, process.env.SECRET, {
+                    expiresIn: "10800s",
+                  });
+                  res.json({
+                    success: true,
+                    auth: true,
+                    token: token,
+                    result: dbResults[0],
+                  });
+                } else {
+                  newLoginErrors.passwordErrors.push(
+                    "Wrong username/password combination!"
+                  );
+                  res.json({
+                    auth: false,
+                    success: false,
+                    message: "Wrong username/password combination!",
+                    errors: newLoginErrors,
+                  });
+                }
+              }
+            );
+          } else {
+            newLoginErrors.usernameErrors.push("User doesn't exist");
+            res.json({ errors: newLoginErrors, success: false });
+          }
         }
       }
-    }
-  );
+    );
+  } else {
+    res.json({ success: false, errors: newLoginErrors });
+  }
 });
 
 app.post("/api/postPost", verifyJWT, async (req, result) => {
-  console.log(req.body.type);
+  // console.log(req.body.type);
   const [
     username,
     userProfilepic,
@@ -629,9 +727,9 @@ app.post("/api/postPost", verifyJWT, async (req, result) => {
       const postLikes = [];
       const episodeTag =
         res.rows[0].type === "spoiler"
-          ? `S${res.rows[0].season_number === 0 ? "SP" : 0}E${
-              res.rows[0].episode_number
-            }`
+          ? `S${
+              res.rows[0].season_number === 0 ? "P" : res.rows[0].season_number
+            }E${res.rows[0].episode_number}`
           : null;
       const tags = [
         {
@@ -641,7 +739,7 @@ app.post("/api/postPost", verifyJWT, async (req, result) => {
         { type: "title", text: res.rows[0].show_title },
         { type: "episode_tag", text: episodeTag },
       ];
-      console.log(tags);
+      // console.log(tags);
       result.json({
         posts: [
           {
@@ -658,6 +756,8 @@ app.post("/api/postPost", verifyJWT, async (req, result) => {
             type: res.rows[0].type,
             show_title: res.rows[0].show_title,
             tags: tags,
+            friend_status: "Current User",
+            num_likes: 0,
           },
         ],
         profile_pic: userProfilepic,
@@ -679,11 +779,12 @@ app.post("/api/postPost", verifyJWT, async (req, result) => {
       const userLikedPost = 0;
       const comments = [];
       const postLikes = [];
+      console.log(res.rows[0]);
       const episodeTag =
         res.rows[0].type === "spoiler"
-          ? `S${res.rows[0].season_number === 0 ? "SP" : 0}E${
-              res.rows[0].episode_number
-            }`
+          ? `S${
+              res.rows[0].season_number === 0 ? "P" : res.rows[0].season_number
+            }E${res.rows[0].episode_number}`
           : null;
       const tags = [
         {
@@ -693,7 +794,7 @@ app.post("/api/postPost", verifyJWT, async (req, result) => {
         { type: "title", text: res.rows[0].show_title },
         { type: "episode_tag", text: episodeTag },
       ];
-      console.log(tags);
+      // console.log(tags);
       result.json({
         posts: [
           {
@@ -704,13 +805,14 @@ app.post("/api/postPost", verifyJWT, async (req, result) => {
             likes: postLikes,
             username: username,
             post_date: res.rows[0].post_date,
-            likes: postLikes,
             body: res.rows[0].post_text,
             user_id: res.rows[0].user_id,
             episode_tag: episodeTag,
             type: res.rows[0].type,
             show_title: res.rows[0].show_title,
             tags: tags,
+            friend_status: "Current User",
+            num_likes: 0,
           },
         ],
         profile_pic: userProfilepic,
@@ -733,20 +835,19 @@ app.post("/api/getPosts", verifyJWT, async (req, res) => {
         res.json({ message: "No subscriptions" });
       }
     });
+
   subscriptions.forEach((subscription) =>
     subscriptionsMap.set(subscription.show_id, subscription)
   );
-  // console.log(subscriptionsMap);
   const alreadyLoadedPostIDs = req.body.postIDs;
-  // console.log(alreadyLoadedPostIDs);
   let posts = [];
-  //
+
   await Promise.all(
     //Iterating through shows
     subscribedShowIDs.map(async (showID) => {
       const postsAboutShow = await db
         .query(
-          "SELECT * FROM posts WHERE ((NOT post_id = ANY($1))) AND (tv_id = $2) AND ( (type = $3) OR ( (type = $4 ) AND ( episode_order <= $5) )) ORDER BY num_likes DESC LIMIT 6",
+          "SELECT * FROM posts WHERE ((NOT post_id = ANY($1))) AND (tv_id = $2) AND ( (type = $3) OR ( (type = $4 ) AND ( episode_order <= $5) )) ORDER BY num_likes DESC LIMIT 3",
           [
             alreadyLoadedPostIDs,
             showID,
@@ -756,15 +857,13 @@ app.post("/api/getPosts", verifyJWT, async (req, res) => {
           ]
         )
         .then((res) => {
-          // console.log("Rows");
-          // console.log(res.rows);
           return res.rows;
         });
       posts = posts.concat(postsAboutShow);
     })
     //Done iterating through shows
   );
-  // console.log(posts);
+
   posts = posts
     .sort((el1, el2) => {
       if (el1.num_likes < el2.num_likes) {
@@ -792,18 +891,18 @@ app.post("/api/getPosts", verifyJWT, async (req, res) => {
         .then((res) => res.rows[0].username);
       let postLikes = [];
       let userLikedPost = 0;
-      let comments = [];
       await db
-        .query("SELECT * FROM post_likes WHERE user_id = $1", [req.userID])
+        .query("SELECT * FROM post_likes WHERE post_id = $1", [post.post_id])
         .then((res) => {
           res.rows.forEach(async (row) => {
+            // console.log(post.post_id + " " + row.user_id + " " + req.userID);
             if (row.user_id === req.userID) {
               userLikedPost = row.is_like ? 1 : -1;
             }
             if (!userPicsMap.has(req.userID)) {
               await db
                 .query(
-                  "SELECT (profile_pic, username) FROM users WHERE user_id = $1",
+                  "SELECT profile_pic, username FROM users WHERE user_id = $1",
                   [req.userID]
                 )
                 .then((res) => {
@@ -814,15 +913,84 @@ app.post("/api/getPosts", verifyJWT, async (req, res) => {
           postLikes = postLikes.concat(res.rows);
         });
 
+      let comments = await db
+        .query("SELECT * FROM comments WHERE post_id=$1", [post.post_id])
+        .then(async (result) => {
+          if (result.rows && result.rows.length > 0) {
+            Promise.all(
+              result.rows.map(async (comment) => {
+                if (!userPicsMap.has(comment.user_id)) {
+                  const profile_pic = await db
+                    .query("SELECT * FROM users WHERE user_id = $1", [
+                      comment.user_id,
+                    ])
+                    .then((result) => result.rows[0].profile_pic);
+                  userPicsMap.set(comment.user_id, profile_pic);
+                }
+              })
+            );
+            return result.rows;
+          } else {
+            return [];
+          }
+        });
+
       const episodeTag =
         post.type === "spoiler"
-          ? `S${post.season_number === 0 ? "SP" : 0}E${post.episode_number}`
+          ? `S${post.season_number === 0 ? "SP" : post.season_number}E${
+              post.episode_number
+            }`
           : null;
       const tags = [
         { type: "type", text: post.type[0].toUpperCase() + post.type.slice(1) },
         { type: "title", text: post.show_title },
         { type: "episode_tag", text: episodeTag },
       ];
+
+      //Start of code to get friend status message
+
+      const sentRequestStatus = await db
+        .query(
+          "SELECT * FROM friend_requests WHERE sender_id = $1 AND receiver_id = $2",
+          [req.userID, post.user_id]
+        )
+        .then((res) =>
+          res.rows.length !== 0 ? "Unsend Friend Request" : null
+        );
+      const receivedRequestStatus = await db
+        .query(
+          "SELECT * FROM friend_requests WHERE sender_id = $1 AND receiver_id = $2",
+          [post.user_id, req.userID]
+        )
+        .then((res) =>
+          res.rows.length !== 0 ? "Accept Friend Request" : null
+        );
+      const friendStatus = await db
+        .query(
+          "(SELECT * FROM friends WHERE friend_1_id = $1 AND friend_2_id = $2) UNION (SELECT * FROM friends WHERE friend_1_id = $2 AND friend_2_id = $1)",
+          [post.user_id, req.userID]
+        )
+        .then((res) => (res.rows.length !== 0 ? "Unfriend User" : null));
+      // console.log(post.user_id + " " + req.userID);
+      const userStatus = post.user_id === req.userID ? "Current User" : null;
+      //
+      let friend_status =
+        sentRequestStatus ||
+        receivedRequestStatus ||
+        friendStatus ||
+        userStatus ||
+        "Add Friend";
+
+      //End of code to get friend status message
+      // let numLikesWithoutCurrentUser = 0;
+      const numLikesWithoutCurrentUser = postLikes.reduce((acc, curr) => {
+        if (parseInt(curr.user_id) !== parseInt(req.userID)) {
+          return acc + (curr.is_like ? 1 : -1);
+        } else {
+          return acc;
+        }
+      }, 0);
+
       return {
         ...post,
         post_id: parseInt(post.post_id),
@@ -837,17 +1005,201 @@ app.post("/api/getPosts", verifyJWT, async (req, res) => {
         type: post.type,
         show_title: post.show_title,
         tags: tags,
+        num_likes: numLikesWithoutCurrentUser,
+        friend_status,
       };
     })
   );
   //
   res.json({ posts: posts, userPics: JSON.stringify([...userPicsMap]) });
-  // console.log(posts);
-  // console.log(userPicsMap);
 });
 //
+//
+app.post("/api/comments/:post_id", verifyJWT, async (req, res) => {
+  const post_id = req.params.post_id;
+  const text = req.body.text;
+
+  await db
+    .query(
+      "INSERT INTO comments(comment_body, user_id, post_id, comment_date) VALUES($1, $2, $3,$4) RETURNING *",
+      [text, req.userID, post_id, new Date()]
+    )
+    .then((result) => {
+      res.json({ comments: result.rows });
+    });
+});
 
 app.post("/api/updateSubscriptions", (req, res) => {});
+
+app.get("/api/friend-requests", verifyJWT, async (req, res) => {
+  const profile_pics = req.query.profile_pics;
+  const usernames = req.query.usernames;
+  if (usernames && profile_pics) {
+    const friend_requests = await db
+      .query(
+        "SELECT a.sender_id, b.username, a.read, b.profile_pic FROM (SELECT * FROM friend_requests WHERE receiver_id = $1) a JOIN users b ON a.sender_id = b.user_id",
+        [req.userID]
+      )
+      .then((results) => {
+        if (results.rows) {
+          res.json({
+            friend_requests: results.rows,
+            num_unread: results.rows.reduce((acc, curr) => {
+              return acc + (!curr.read ? 1 : 0);
+            }, 0),
+          });
+        }
+      });
+  } else if (usernames) {
+    const friend_requests = await db
+      .query(
+        "SELECT a.sender_id, b.username, a.read FROM (SELECT * FROM friend_requests WHERE receiver_id = $1) a JOIN users b ON a.receiver_id = b.user_id",
+        [req.userID]
+      )
+      .then((results) => {
+        if (results.rows) {
+          res.json({
+            friend_requests: results.rows,
+            num_unread: results.rows.reduce((acc, curr) => {
+              return acc + (!curr.read ? 1 : 0);
+            }, 0),
+          });
+        }
+      });
+  }
+});
+
+app.post("/api/friend-requests/:receiver_id", verifyJWT, async (req, res) => {
+  const receiver_id = req.params.receiver_id;
+  if (receiver_id === req.userID) {
+    res.json({ success: false });
+  }
+  const isUserAlreadyFriend = await db
+    .query(
+      "(SELECT * FROM friends WHERE friend_1_id=$1 AND friend_2_id=$2) UNION (SELECT * FROM friends WHERE friend_1_id=$2 AND friend_2_id=$1)",
+      [receiver_id, req.userID]
+    )
+    .then((res) => res.rows.length !== 0);
+  if (isUserAlreadyFriend) {
+    res.json({ success: false });
+  }
+
+  const isFriendRequestAlreadySent = await db
+    .query(
+      "(SELECT * FROM friend_requests WHERE sender_id=$1 AND receiver_id=$2) UNION (SELECT * FROM friend_requests WHERE sender_id=$2 AND receiver_id=$1)",
+      [receiver_id, req.userID]
+    )
+    .then((res, err) => {
+      return res.rows.length !== 0;
+    });
+  if (isFriendRequestAlreadySent) {
+    res.json({ success: false });
+  } else {
+    db.query("INSERT INTO friend_requests VALUES($1, $2, $3)", [
+      req.userID,
+      receiver_id,
+      false,
+    ]).then((result) => {
+      res.json({ success: true });
+    });
+  }
+});
+
+// Fix this route
+app.patch("/api/friend-requests", verifyJWT, async (req, res) => {
+  const read = req.body.params.read;
+  if (read) {
+    db.query("UPDATE friend_requests SET read=true WHERE receiver_id=$1", [
+      req.userID,
+    ]).then((result) => {
+      return res.json({ success: true });
+    });
+  } else {
+    return res.json({ success: true });
+  }
+});
+
+app.delete("/api/friend-requests/:receiver_id", verifyJWT, async (req, res) => {
+  const receiver_id = req.params.receiver_id;
+  db.query(
+    "DELETE FROM friend_requests WHERE sender_id = $1 AND receiver_id = $2",
+    [req.userID, receiver_id]
+  ).then((result) => {
+    res.json({ success: true });
+  });
+});
+
+app.get("/api/friends", verifyJWT, async (request, response) => {
+  const profile_pics = request.query.profile_pics;
+  db.query(
+    "SELECT friend_list.select_user_id, users.username, users.profile_pic, users.user_id FROM (SELECT (CASE WHEN friend_1_id = $1 THEN friend_2_id WHEN friend_2_id = $1 THEN friend_1_id END) AS select_user_id FROM friends) AS friend_list JOIN users ON friend_list.select_user_id = users.user_id",
+    [request.userID]
+  ).then((result) => {
+    return response.status(200).json({ success: true, friends: result.rows });
+  });
+});
+
+app.get("/api/friends/:friend_id", verifyJWT, async (request, response) => {
+  await db
+    .query(
+      "SELECT * FROM (SELECT friend_list.select_user_id, users.username, users.profile_pic, users.user_id FROM (SELECT (CASE WHEN friend_1_id = $1 THEN friend_2_id WHEN friend_2_id = $1 THEN friend_1_id END) AS select_user_id FROM friends) AS friend_list JOIN users ON friend_list.select_user_id = users.user_id) AS final_list WHERE user_id = $2",
+      [request.userID, request.params.friend_id]
+    )
+    .then((result) => {
+      if (result.rows.length > 0) {
+        return response
+          .status(200)
+          .json({ success: true, friends: result.rows });
+      } else {
+        return response.status(404).json({ success: false });
+      }
+    });
+});
+
+app.post("/api/friends/:friend_id", verifyJWT, async (req, res) => {
+  const friend_id = req.params.friend_id;
+  const isUserAlreadyFriend = await db
+    .query(
+      "(SELECT * FROM friends WHERE friend_1_id=$1 AND friend_2_id=$2) UNION (SELECT * FROM friends WHERE friend_1_id=$2 AND friend_2_id=$1)",
+      [friend_id, req.userID]
+    )
+    .then((result) => result.rows.length !== 0);
+  if (isUserAlreadyFriend) {
+    return res.status(200).json({ success: false });
+  } else {
+    const isFriendRequestPending = await db
+      .query(
+        "SELECT * FROM friend_requests WHERE sender_id=$2 AND receiver_id=$1",
+        [friend_id, req.userID]
+      )
+      .then((res, err) => {
+        return res.rows.length !== 0;
+      });
+    if (isFriendRequestPending) {
+      return res.status(200).json({ success: false });
+    } else {
+      db.query(
+        "DELETE FROM friend_requests WHERE sender_id = $1 AND receiver_id = $2",
+        [friend_id, req.userID]
+      );
+      db.query("INSERT INTO friends(friend_1_id, friend_2_id) VALUES($1, $2)", [
+        req.userID,
+        friend_id,
+      ]).then((result) => {
+        return res.status(200).json({ success: true });
+      });
+    }
+  }
+});
+
+app.delete("/api/friends/:friend_id", verifyJWT, async (req, res) => {
+  db.query(
+    "DELETE FROM friends WHERE (friend_1_id = $1 AND friend_2_id = $2) OR (friend_1_id = $2 AND friend_2_id = $1)",
+    [req.userID, req.params.friend_id]
+  ).then((result) => {
+    res.json({ success: true });
+  });
+});
 
 const PORT = process.env.port || 5000;
 

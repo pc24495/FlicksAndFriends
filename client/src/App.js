@@ -7,7 +7,8 @@ import axios from "./axiosConfig.js";
 import { Route, Switch, useHistory } from "react-router-dom";
 import Registration from "./Components/Registration/Registration.js";
 import ProfilePicUpload from "./Components/Registration/ProfilePicUpload/ProfilePicUpload.js";
-import Login from "./Components/Login/Login.js";
+// import Login from "./Components/Login/Login.js";
+import Login from "./Components/Login2/Login2.js";
 import CreatePost from "./Components/CreatePost/CreatePost.js";
 import { useEffect } from "react";
 // import logo from "./logo.svg";
@@ -34,7 +35,7 @@ function App(props) {
 
   useEffect(() => {
     window.addEventListener("resize", resizeWindow);
-  }, []);
+  }, [resizeWindow]);
 
   // const getShows = () => {
   //   axios.get("/api/GetAllShows").then((res) => {
@@ -79,6 +80,7 @@ function App(props) {
               type: "LOGIN",
               username: res.data.userData.username,
               profilePic: res.data.userData.profile_pic,
+              userID: parseInt(res.data.userData.user_id),
             });
             // getShows();
             getSubscriptions();
@@ -112,7 +114,11 @@ function App(props) {
           <Route path="/registration" component={Registration} />
           <Route path="/profilepic" component={ProfilePicUpload}></Route>
           <Route path="/login" component={Login} />
-          <Route path="/" component={MainSection} />
+          {loggedIn || localStorage.getItem("token") ? (
+            <Route path="/" component={MainSection} />
+          ) : (
+            <Route path="/" component={Login} />
+          )}
         </Switch>
       </Layout>
     </div>

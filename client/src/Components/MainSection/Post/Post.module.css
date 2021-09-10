@@ -67,10 +67,116 @@
   height: fit-content;
   padding: 0px;
   background-color: var(--nord1);
+  /* background-color: green; */
   display: flex;
   justify-content: flex-start;
   align-items: center;
   align-self: flex-start;
+}
+
+.ThreeDots {
+  margin-left: auto;
+  margin-right: 10px;
+  height: 20px;
+  width: 20px;
+  color: var(--nord5);
+  /* background-color: pink; */
+  border-radius: 3px;
+  padding: 3px;
+}
+
+.ThreeDots:hover {
+  cursor: pointer;
+  background-color: var(--nord2);
+}
+
+.DropDown {
+  z-index: 100;
+  position: absolute;
+  width: 100px;
+  height: 70px;
+  background-color: var(--nord2);
+  right: 28px;
+  top: 40px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.UserAdd {
+  z-index: 100;
+  position: absolute;
+  /* width: 150px; */
+  height: 40px;
+  background-color: var(--nord2);
+  left: 198px;
+  top: 30px;
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.UserAddButton {
+  /* width: 100%; */
+  height: 80%;
+  outline: none;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--nord9);
+  color: var(--nord6);
+  font-weight: 900;
+  padding: 0px 15px;
+}
+
+.UserAddButton:hover {
+  background-color: var(--nord8);
+  cursor: pointer;
+}
+
+.Edit {
+  display: flex;
+  /* position: relative; */
+  /* justify-content: center; */
+  /* left: 0px; */
+  align-items: center;
+  width: 100%;
+  height: 50%;
+  border-bottom: 1px solid var(--nord1);
+  color: var(--nord5);
+}
+
+.Edit:hover {
+  background-color: var(--nord3);
+  cursor: pointer;
+}
+
+.EditInner {
+  position: relative;
+  left: 10px;
+}
+
+.Delete {
+  display: flex;
+  /* position: relative; */
+  /* justify-content: center; */
+  /* left: 0px; */
+  align-items: center;
+  width: 100%;
+  height: 50%;
+  color: var(--nord5);
+  /* border-bottom: 1px solid black; */
+}
+
+.DeleteInner {
+  position: relative;
+  left: 10px;
+}
+
+.Delete:hover {
+  background-color: var(--nord3);
+  cursor: pointer;
 }
 
 .Username {
@@ -79,6 +185,11 @@
   color: var(--nord5);
   height: 20px;
   line-height: 20px;
+}
+
+.Username:hover {
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .Bullet {
@@ -90,12 +201,34 @@
   width: 13px;
 }
 
+.FriendTagBullet {
+  margin: 10px;
+  font-weight: normal;
+  color: var(--nord4);
+  height: 20px;
+  line-height: 20px;
+  width: 13px;
+}
+
+.FriendTag {
+  color: var(--nord6);
+  margin: 0px;
+  margin-left: -10px;
+  padding: 6px;
+  background-color: var(--nord14);
+  height: 20px;
+  line-height: 20px;
+  border-radius: 18px;
+  font-weight: bold;
+}
+
 .Date {
   margin: 0px;
   font-weight: normal;
   color: var(--nord4);
   height: 20px;
   line-height: 20px;
+  /* background-color: violet; */
 }
 
 .Tags {
@@ -131,7 +264,7 @@
 
 .DropTags {
   color: var(--nord7);
-  background-color: var(--nord0);
+  background-color: var(--nord1);
   border-radius: 50%;
   border: 0px solid green;
   margin-left: 3px;
@@ -167,6 +300,7 @@
   position: relative;
   width: 100%;
   height: 100%;
+  min-height: 75px;
   background-color: var(--nord1);
   justify-content: center;
   align-items: center;
@@ -186,6 +320,11 @@
 
 .module p {
   margin: 0;
+}
+
+.PostText {
+  /* background-color: lightseagreen; */
+  color: var(--nord4);
 }
 
 .PostText i {
@@ -227,11 +366,14 @@
   display: flex;
   align-items: center;
   background-color: var(--nord1);
+  /* background-color: lightseagreen; */
   margin-right: auto;
   margin-left: 10px;
 }
 
 .FriendsLiked {
+  position: relative;
+  top: 0px;
   border-radius: 50%;
 }
 
@@ -251,18 +393,7 @@
   line-height: 30px;
 }
 
-.ThumbsUp {
-  position: relative;
-  width: 30px;
-  height: 30px;
-}
-
 .ThumbUp {
-  margin: 10px;
-  color: var(--nord5);
-}
-
-.ThumbDown {
   margin: 10px;
   color: var(--nord5);
 }
@@ -272,7 +403,36 @@
   cursor: pointer;
 }
 
+.ThumbUpSelected {
+  margin: 10px;
+  color: var(--nord14);
+}
+
+.ThumbUpSelected:hover {
+  color: var(--nord14);
+  cursor: pointer;
+}
+
+.NumLikes {
+  color: var(--nord6);
+}
+
+.ThumbDown {
+  margin: 10px;
+  color: var(--nord5);
+}
+
 .ThumbDown:hover {
+  color: var(--nord11);
+  cursor: pointer;
+}
+
+.ThumbDownSelected {
+  margin: 10px;
+  color: var(--nord11);
+}
+
+.ThumbDownSelected:hover {
   color: var(--nord11);
   cursor: pointer;
 }
@@ -293,15 +453,60 @@
   margin: 0px;
   height: fit-content;
   box-sizing: border-box;
+  align-items: flex-start;
+  /* background-color: ; */
 }
 
 .CommentInput {
   flex: 1;
-  min-height: 40px;
+  min-height: 30px;
   /* overflow-wrap: break-word; */
   overflow: hidden;
   border: none;
   border-radius: 10px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  margin-right: 4px;
+  margin-left: 0px;
+  box-sizing: border-box;
+  padding: 4px;
+  font: inherit;
+  font-size: 18px;
+  height: unset;
+  resize: none;
+  background-color: var(--nord6);
+  line-height: 30px;
+}
+
+.CommentInput:focus {
+  outline: none;
+  background-color: var(--nord4);
+}
+
+.SubmitComment {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  padding-top: 8px;
+  padding-bottom: 10px;
+  padding-right: 3px;
+  top: 0px;
+  left: 0px;
+  color: var(--nord4);
+}
+
+.SubmitComment:hover {
+  color: var(--nord7);
+  cursor: pointer;
+}
+
+.PostInput {
+  flex: 1;
+  min-height: 30px;
+  /* overflow-wrap: break-word; */
+  overflow: hidden;
+  border: none;
+  border-radius: 5px;
   margin: 4px;
   box-sizing: border-box;
   padding: 4px;
@@ -310,9 +515,11 @@
   height: unset;
   resize: none;
   background-color: var(--nord6);
+  line-height: 30px;
+  width: 96%;
 }
 
-.CommentInput:focus {
+.PostInput:focus {
   outline: none;
   background-color: var(--nord4);
 }
@@ -337,6 +544,10 @@
   margin: 0px;
 }
 
+.CommentProfilePic {
+  border-radius: 50%;
+}
+
 .CommentText {
   position: relative;
   top: 0px;
@@ -353,17 +564,39 @@
   color: var(--nord5);
 }
 
-@media (max-width: 1000px) {
+.Button {
+  padding: 0.7em;
+  margin: 4px;
+  border-radius: 0.2em;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  color: var(--nord6);
+  background-color: var(--nord8);
+  /* box-shadow: inset 0 -0.6em 1em -0.35em rgba(0, 0, 0, 0.17),
+    inset 0 0.6em 2em -0.3em rgba(255, 255, 255, 0.15),
+    inset 0 0 0em 0.05em rgba(255, 255, 255, 0.12); */
+  border: none;
+  text-align: center;
+  position: relative;
+  left: calc(96% - 49px);
+}
+
+.Button:hover {
+  cursor: pointer;
+}
+
+/* @media (max-width: 1000px) {
   .Post {
     width: 400px;
   }
-}
+} */
 
 .Options {
   display: flex;
   margin: 0;
   flex-direction: row;
-  background-color: ;
   height: fit-content;
   align-items: flex-end;
   justify-content: flex-end;
@@ -385,4 +618,14 @@
 .Option:hover {
   cursor: pointer;
   color: var(--nord7);
+}
+
+@media (max-width: 960px) {
+  .ProfilePicSection {
+    width: 200px;
+  }
+
+  .BodySection {
+    width: calc(100vw - 200px);
+  }
 }

@@ -3,8 +3,9 @@ import { useSelector } from "react-redux";
 import classes from "./ShowBox.module.css";
 
 export default function ShowBox(props) {
-  //   console.log(props.maxHeight);
-  //
+  // console.log(
+  //   props.show.episodes.length + "-" + props.show.title + "-" + props.show.tv_id
+  // );
   const [currentSeason, setCurrentSeason] = useState(props.show.episodes[0]);
   const [currentEpisode, setCurrentEpisode] = useState(
     currentSeason.episodes[0]
@@ -58,7 +59,7 @@ export default function ShowBox(props) {
     });
   };
 
-  return props.poster ? (
+  return (
     <div
       className={classes.ShowBox}
       id={props.id}
@@ -114,5 +115,5 @@ export default function ShowBox(props) {
         </button>
       </div>
     </div>
-  ) : null;
+  );
 }

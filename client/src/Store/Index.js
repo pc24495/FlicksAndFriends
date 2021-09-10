@@ -20,6 +20,9 @@ const initialState = {
   windowWidth: 1440,
   windowHeight: 0,
   profilePic: null,
+  searchValue: "",
+  newFriendStatus: {},
+  userID: null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -38,11 +41,13 @@ const reducer = (state = initialState, action) => {
   }
 
   if (action.type === "LOGIN") {
+    // console.log(action);
     return {
       ...state,
       loggedIn: true,
       username: action.username,
       profilePic: action.profilePic,
+      userID: action.userID,
     };
   }
 
@@ -115,6 +120,27 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       profilePic: action.profilePic,
+    };
+  }
+
+  if (action.type === "SEARCH") {
+    return {
+      ...state,
+      searchValue: action.searchValue,
+    };
+  }
+
+  if (action.type === "TOGGLE FRIENDS DROPDOWN") {
+    return {
+      ...state,
+      showFriendsDropdown: !state.showFriendsDropdown,
+    };
+  }
+
+  if (action.type === "NEW FRIEND STATUS") {
+    return {
+      ...state,
+      newFriendStatus: action.newFriendStatus,
     };
   }
 

@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import classes from "./MainSection.module.css";
 import Feed from "./Feed/Feed.js";
 import Sidebar from "./Sidebar/Sidebar.js";
+import FriendsSidebar from "./FriendsSidebar/FriendsSidebar.js";
 // import Modal from "../MovieSelectorComponents/Modal.js";
 // import Backdrop from "../MovieSelectorComponents/Backdrop.js";
 import { withRouter, useHistory } from "react-router-dom";
@@ -51,6 +52,7 @@ export default function MainSection(props) {
               // const { posts, userPics } = { ...res.data };
               // console.log(posts);
               const posts = res.data.posts;
+              console.log(posts);
               const userPics = new Map(JSON.parse(res.data.userPics));
               // console.log(posts);
               setInitPosts((prevState) => ({
@@ -64,22 +66,22 @@ export default function MainSection(props) {
       }
     }
   }, [subscriptions]);
-  // console.log(subscriptions);
 
-  // console.log(initPosts);
   return (
     <div className={classes.MainSection}>
       <Sidebar></Sidebar>
       <Feed history={history} initPosts={initPosts}></Feed>
-      <div className={classes.TestClass}>
-        {loggedIn ? (
-          <div className={classes.TestInner}>Friends: coming soon!</div>
-        ) : null}
-      </div>
+      <FriendsSidebar></FriendsSidebar>
     </div>
   );
   // }
 }
+
+// <div className={classes.TestClass}>
+// {loggedIn ? (
+//   <div className={classes.TestInner}>Friends: coming soon!</div>
+// ) : null}
+// </div>
 
 // export default withRouter(MainSection);
 
