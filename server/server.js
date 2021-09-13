@@ -10,10 +10,13 @@ const session = require("express-session");
 const base64_arraybuffer = require("base64-arraybuffer");
 const requestMod = require("request");
 const canvas = require("canvas");
-
-const saltRounds = 10;
+const postsRoute = require("./routes/Posts.js");
+const friendsRoute = require("./routes/Friends.js");
+const friendRequestsRoute = require("./routes/FriendRequests.js");
+const registerRoute = require("./routes/Register.js");
+const usersRoute = require("./routes/Users.js");
+const verifyJWT = require("./middlewares/VerifyJWT.js");
 const jwt = require("jsonwebtoken");
-
 const app = express();
 
 app.use(express.json({ limit: "50mb" }));
@@ -37,11 +40,6 @@ app.use(
     },
   })
 );
-
-app.get("/api/GetAllShows", async (req, res, next) => {
-  const results = await db.query("SELECT * FROM shows");
-  res.json(results.rows);
-});
 
 app.get("/api/test", (req, res) => {
   res.send("Hey");
@@ -283,84 +281,6 @@ app.post("/api/getShowPosters", async (req, res, next) => {
   res.json({ image: image64str });
 });
 
-app.post("/api/register", async (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
-
-  const newRegisterErrors = {
-    usernameErrors: [],
-    passwordErrors: [],
-    confirmPasswordErrors: [],
-  };
-
-  if (password === null || password === "") {
-    newRegisterErrors.passwordErrors.push("Please enter a password");
-  } else if (
-    !(password.length >= 10) ||
-    !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(password) ||
-    !/\d/.test(password)
-  ) {
-    newRegisterErrors.passwordErrors.push(
-      "Passwords must be at least 10 characters long and contain at least one number and one special character"
-    );
-  }
-
-  if (username === null || username === "") {
-    newRegisterErrors.usernameErrors.push("Please enter a username");
-  } else if (username.length > 20) {
-    newRegisterErrors.usernameErrors.push(
-      "Usernames must be less than 20 characters long"
-    );
-  }
-
-  if (
-    newRegisterErrors.usernameErrors.length != 0 ||
-    newRegisterErrors.passwordErrors.length != 0
-  ) {
-    res.json({ success: false, errors: newRegisterErrors });
-  }
-
-  bcrypt.hash(password, saltRounds, (err, hash) => {
-    db.query(
-      "INSERT INTO users(username, password) values($1,$2)",
-      [username, hash],
-      (err, result) => {
-        if (err) {
-          console.log(err);
-          newRegisterErrors.usernameErrors.push(
-            "Username is already taken, please select a different one"
-          );
-          res.json({ success: false, errors: newRegisterErrors });
-        } else {
-          res.json({ success: true });
-        }
-        //
-      }
-    );
-  });
-});
-
-const verifyJWT = (req, res, next) => {
-  const token =
-    req.headers["x-access-token"] || req.body.headers["x-access-token"];
-  // console.log(token);
-
-  if (!token) {
-    console.log("Hey we need a token");
-    res.send("Hey, we need a token");
-  } else {
-    jwt.verify(token, process.env.SECRET, (err, decoded) => {
-      // console.log("verifying....");
-      if (err) {
-        console.log("Error verifying");
-        res.json({ auth: false, message: "You failed to authenticate" });
-      } else {
-        req.userID = decoded.id;
-        next();
-      }
-    });
-  }
-};
 //
 
 app.get("/api/getUserData", verifyJWT, (req, res) => {
@@ -382,54 +302,6 @@ app.get("/api/getUserData", verifyJWT, (req, res) => {
 
 app.get("/api/isUserAuth", verifyJWT, (req, res) => {
   res.send("Hey, you're authenticated!");
-});
-
-app.get("/api/users/subscriptions", verifyJWT, (req, res) => {
-  db.query(
-    "SELECT subscriptions FROM users WHERE user_id=$1",
-    [req.userID],
-    (err, result) => {
-      if (err) {
-        console.log("Error fetching subscriptions");
-      } else {
-        if (!(result.rows.length > 0)) {
-          res.json({ auth: false, subscriptions: [] });
-        } else if (result.rows[0].subscriptions === null) {
-          res.json({ auth: true, subscriptions: [] });
-        } else {
-          res.json({
-            auth: true,
-            subscriptions: result.rows[0].subscriptions,
-          });
-        }
-      }
-    }
-  );
-});
-
-app.get("/api/users/subscriptions-and-shows", verifyJWT, async (req, res) => {
-  const limit = req.query.limit || null;
-  const user_id = req.userID;
-  const subscriptions = await db
-    .query("SELECT * FROM users WHERE user_id=$1", [user_id])
-    .then((result) => result.rows[0].subscriptions || []);
-  const subscribedShowIDs = subscriptions.map(
-    (subscription) => subscription.show_id
-  );
-  const subscribedShows = await db
-    .query("SELECT * FROM shows WHERE tv_id=ANY($1)", [subscribedShowIDs])
-    .then((result) => result.rows);
-  const shows = await db
-    .query(
-      "SELECT * FROM shows WHERE NOT tv_id=ANY($1) ORDER BY popularity DESC LIMIT $2",
-      [subscribedShowIDs, limit]
-    )
-    .then((result) => result.rows);
-  res.json({
-    shows: [...shows, ...subscribedShows],
-    displayShows: shows,
-    subscriptions,
-  });
 });
 
 app.get("/api/shows/", async (req, res) => {
@@ -491,97 +363,35 @@ app.post("/api/getShowsFromSubscriptions", verifyJWT, (req, res) => {
   );
 });
 
-app.delete("/api/shows/", async (req, res) => {
-  const showIDs = await db
-    .query("SELECT tv_id FROM shows")
-    .then((result) => result.rows);
-  await Promise.all(
-    showIDs.map(async (showID) => {
-      const tv_id = showID.tv_id;
-      const show = await db
-        .query("SELECT * FROM shows WHERE tv_id=$1", [tv_id])
-        .then((result) => {
-          return result.rows[0];
-        });
-      if (show.episodes.length === 0) {
-        console.log(show.title);
-        await db.query("DELETE FROM shows WHERE tv_id=$1", [tv_id]);
-      } else {
-        const seasons = show.episodes.filter(
-          (season) => !(season.episodes.length === 0)
-        );
-        await db.query("UPDATE shows SET episodes = $1 WHERE tv_id =  $2", [
-          JSON.stringify(seasons),
-          show.tv_id,
-        ]);
-      }
-    })
-  );
-  res.send("Done updating");
-});
+// app.delete("/api/shows/", async (req, res) => {
+//   const showIDs = await db
+//     .query("SELECT tv_id FROM shows")
+//     .then((result) => result.rows);
+//   await Promise.all(
+//     showIDs.map(async (showID) => {
+//       const tv_id = showID.tv_id;
+//       const show = await db
+//         .query("SELECT * FROM shows WHERE tv_id=$1", [tv_id])
+//         .then((result) => {
+//           return result.rows[0];
+//         });
+//       if (show.episodes.length === 0) {
+//         console.log(show.title);
+//         await db.query("DELETE FROM shows WHERE tv_id=$1", [tv_id]);
+//       } else {
+//         const seasons = show.episodes.filter(
+//           (season) => !(season.episodes.length === 0)
+//         );
+//         await db.query("UPDATE shows SET episodes = $1 WHERE tv_id =  $2", [
+//           JSON.stringify(seasons),
+//           show.tv_id,
+//         ]);
+//       }
+//     })
+//   );
+//   res.send("Done updating");
+// });
 //Hey
-
-app.post("/api/posts/:id/likes", verifyJWT, async (req, res) => {
-  const type = req.body.params.type;
-  const id = req.params.id;
-  await db.query(
-    "DELETE FROM post_likes WHERE (user_id = $1) AND (post_id = $2)",
-    [req.userID, id]
-  );
-  await db.query(
-    "INSERT INTO post_likes(user_id, post_id, is_like) values($1, $2, $3)",
-    [req.userID, id, type === "like"]
-  );
-});
-
-app.patch("/api/posts/:id", verifyJWT, async (request, response) => {
-  if (!request.body.post_text) {
-    return response.status(400).json({ success: false });
-  }
-  if (request.params.id) {
-    console.log(request.params.id);
-    const post = await db
-      .query("SELECT * FROM posts WHERE post_id = $1", [request.params.id])
-      .then((result) => {
-        if (result.rows.length > 0) {
-          return result.rows[0];
-        } else {
-          return response.status(404).json({ success: false });
-        }
-      });
-    console.log(post);
-    if (post.user_id === request.userID) {
-      await db
-        .query("UPDATE posts SET post_text = $1 WHERE post_id = $2", [
-          request.body.post_text,
-          post.post_id,
-        ])
-        .then((result) => {
-          return response.status(200).json({ success: true });
-        });
-    } else {
-      return response.status(403).json({ success: false });
-    }
-  } else {
-    return response.status(400).json({ success: false });
-  }
-});
-
-app.delete("/api/posts/:id", verifyJWT, async (request, response) => {
-  const id = parseInt(request.params.id);
-  await db.query("DELETE FROM posts WHERE (user_id = $1) AND (post_id = $2)", [
-    request.userID,
-    id,
-  ]);
-});
-
-app.delete("/api/posts/:id/likes", verifyJWT, async (req, res) => {
-  const id = req.params.id;
-  await db.query(
-    "DELETE FROM post_likes WHERE (user_id = $1) AND (post_id = $2)",
-    [req.userID, id]
-  );
-});
 
 app.post("/api/updateSubscriptions", verifyJWT, (req, res) => {
   db.query(
@@ -841,7 +651,7 @@ app.post("/api/getPosts", verifyJWT, async (req, res) => {
   );
   const alreadyLoadedPostIDs = req.body.postIDs;
   let posts = [];
-
+  //
   await Promise.all(
     //Iterating through shows
     subscribedShowIDs.map(async (showID) => {
@@ -1031,175 +841,11 @@ app.post("/api/comments/:post_id", verifyJWT, async (req, res) => {
 
 app.post("/api/updateSubscriptions", (req, res) => {});
 
-app.get("/api/friend-requests", verifyJWT, async (req, res) => {
-  const profile_pics = req.query.profile_pics;
-  const usernames = req.query.usernames;
-  if (usernames && profile_pics) {
-    const friend_requests = await db
-      .query(
-        "SELECT a.sender_id, b.username, a.read, b.profile_pic FROM (SELECT * FROM friend_requests WHERE receiver_id = $1) a JOIN users b ON a.sender_id = b.user_id",
-        [req.userID]
-      )
-      .then((results) => {
-        if (results.rows) {
-          res.json({
-            friend_requests: results.rows,
-            num_unread: results.rows.reduce((acc, curr) => {
-              return acc + (!curr.read ? 1 : 0);
-            }, 0),
-          });
-        }
-      });
-  } else if (usernames) {
-    const friend_requests = await db
-      .query(
-        "SELECT a.sender_id, b.username, a.read FROM (SELECT * FROM friend_requests WHERE receiver_id = $1) a JOIN users b ON a.receiver_id = b.user_id",
-        [req.userID]
-      )
-      .then((results) => {
-        if (results.rows) {
-          res.json({
-            friend_requests: results.rows,
-            num_unread: results.rows.reduce((acc, curr) => {
-              return acc + (!curr.read ? 1 : 0);
-            }, 0),
-          });
-        }
-      });
-  }
-});
-
-app.post("/api/friend-requests/:receiver_id", verifyJWT, async (req, res) => {
-  const receiver_id = req.params.receiver_id;
-  if (receiver_id === req.userID) {
-    res.json({ success: false });
-  }
-  const isUserAlreadyFriend = await db
-    .query(
-      "(SELECT * FROM friends WHERE friend_1_id=$1 AND friend_2_id=$2) UNION (SELECT * FROM friends WHERE friend_1_id=$2 AND friend_2_id=$1)",
-      [receiver_id, req.userID]
-    )
-    .then((res) => res.rows.length !== 0);
-  if (isUserAlreadyFriend) {
-    res.json({ success: false });
-  }
-
-  const isFriendRequestAlreadySent = await db
-    .query(
-      "(SELECT * FROM friend_requests WHERE sender_id=$1 AND receiver_id=$2) UNION (SELECT * FROM friend_requests WHERE sender_id=$2 AND receiver_id=$1)",
-      [receiver_id, req.userID]
-    )
-    .then((res, err) => {
-      return res.rows.length !== 0;
-    });
-  if (isFriendRequestAlreadySent) {
-    res.json({ success: false });
-  } else {
-    db.query("INSERT INTO friend_requests VALUES($1, $2, $3)", [
-      req.userID,
-      receiver_id,
-      false,
-    ]).then((result) => {
-      res.json({ success: true });
-    });
-  }
-});
-
-// Fix this route
-app.patch("/api/friend-requests", verifyJWT, async (req, res) => {
-  const read = req.body.params.read;
-  if (read) {
-    db.query("UPDATE friend_requests SET read=true WHERE receiver_id=$1", [
-      req.userID,
-    ]).then((result) => {
-      return res.json({ success: true });
-    });
-  } else {
-    return res.json({ success: true });
-  }
-});
-
-app.delete("/api/friend-requests/:receiver_id", verifyJWT, async (req, res) => {
-  const receiver_id = req.params.receiver_id;
-  db.query(
-    "DELETE FROM friend_requests WHERE sender_id = $1 AND receiver_id = $2",
-    [req.userID, receiver_id]
-  ).then((result) => {
-    res.json({ success: true });
-  });
-});
-
-app.get("/api/friends", verifyJWT, async (request, response) => {
-  const profile_pics = request.query.profile_pics;
-  db.query(
-    "SELECT friend_list.select_user_id, users.username, users.profile_pic, users.user_id FROM (SELECT (CASE WHEN friend_1_id = $1 THEN friend_2_id WHEN friend_2_id = $1 THEN friend_1_id END) AS select_user_id FROM friends) AS friend_list JOIN users ON friend_list.select_user_id = users.user_id",
-    [request.userID]
-  ).then((result) => {
-    return response.status(200).json({ success: true, friends: result.rows });
-  });
-});
-
-app.get("/api/friends/:friend_id", verifyJWT, async (request, response) => {
-  await db
-    .query(
-      "SELECT * FROM (SELECT friend_list.select_user_id, users.username, users.profile_pic, users.user_id FROM (SELECT (CASE WHEN friend_1_id = $1 THEN friend_2_id WHEN friend_2_id = $1 THEN friend_1_id END) AS select_user_id FROM friends) AS friend_list JOIN users ON friend_list.select_user_id = users.user_id) AS final_list WHERE user_id = $2",
-      [request.userID, request.params.friend_id]
-    )
-    .then((result) => {
-      if (result.rows.length > 0) {
-        return response
-          .status(200)
-          .json({ success: true, friends: result.rows });
-      } else {
-        return response.status(404).json({ success: false });
-      }
-    });
-});
-
-app.post("/api/friends/:friend_id", verifyJWT, async (req, res) => {
-  const friend_id = req.params.friend_id;
-  const isUserAlreadyFriend = await db
-    .query(
-      "(SELECT * FROM friends WHERE friend_1_id=$1 AND friend_2_id=$2) UNION (SELECT * FROM friends WHERE friend_1_id=$2 AND friend_2_id=$1)",
-      [friend_id, req.userID]
-    )
-    .then((result) => result.rows.length !== 0);
-  if (isUserAlreadyFriend) {
-    return res.status(200).json({ success: false });
-  } else {
-    const isFriendRequestPending = await db
-      .query(
-        "SELECT * FROM friend_requests WHERE sender_id=$2 AND receiver_id=$1",
-        [friend_id, req.userID]
-      )
-      .then((res, err) => {
-        return res.rows.length !== 0;
-      });
-    if (isFriendRequestPending) {
-      return res.status(200).json({ success: false });
-    } else {
-      db.query(
-        "DELETE FROM friend_requests WHERE sender_id = $1 AND receiver_id = $2",
-        [friend_id, req.userID]
-      );
-      db.query("INSERT INTO friends(friend_1_id, friend_2_id) VALUES($1, $2)", [
-        req.userID,
-        friend_id,
-      ]).then((result) => {
-        return res.status(200).json({ success: true });
-      });
-    }
-  }
-});
-
-app.delete("/api/friends/:friend_id", verifyJWT, async (req, res) => {
-  db.query(
-    "DELETE FROM friends WHERE (friend_1_id = $1 AND friend_2_id = $2) OR (friend_1_id = $2 AND friend_2_id = $1)",
-    [req.userID, req.params.friend_id]
-  ).then((result) => {
-    res.json({ success: true });
-  });
-});
+app.use("/api/users", usersRoute);
+app.use("/api/register", registerRoute);
+app.use("/api/friend-requests", friendRequestsRoute);
+app.use("/api/friends", friendsRoute);
+app.use("/api/posts", postsRoute);
 
 const PORT = process.env.port || 5000;
 

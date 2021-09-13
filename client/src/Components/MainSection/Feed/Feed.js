@@ -89,7 +89,7 @@ export default function Feed(props) {
     imageArray: null,
     showImage: false,
     // showBackdrop: false,
-    showDropdowns: false,
+    showDropdowns: true,
   });
 
   const likes = [];

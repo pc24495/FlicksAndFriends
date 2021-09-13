@@ -200,6 +200,7 @@ const Login2 = (props) => {
               transform: loginMode ? "translateX(0%)" : "translateX(-100%)",
             }}
           >
+            <h2>Login</h2>
             <div className={classes.InputSection}>
               <label for="username">Username</label>
               <input type="text" name="username" id="username"></input>
@@ -226,6 +227,8 @@ const Login2 = (props) => {
               transform: loginMode ? "translateX(0%)" : "translateX(-100%)",
             }}
           >
+            <h2>Register</h2>
+
             <div className={classes.InputSection}>
               <label for="username">Username</label>
               <input type="text" name="username" id="username"></input>

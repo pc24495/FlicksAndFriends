@@ -37,12 +37,6 @@ function App(props) {
     window.addEventListener("resize", resizeWindow);
   }, [resizeWindow]);
 
-  // const getShows = () => {
-  //   axios.get("/api/GetAllShows").then((res) => {
-  //     dispatch({ type: "UPDATE_SHOWS", shows: res.data });
-  //   });
-  // };
-
   const getSubscriptions = () => {
     axios
       .get("/api/users/subscriptions", {

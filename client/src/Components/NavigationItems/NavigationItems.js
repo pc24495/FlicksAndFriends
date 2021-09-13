@@ -8,12 +8,12 @@ class NavigationItems extends Component {
     shows: null,
   };
 
-  getShows = () => {
-    console.log("Hi");
-    axios
-      .get("/api/GetAllShows")
-      .then((res) => console.log(res.data.rows[0].title));
-  };
+  // getShows = () => {
+  //   console.log("Hi");
+  //   axios
+  //     .get("/api/GetAllShows")
+  //     .then((res) => console.log(res.data.rows[0].title));
+  // };
 
   render() {
     return <ul className={classes.NavigationItems}>{this.props.children}</ul>;

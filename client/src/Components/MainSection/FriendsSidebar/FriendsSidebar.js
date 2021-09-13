@@ -32,8 +32,8 @@ const FriendsSidebar = (props) => {
   }, []);
 
   const removeFriend = (event, userID) => {
-    // console.log(userID);
-    // console.log(state.friendsList);
+    console.log(userID);
+    console.log(state.friendsList);
     axios.delete(`/api/friends/${userID}`, {
       headers: {
         "x-access-token": localStorage.getItem("token"),
@@ -84,10 +84,11 @@ const FriendsSidebar = (props) => {
         //   break;
         case "Accept Friend Request":
           console.log("Accepting");
+          console.log(newFriendStatus.userID);
           const newFriendsListAccepting = state.friendsList.concat([
             {
               username: newFriendStatus.username,
-              user_id: newFriendStatus.user_id,
+              user_id: newFriendStatus.userID,
               profile_pic: newFriendStatus.profilePic,
             },
           ]);
