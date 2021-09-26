@@ -304,6 +304,7 @@
   height: 100%;
   min-height: 75px;
   background-color: var(--nord1);
+  /* background-color: yellowgreen; */
   justify-content: center;
   align-items: center;
   text-overflow: ellipsis;
@@ -368,7 +369,6 @@
   display: flex;
   align-items: center;
   background-color: var(--nord1);
-  /* background-color: lightseagreen; */
   margin-right: auto;
   margin-left: 10px;
 }
