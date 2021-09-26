@@ -228,6 +228,7 @@
   color: var(--nord4);
   height: 20px;
   line-height: 20px;
+  overflow-wrap: none;
   /* background-color: violet; */
 }
 
@@ -240,6 +241,7 @@
   height: fit-content;
   padding: 0px;
   background-color: var(--nord1);
+  /* background-color: violet; */
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -627,5 +629,43 @@
 
   .BodySection {
     width: calc(100vw - 200px);
+  }
+}
+
+@media (max-width: 610px) {
+  .ProfilePicSection {
+    width: 30%;
+  }
+
+  .BodySection {
+    width: 70%;
+  }
+
+  .ProfilePic {
+    position: relative;
+    width: 80%;
+    height: auto;
+    margin: 0px;
+    box-sizing: border-box;
+    clip-path: circle();
+  }
+}
+
+@media (max-width: 510px) {
+  .Post {
+    font-size: 15px;
+  }
+
+  .Title {
+    font-size: 12px;
+  }
+
+  .Username {
+    margin: 10px 5px 10px 0px;
+  }
+
+  .Tag {
+    font-size: 13px;
+    padding: 2px;
   }
 }

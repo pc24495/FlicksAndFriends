@@ -235,7 +235,7 @@ const ProfilePicUpload = (props) => {
     console.log(state.croppedImageSrc);
     // console.log(emptySrc);
     axios
-      .post("/api/updateProfilePic", {
+      .patch("/api/users/profilePic", {
         profile_pic: state.croppedImageSrc || state.emptySrc,
         headers: {
           "x-access-token": token,

@@ -1,229 +1,149 @@
-import React, { useState, useReducer, useEffect } from "react";
+import React, { useState, useReducer, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import ShowBox from "./ShowBox/ShowBox.js";
+import LoadingShowBox from "./ShowBox/LoadingShowBox.js";
 import classes from "./Subscriptions.module.css";
-import Button from "../Button/Button.js";
 import axios from "../../axiosConfig.js";
+import Axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
+import qs from "qs";
 
 export default function Subscriptions(props) {
-  const dispatchRedux = useDispatch();
-  const ACTIONS = {
-    SELECT_SHOW: "select show",
-    UNSELECT_SHOW: "unselect show",
-    SET_INIT: "set init",
-    MERGE_SUBSCRIPTIONS: "merge subscriptions",
-  };
-
-  let shows = useSelector((state) => {
-    return state.shows;
-  });
-  let subscriptionsList = useSelector((state) => {
-    return state.subscriptions;
-  });
-  let subscriptions = null;
-  if (localStorage.getItem("subscriptions")) {
-    subscriptions = JSON.parse(localStorage.getItem("subscriptions"));
-  } else {
-    subscriptions = subscriptionsList;
-  }
-  let posterMap = new Map();
-  shows.forEach((show) => posterMap.set(show.tv_id, show.poster));
-
-  let selectedList = [];
-  let displayList =
-    JSON.parse(localStorage.getItem("shows")) ||
-    shows.map((show) => {
-      return { ...show, poster: null, display: true };
-    });
-  displayList = displayList.map((show) => {
-    return { ...show, display: true };
+  const dispatch = useDispatch();
+  const [state, setState] = useState({
+    shows: [],
+    displayShows: [],
+    subscriptions: [],
+    isSearching: false,
+    filteredShows: [],
   });
 
-  let initState = {
-    displayList: displayList,
-    selectedList: selectedList,
-    subscriptions: subscriptions,
-  };
-
-  //   console.log(initState);
-
-  const reducer = (state = initState, action) => {
-    switch (action.type) {
-      case ACTIONS.SELECT_SHOW: {
-        // console.log("adding subscription");
-        const selectedID = action.selectedID;
-        // console.log(selectedID);
-        let selectedShows = [...state.selectedList];
-        let displayShows = [...state.displayList];
-        let subscriptions = [...state.subscriptions];
-        displayShows = displayShows.map((show) => {
-          //   console.log(show.tv_id);
-          if (show.tv_id === selectedID) {
-            selectedShows.push(show);
-            return {
-              ...show,
-              display: false,
-            };
-          } else {
-            return show;
-          }
-        });
-        subscriptions.push(action.subscription);
-        return {
-          ...state,
-          displayList: displayShows,
-          selectedList: selectedShows,
-          subscriptions: subscriptions,
-        };
-      }
-      case ACTIONS.UNSELECT_SHOW: {
-        const unSelectedID = action.selectedID;
-        let selectedShows = [...state.selectedList];
-        let displayShows = [...state.displayList];
-        let subscriptions = [...state.subscriptions];
-        selectedShows = selectedShows.filter((show) => {
-          //   console.log("show: " + show.tv_id + " selected: " + unSelectedID);
-          return show.tv_id != unSelectedID;
-        });
-        displayShows = displayShows.map((show) => {
-          if (show.tv_id === unSelectedID) {
-            return {
-              ...show,
-              display: true,
-            };
-          } else {
-            return show;
-          }
-        });
-        subscriptions = subscriptions.filter((show) => {
-          return show.show_id != unSelectedID;
-        });
-        return {
-          ...state,
-          displayList: displayShows,
-          selectedList: selectedShows,
-          subscriptions: subscriptions,
-        };
-      }
-      case ACTIONS.SET_INIT:
-        // console.log("Dispatch set init");
-        return {
-          ...state,
-          displayList: action.displayList,
-          selectedList: action.selctedList,
-        };
-      case ACTIONS.MERGE_SUBSCRIPTIONS: {
-        let subscriptionList = action.subscriptions;
-        // console.log(subscriptionList);
-        if (subscriptionList.length === undefined) {
-          subscriptionList = [];
-        }
-        // console.log(subscriptionList.length);
-        if (subscriptionList.length === 0) {
-          return {
+  const searchValue = useSelector((state) => state.searchValue);
+  let source = Axios.CancelToken.source();
+  //Note: "show_id" field in shows corresponds to "tv_id" in subscriptions
+  useEffect(async () => {
+    if (state.shows.length === 0) {
+      console.log("Querying backend");
+      const token = localStorage.getItem("token");
+      const SHOW_LIMIT = 6;
+      const shows = await axios
+        .get("/api/users/subscriptions-and-shows", {
+          headers: {
+            "x-access-token": token,
+          },
+          params: {
+            limit: 12,
+          },
+        })
+        .then((res) => {
+          console.log(res.data.shows.length);
+          setState({
             ...state,
-          };
-        }
-        // console.log(subscriptionList);
-        const subscriptionIDs = subscriptionList.map((show) => show.show_id);
-        // console.log(subscriptionIDs);
-        let selectedShows = state.selectedList;
-        const selectedIDs = selectedShows.map((show) => show.tv_id);
-        let displayShows = state.displayList;
-        // console.log(selectedShows);
-        displayShows = displayShows.map((show) => {
-          if (subscriptionIDs.includes(show.tv_id)) {
-            if (!selectedIDs.includes(show.tv_id)) {
-              selectedShows.push(show);
-            }
-            return {
-              ...show,
-              display: false,
-            };
-          } else {
-            return show;
-          }
+            displayShows: res.data.displayShows,
+            shows: res.data.shows,
+            subscriptions: res.data.subscriptions,
+          });
         });
-        return {
-          ...state,
-          displayList: displayShows,
-          selectedList: selectedShows,
-          subscriptions: subscriptionList,
-        };
+    }
+  }, []);
+
+  useEffect(() => {
+    source.cancel();
+    source = Axios.CancelToken.source();
+    console.log(searchValue);
+    const token = localStorage.getItem("token");
+    setTimeout(() => {
+      if (
+        searchValue &&
+        searchValue.trim() !== null &&
+        searchValue.trim() !== ""
+      ) {
+        console.log("not null");
+        axios
+          .get("/api/shows/", {
+            headers: {
+              "x-access-token": token,
+            },
+            cancelToken: source.token,
+            params: {
+              limit: 12,
+              searchTerm: searchValue,
+            },
+          })
+          .then((res) => {
+            console.log(searchValue);
+            setState({
+              ...state,
+              isSearching: true,
+              filteredShows: res.data.shows,
+            });
+          });
+      } else {
+        console.log("null");
+        console.log(state.filteredShows);
+        setState({ ...state, isSearching: false, filteredShows: [] });
+        console.log(state.isSearching);
       }
-      default:
-        return state;
-    }
+    }, 1);
+  }, [searchValue]);
+
+  const getMoreShows = async (event) => {
+    const excludeIDs = state.shows.map((show) => show.show_id);
+    const token = localStorage.getItem("token");
+    await axios
+      .get("/api/shows/", {
+        headers: {
+          "x-access-token": token,
+        },
+        params: {
+          limit: 12,
+          excludeIDs,
+        },
+      })
+      .then((res) => {
+        setState({
+          ...state,
+          shows: state.shows.concat(res.data.shows),
+          displayShows: state.displayShows.concat(res.data.shows),
+        });
+      });
   };
-  //   const [selectedShows, setSelectedShows] = useState(selectedList);
-  //   const [displayShows, set] = useState(displayList);
 
-  //   const [, set] = useState(initialState);
-  const [state, dispatch] = useReducer(reducer, initState);
-
-  //   console.log(displayList);
-
-  //   console.log(state);
-
-  useEffect(() => {
-    // console.log(shows);
-    localStorage.setItem("shows", JSON.stringify(shows));
-    // console.log(displayList);
-    // console.log("Refreshing state");
-  }, [state.displayList, shows]);
-
-  useEffect(() => {
-    // console.log(typeof subscriptionsList);
-    localStorage.setItem("subscriptions", JSON.stringify(subscriptionsList));
-    // console.log(JSON.parse(subscriptionsList));
-    dispatch({
-      type: ACTIONS.MERGE_SUBSCRIPTIONS,
-      subscriptions: subscriptionsList,
+  const removeSubscription = (event, tv_id) => {
+    setState({
+      ...state,
+      subscriptions: state.subscriptions.filter((sub) => sub.show_id !== tv_id),
+      displayShows: [
+        state.shows.find((show) => parseInt(show.tv_id) === tv_id),
+      ].concat(state.displayShows),
     });
+  };
 
-    // console.log(displayList);
-    // console.log("Refreshing state");
-  }, [subscriptionsList]);
-
-  const maxHeight = shows.reduce((acc, curr) => {
-    if (curr.poster_height > acc) {
-      return curr.poster_height;
-    } else {
-      return acc;
-    }
-  }, 0);
-
-  const addSubscription = (event, tv_id, dispatch) => {
+  const addSubscriptions = (event, tv_id) => {
     const subscription = JSON.parse(
       document.getElementById(tv_id).dataset.subscription
     );
-    console.log(subscription);
-    // console.log(subscription);
-    // console.log("Clicked");
-    dispatch({
-      type: ACTIONS.SELECT_SHOW,
-      selectedID: tv_id,
-      subscription: subscription,
+    setState({
+      ...state,
+      subscriptions: [subscription].concat(state.subscriptions),
+      displayShows: state.displayShows.filter(
+        (show) => parseInt(show.tv_id) !== tv_id
+      ),
     });
-  };
-
-  const removeSubscription = (event, tv_id, dispatch) => {
-    dispatch({ type: ACTIONS.UNSELECT_SHOW, selectedID: tv_id });
   };
 
   const submitSubscriptions = (event) => {
     let token = localStorage.getItem("token");
     // console.log(state.subscriptions);
     axios
-      .post("/api/updateSubscriptions", {
+      .patch("/api/users/subscriptions", {
         subscriptions: JSON.stringify(state.subscriptions),
         headers: {
           "x-access-token": token,
         },
       })
       .then((res) => {
-        dispatchRedux({
+        dispatch({
           type: "UPDATE_SUBSCRIPTIONS",
           subscriptions: state.subscriptions,
         });
@@ -231,40 +151,39 @@ export default function Subscriptions(props) {
       });
   };
 
-  // console.log(state);
-
-  return state.displayList.length > 0 ? (
+  //   console.log(state.subscriptions);
+  return (
     <div className={classes.Subscriptions}>
-      <div
-        className={classes.ShowTags}
-        style={{ display: state.selectedList.length > 0 ? "block" : "none" }}
-      >
-        <div className={classes.ShowTagContainer}>
-          {state.selectedList.map((show) => (
-            <p className={classes.ShowTag} key={show.title}>
-              {show.title}
-              <span
-                className={classes.CloseButton}
-                onClick={(event) =>
-                  removeSubscription(event, show.tv_id, dispatch)
-                }
-              >
-                {" "}
-                x
-              </span>
-            </p>
-          ))}
+      {state.subscriptions ? (
+        <div
+          className={classes.ShowTags}
+          style={{ display: state.subscriptions.length > 0 ? "block" : "none" }}
+        >
+          <div className={classes.ShowTagContainer}>
+            {state.subscriptions.map((show) => (
+              <p className={classes.ShowTag} key={show.show_title}>
+                {show.show_title}
+                <span
+                  className={classes.CloseButton}
+                  onClick={(event) => removeSubscription(event, show.show_id)}
+                >
+                  {" "}
+                  x
+                </span>
+              </p>
+            ))}
+          </div>
+          <br></br>
+          <div className={classes.ButtonContainer}>
+            <button
+              onClick={(event) => submitSubscriptions(event)}
+              className={classes.Button}
+            >
+              Submit
+            </button>
+          </div>
         </div>
-        <br></br>
-        <div className={classes.ButtonContainer}>
-          <button
-            onClick={(event) => submitSubscriptions(event)}
-            className={classes.Button}
-          >
-            Submit
-          </button>
-        </div>
-      </div>
+      ) : null}
       <div
         style={{
           margin: "auto",
@@ -275,30 +194,43 @@ export default function Subscriptions(props) {
           justifyContent: "center",
         }}
       >
-        <InfiniteScroll
-          dataLength={state.displayList.filter((show) => show.display).length}
-          className={classes.Selector}
-          loader={<h1>Loading!</h1>}
-        >
-          {state.displayList
-            .filter((show) => show.display)
-            .map((show, index) => (
+        {!state.isSearching ? (
+          <InfiniteScroll
+            dataLength={state.shows.length}
+            className={classes.Selector}
+            loader={<LoadingShowBox></LoadingShowBox>}
+            hasMore={true}
+            scrollThreshold={0}
+            next={getMoreShows}
+          >
+            {state.displayShows.map((show, index) => (
               <ShowBox
                 key={show.tv_id}
                 id={show.tv_id}
                 title={show.title}
-                poster={posterMap.get(show.tv_id)}
+                poster={show.poster}
                 show={show}
-                maxHeight={maxHeight}
-                submitFunc={(event) =>
-                  addSubscription(event, show.tv_id, dispatch)
-                }
+                maxHeight={342}
+                submitFunc={(event) => addSubscriptions(event, show.tv_id)}
               ></ShowBox>
             ))}
-        </InfiniteScroll>
+          </InfiniteScroll>
+        ) : (
+          <div className={classes.Selector}>
+            {state.filteredShows.map((show, index) => (
+              <ShowBox
+                key={show.tv_id}
+                id={show.tv_id}
+                title={show.title}
+                poster={show.poster}
+                show={show}
+                maxHeight={342}
+                submitFunc={(event) => addSubscriptions(event, show.tv_id)}
+              ></ShowBox>
+            ))}
+          </div>
+        )}
       </div>
     </div>
-  ) : (
-    <p>Loading</p>
   );
 }

@@ -8,6 +8,7 @@ import FriendsSidebar from "./FriendsSidebar/FriendsSidebar.js";
 // import Backdrop from "../MovieSelectorComponents/Backdrop.js";
 import { withRouter, useHistory } from "react-router-dom";
 import axios from "../../axiosConfig.js";
+import qs from "qs";
 
 export default function MainSection(props) {
   const history = useHistory();
@@ -39,10 +40,15 @@ export default function MainSection(props) {
             : null;
         if (subscriptionIDs) {
           axios
-            .post("/api/getPosts", {
-              postIDs: [],
-              userIDs: [],
-              subscriptionIDs: subscriptionIDs,
+            .get("/api/posts", {
+              params: {
+                subscriptionIDs,
+                postIDs: [],
+                userIDs: [],
+              },
+              paramsSerializer: (params) => {
+                return qs.stringify(params);
+              },
               headers: {
                 "x-access-token": localStorage.getItem("token"),
               },

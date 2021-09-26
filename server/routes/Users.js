@@ -3,6 +3,23 @@ const router = express.Router();
 const verifyJWT = require("../middlewares/VerifyJWT.js");
 const db = require("../database");
 
+router.get("/", verifyJWT, (req, res) => {
+  db.query(
+    "SELECT * FROM users WHERE user_id=$1",
+    [req.userID],
+    (err, result) => {
+      if (!(result.rows.length > 0)) {
+        res.json({ auth: false });
+      } else if (err) {
+        console.log("Error");
+      } else {
+        // console.log(result.rows);
+        res.json({ auth: true, userData: result.rows[0] });
+      }
+    }
+  );
+});
+
 router.get("/subscriptions", verifyJWT, (req, res) => {
   db.query(
     "SELECT subscriptions FROM users WHERE user_id=$1",
@@ -49,6 +66,39 @@ router.get("/subscriptions-and-shows", verifyJWT, async (req, res) => {
     displayShows: shows,
     subscriptions,
   });
+});
+
+router.patch("/subscriptions", verifyJWT, (req, res) => {
+  db.query(
+    "UPDATE users SET subscriptions = $1 WHERE user_id=$2",
+    [req.body.subscriptions, req.userID],
+    (err, result) => {
+      if (err) {
+        console.log("Error setting subscriptions");
+      } else {
+        res.json({
+          auth: true,
+          subscriptions: JSON.stringify(result.rows[0]),
+        });
+      }
+    }
+  );
+});
+
+router.patch("/profilePic", verifyJWT, (req, res) => {
+  db.query(
+    "UPDATE users SET profile_pic = $1 WHERE user_id = $2",
+    [req.body.profile_pic, req.userID],
+    (err, result) => {
+      if (err) {
+        console.log("Error changing profile pic!");
+      } else {
+        res.json({
+          auth: true,
+        });
+      }
+    }
+  );
 });
 
 module.exports = router;

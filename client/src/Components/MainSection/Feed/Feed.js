@@ -9,6 +9,7 @@ import squareTest from "./SquareTestImage.png";
 import Backdrop from "../../Backdrop/Backdrop.js";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useHistory } from "react-router-dom";
+import qs from "qs";
 
 // import TextareaAutosize from "react-textarea-autosize";
 
@@ -46,7 +47,7 @@ export default function Feed(props) {
         : null;
     if (subscriptions && subscriptions.length > 0) {
       axios
-        .post("/api/getShowsFromSubscriptions", {
+        .post("/api/shows", {
           headers: {
             "x-access-token": localStorage.getItem("token"),
           },
@@ -176,13 +177,6 @@ export default function Feed(props) {
     setCurrentEpisode(setInitEpisode(currentSeason));
   }, [currentSeason]);
 
-  // const showImageClick = () => {
-  //   axios.get("/api/getShowPosters").then((res) => {
-  //     console.log(res.data.image);
-  //     this.setState({ showImage: true, imageArray: res.data.image });
-  //   });
-  // };
-
   //FUNCTIONS
   const inputClickHandler = (event) => {
     // console.log(props);
@@ -251,7 +245,7 @@ export default function Feed(props) {
     // console.log(currentShow);
     if (state.showDropdowns) {
       axios
-        .post("/api/postPost", {
+        .post("/api/posts", {
           headers: {
             "x-access-token": localStorage.getItem("token"),
           },
@@ -291,7 +285,7 @@ export default function Feed(props) {
         });
     } else {
       axios
-        .post("/api/postPost", {
+        .post("/api/posts", {
           headers: {
             "x-access-token": localStorage.getItem("token"),
           },
@@ -374,12 +368,17 @@ export default function Feed(props) {
           : null;
       if (subscriptionIDs) {
         await axios
-          .post("/api/getPosts", {
-            postIDs: postState.posts
-              .map((post) => post.post_id)
-              .concat(newPosts.posts.map((post) => post.post_id)),
-            userIDs: Array.from(postState.userPics.keys()),
-            subscriptionIDs: subscriptionIDs,
+          .get("/api/posts", {
+            params: {
+              postIDs: postState.posts
+                .map((post) => post.post_id)
+                .concat(newPosts.posts.map((post) => post.post_id)),
+              userIDs: Array.from(postState.userPics.keys()),
+              subscriptionIDs: subscriptionIDs,
+            },
+            paramsSerializer: (params) => {
+              return qs.stringify(params);
+            },
             headers: {
               "x-access-token": localStorage.getItem("token"),
             },
