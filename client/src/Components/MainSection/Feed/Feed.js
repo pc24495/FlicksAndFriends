@@ -37,7 +37,7 @@ export default function Feed(props) {
 
   const [shows, setShows] = useState([]);
   // console.log(shows);
-
+  //
   useEffect(() => {
     const subscriptionIDs =
       subscriptions && subscriptions.length > 0
@@ -47,7 +47,7 @@ export default function Feed(props) {
         : null;
     if (subscriptions && subscriptions.length > 0) {
       axios
-        .post("/api/shows", {
+        .get("/api/shows", {
           headers: {
             "x-access-token": localStorage.getItem("token"),
           },

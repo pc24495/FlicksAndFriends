@@ -509,33 +509,37 @@ export default function Post(props) {
         </div>
         <div className={classes.BodySection}>
           <div className={classes.Title}>
-            <p
-              className={classes.Username}
-              onMouseEnter={hoverUsername}
-              id={`${props.post_id}-username`}
-            >
-              {props.username}
-            </p>
-            <li className={classes.Bullet}>
-              <ul></ul>
-            </li>
-            <p className={classes.Date}>
-              {timeSince(Date.parse(props.post_date))}
-            </p>
-            {tags.friendStatus === "Unfriend User" ? (
-              <li className={classes.FriendTagBullet}>
+            <div className={classes.TitleMain}>
+              <p
+                className={classes.Username}
+                onMouseEnter={hoverUsername}
+                id={`${props.post_id}-username`}
+              >
+                {props.username}
+              </p>
+              <li className={classes.Bullet}>
                 <ul></ul>
               </li>
-            ) : null}
-            {tags.friendStatus === "Unfriend User" ? (
-              <p className={classes.FriendTag}>Friend</p>
-            ) : null}
-            {userID === parseInt(props.user_id) ? (
-              <BsThreeDotsVertical
-                className={classes.ThreeDots}
-                onClick={dropdown}
-              ></BsThreeDotsVertical>
-            ) : null}
+              <p className={classes.Date}>
+                {timeSince(Date.parse(props.post_date))}
+              </p>
+              {tags.friendStatus === "Unfriend User" ? (
+                <li className={classes.FriendTagBullet}>
+                  <ul></ul>
+                </li>
+              ) : null}
+              {tags.friendStatus === "Unfriend User" ? (
+                <p className={classes.FriendTag}>Friend</p>
+              ) : null}
+            </div>
+            <div className={classes.ThreeDotsOuter}>
+              {userID === parseInt(props.user_id) ? (
+                <BsThreeDotsVertical
+                  className={classes.ThreeDots}
+                  onClick={dropdown}
+                ></BsThreeDotsVertical>
+              ) : null}
+            </div>
           </div>
 
           <div className={classes.Tags} id={postID + "-tags"}>

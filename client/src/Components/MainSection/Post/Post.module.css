@@ -70,8 +70,27 @@
   /* background-color: green; */
   display: flex;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
   align-self: flex-start;
+}
+
+.TitleMain {
+  min-height: 30px;
+  display: flex;
+  flex: 1;
+  justify-content: flex-start;
+  align-items: center;
+  /* background-color: red; */
+  flex-wrap: wrap;
+}
+
+.ThreeDotsOuter {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  /* background-color: paleturquoise; */
+  height: 100%;
+  margin-top: 7px;
 }
 
 .ThreeDots {
@@ -83,6 +102,7 @@
   /* background-color: pink; */
   border-radius: 3px;
   padding: 3px;
+  /* align-self: flex-start; */
 }
 
 .ThreeDots:hover {
@@ -229,6 +249,7 @@
   height: 20px;
   line-height: 20px;
   overflow-wrap: none;
+  display: block;
   /* background-color: violet; */
 }
 
@@ -651,7 +672,7 @@
   }
 }
 
-@media (max-width: 510px) {
+/* @media (max-width: 510px) {
   .Post {
     font-size: 15px;
   }
@@ -668,4 +689,4 @@
     font-size: 13px;
     padding: 2px;
   }
-}
+} */
