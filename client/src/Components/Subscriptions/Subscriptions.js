@@ -2,11 +2,15 @@ import React, { useState, useReducer, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import ShowBox from "./ShowBox/ShowBox.js";
 import LoadingShowBox from "./ShowBox/LoadingShowBox.js";
+import Backdrop from "../Backdrop/Backdrop.js";
 import classes from "./Subscriptions.module.css";
 import axios from "../../axiosConfig.js";
 import Axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import qs from "qs";
+import { BsCaretUpFill } from "react-icons/bs";
+import { BsSearch } from "react-icons/bs";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 export default function Subscriptions(props) {
   const dispatch = useDispatch();
@@ -16,10 +20,14 @@ export default function Subscriptions(props) {
     subscriptions: [],
     isSearching: false,
     filteredShows: [],
+    showBackdrop: false,
+    clickedShow: {},
+    searchMode: false,
   });
-
+  const [expandTags, setExpandTags] = useState(false);
   const searchValue = useSelector((state) => state.searchValue);
   let source = Axios.CancelToken.source();
+  const mobileCutoff = useMediaQuery("(max-width:610px)");
   //Note: "show_id" field in shows corresponds to "tv_id" in subscriptions
   useEffect(async () => {
     if (state.shows.length === 0) {
@@ -69,13 +77,21 @@ export default function Subscriptions(props) {
               limit: 12,
               searchTerm: searchValue,
             },
+            paramsSerializer: (params) => {
+              return qs.stringify(params);
+            },
           })
           .then((res) => {
+            console.log(state.filteredShows);
+            console.log(res.data.shows);
             console.log(searchValue);
-            setState({
-              ...state,
-              isSearching: true,
-              filteredShows: res.data.shows,
+            const newFilteredShows = res.data.shows;
+            setState((prevState) => {
+              return {
+                ...prevState,
+                isSearching: true,
+                filteredShows: newFilteredShows,
+              };
             });
           });
       } else {
@@ -88,25 +104,33 @@ export default function Subscriptions(props) {
   }, [searchValue]);
 
   const getMoreShows = async (event) => {
+    // console.log(state.shows);
     const excludeIDs = state.shows.map((show) => show.show_id);
+    // console.log(excludeIDs);
     const token = localStorage.getItem("token");
-    await axios
-      .get("/api/shows/", {
-        headers: {
-          "x-access-token": token,
-        },
-        params: {
-          limit: 12,
-          excludeIDs,
-        },
-      })
-      .then((res) => {
-        setState({
-          ...state,
-          shows: state.shows.concat(res.data.shows),
-          displayShows: state.displayShows.concat(res.data.shows),
+    setTimeout(async () => {
+      await axios
+        .get("/api/shows/", {
+          headers: {
+            "x-access-token": token,
+          },
+          params: {
+            limit: 12,
+            excludeIDs,
+          },
+          paramsSerializer: (params) => {
+            // console.log(qs.stringify(params));
+            return qs.stringify(params);
+          },
+        })
+        .then((res) => {
+          setState({
+            ...state,
+            shows: state.shows.concat(res.data.shows),
+            displayShows: state.displayShows.concat(res.data.shows),
+          });
         });
-      });
+    }, 1000);
   };
 
   const removeSubscription = (event, tv_id) => {
@@ -159,7 +183,10 @@ export default function Subscriptions(props) {
           className={classes.ShowTags}
           style={{ display: state.subscriptions.length > 0 ? "block" : "none" }}
         >
-          <div className={classes.ShowTagContainer}>
+          <div
+            className={classes.ShowTagContainer}
+            style={{ height: expandTags ? "fit-content" : "35px" }}
+          >
             {state.subscriptions.map((show) => (
               <p className={classes.ShowTag} key={show.show_title}>
                 {show.show_title}
@@ -175,12 +202,37 @@ export default function Subscriptions(props) {
           </div>
           <br></br>
           <div className={classes.ButtonContainer}>
+            <BsCaretUpFill
+              className={classes.BsCaretUpFill}
+              style={{
+                transform: !expandTags ? "rotate(180deg)" : "rotate(0deg)",
+              }}
+              onClick={() => setExpandTags((prevExpandTags) => !prevExpandTags)}
+            ></BsCaretUpFill>
             <button
               onClick={(event) => submitSubscriptions(event)}
               className={classes.Button}
             >
               Submit
             </button>
+          </div>
+        </div>
+      ) : null}
+      {state.searchMode ? (
+        <div className={classes.MobileSearch}>
+          <div className={classes.MobileSearchInner}>
+            <div className={classes.MobileSearchInnerInner}>
+              <BsSearch className={classes.SearchBarIcon}></BsSearch>
+              <div className={classes.MobileSearchbar}>
+                <input></input>
+              </div>
+            </div>
+            <p
+              className={classes.CloseSearch}
+              onClick={() => setState({ ...state, searchMode: false })}
+            >
+              x
+            </p>
           </div>
         </div>
       ) : null}
@@ -194,7 +246,7 @@ export default function Subscriptions(props) {
           justifyContent: "center",
         }}
       >
-        {!state.isSearching ? (
+        {!mobileCutoff && !state.isSearching ? (
           <InfiniteScroll
             dataLength={state.shows.length}
             className={classes.Selector}
@@ -205,7 +257,7 @@ export default function Subscriptions(props) {
           >
             {state.displayShows.map((show, index) => (
               <ShowBox
-                key={show.tv_id}
+                key={`${show.tv_id}`}
                 id={show.tv_id}
                 title={show.title}
                 poster={show.poster}
@@ -215,11 +267,12 @@ export default function Subscriptions(props) {
               ></ShowBox>
             ))}
           </InfiniteScroll>
-        ) : (
+        ) : null}
+        {!mobileCutoff && state.isSearching ? (
           <div className={classes.Selector}>
             {state.filteredShows.map((show, index) => (
               <ShowBox
-                key={show.tv_id}
+                key={`${show.tv_id}`}
                 id={show.tv_id}
                 title={show.title}
                 poster={show.poster}
@@ -229,8 +282,32 @@ export default function Subscriptions(props) {
               ></ShowBox>
             ))}
           </div>
-        )}
+        ) : null}
+        {mobileCutoff && !state.isSearching ? (
+          <InfiniteScroll
+            dataLength={state.shows.length}
+            className={classes.Selector}
+            loader={<LoadingShowBox></LoadingShowBox>}
+            hasMore={true}
+            scrollThreshold={0}
+            next={getMoreShows}
+          >
+            {state.displayShows.map((show, index) => (
+              <div className={classes.ShowTitleBox}>
+                <p>{show.title}</p>
+              </div>
+            ))}
+          </InfiniteScroll>
+        ) : null}
       </div>
+      {!state.searchMode ? (
+        <div
+          className={classes.SearchIconContainer}
+          onClick={() => setState({ ...state, searchMode: true })}
+        >
+          <BsSearch className={classes.SearchIcon}></BsSearch>
+        </div>
+      ) : null}
     </div>
   );
 }

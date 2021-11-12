@@ -1,6 +1,6 @@
 .Login {
   width: 54%;
-  /* height: calc((100vh - 56px) / 3); */
+  /* height: calc((100vh - var(--toolbar-height) - var(--footer-height)) / 3); */
   min-height: 300px;
   top: calc((100vh - 306px) / 3);
   left: 23%;

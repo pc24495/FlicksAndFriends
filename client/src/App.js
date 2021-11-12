@@ -103,10 +103,10 @@ function App(props) {
     <div>
       <Layout>
         <Switch>
-          <Route path="/submitpost" component={CreatePost} />
           <Route path="/subscriptions" component={Subscriptions}></Route>
           <Route path="/registration" component={Registration} />
           <Route path="/profilepic" component={ProfilePicUpload}></Route>
+          <Route path="/create-post" component={CreatePost}></Route>
           <Route path="/login" component={Login} />
           {loggedIn || localStorage.getItem("token") ? (
             <Route path="/" component={MainSection} />

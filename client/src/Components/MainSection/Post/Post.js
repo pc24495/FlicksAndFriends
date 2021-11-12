@@ -12,18 +12,6 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import TextareaAutosize from "react-textarea-autosize";
 import axios from "../../../axiosConfig.js";
-// <p
-//             style={{
-//               margin: "10px",
-//               fontWeight: "bold",
-//               color: "var(--nord5)",
-//               height: "20px",
-//               lineHeight: "20px",
-//               verticalAlign: "sub",
-//             }}
-//           >
-//             \2022
-//           </p>
 
 export default function Post(props) {
   const [tags, setTags] = useState({
@@ -181,7 +169,7 @@ export default function Post(props) {
 
   const closeDropdown = (event) => {
     // console.log(event.target.className);
-    const className = event.target.className.animVal || event.target.className;
+    const className = event.target.className.animVal ?? event.target.className;
     if (className.includes("Post_Edit")) {
       event.preventDefault();
       // console.log(event.target.className);

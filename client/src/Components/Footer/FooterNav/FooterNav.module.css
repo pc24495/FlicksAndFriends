@@ -1,0 +1,25 @@
+.FooterNav a svg {
+  width: 30px;
+  height: 30px;
+  color: yellow;
+  display: inline;
+}
+
+.FooterNav a.active svg {
+  color: pink;
+  display: inline;
+}
+
+@media (min-width: 611px) {
+  .FooterNav a svg {
+    width: 30px;
+    height: 30px;
+    color: yellow;
+    display: none;
+  }
+
+  .FooterNav a.active svg {
+    color: pink;
+    display: none;
+  }
+}

@@ -1,7 +1,7 @@
 /* @import "../../../node_modules/nord/src/nord.css"; */
 
 .Toolbar {
-  height: 56px;
+  height: var(--toolbar-height);
   width: 100%;
   position: fixed;
   top: 0px;
@@ -213,6 +213,15 @@
   color: var(--nord4);
 }
 
+/* @media (max-width: 610px) {
+  .Toolbar {
+    height: 35px;
+    justify-content: center;
+  }
+
+
+} */
+
 @media (min-width: 500px) {
   .Logout {
     margin: 0px;
@@ -236,7 +245,7 @@
   }
 }
 
-@media (max-width: 499px) {
+@media (max-width: 610px) {
   .DesktopOnly {
     display: none;
   }

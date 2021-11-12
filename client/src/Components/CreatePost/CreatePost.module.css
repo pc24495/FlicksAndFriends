@@ -3,19 +3,234 @@
   top: 0px;
   left: 0px;
   width: 100%;
-  height: calc(100vh - 56px);
+  height: calc(100vh - var(--toolbar-height) - var(--footer-height));
   background-color: var(--nord0);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.FormSection {
-  height: 500px;
-  width: 500px;
-  background-color: var(--nord1);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.CreatePostInner {
+  height: 100%;
+  width: 610px;
+  box-sizing: border-box;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.Header {
+  color: var(--nord5);
+  background-color: teal;
+  text-align: center;
+  margin: 0px;
+  margin-bottom: 5px;
+}
+
+.Formik {
+  width: 100%;
+  height: 100%;
+}
+
+.Form {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* .TextInputContainer {
+  width: calc(100% - 4px);
+  background-color: teal;
+  flex-grow: 1;
+} */
+
+.TextInput {
+  outline: none;
+  resize: none;
+  margin: 0px 0px 0px 0px;
+  width: calc(100% - 4px);
+  /* height: 200px; */
+  /* height: 100%; */
+  flex: 1;
+  font-size: 20px;
+  font-family: "Roboto", sans-serif;
+  background-color: var(--nord1);
+  color: var(--nord5);
+  border: none;
+  overflow-y: auto;
+}
+
+.TextInput::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: var(--nord2);
+  border-radius: 10px;
+}
+
+.TextInput::-webkit-scrollbar {
+  width: 6px;
+  background-color: var(--nord0);
+}
+
+.TextInput::-webkit-scrollbar-thumb {
+  background-color: var(--nord4);
+  border-radius: 3px;
+}
+
+.Options {
+  width: 100%;
+  height: fit-content;
+  /* background-color: teal; */
+  background-color: var(--nord0);
+  margin-top: 10px;
+}
+
+.RadioButtons {
+  display: flex;
+  flex-direction: row;
+  align-items: space-around;
+  justify-content: space-around;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  /* background-color: var(--nord0); */
+  background-color: var(--nord0);
+  box-sizing: border-box;
+}
+
+.Radio {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--nord5);
+  box-sizing: border-box;
+  font-family: system-ui, sans-serif;
+  line-height: 1.1;
+  display: grid;
+  grid-template-columns: 1em auto;
+  gap: 0.5em;
+}
+
+.Radio input {
+  /* opacity: 0;
+  width: 0;
+  height: 0; */
+  /* box-sizing: border-box; */
+  -webkit-appearance: none;
+  appearance: none;
+  /* For iOS < 15 to remove gradient background */
+  background-color: var(--nord5);
+  /* Not removed via appearance */
+  margin: 0;
+  font: inherit;
+  color: var(--nord9);
+  width: 1.15em;
+  height: 1.15em;
+  /* width: 5em;
+  height: 5em; */
+  border: 0.15em solid var(--nord0);
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  /* transform: translateY(-0.075em); */
+}
+
+.Radio input::before {
+  content: "";
+  width: 0.55em;
+  height: 0.55em;
+  border-radius: 50%;
+  padding: 0px;
+  transform: scale(0);
+  transition: 200ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--nord0);
+  box-sizing: border-box;
+  text-align: center;
+  /* color: brown; */
+  /* transform: translateX(0.2); */
+}
+
+.Radio input:checked::before {
+  transform: scale(1);
+}
+
+.Select {
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 15ch;
+  /* max-width: 30ch; */
+  border: 1px solid var(--nord5);
+  border-radius: 0.25em;
+  padding: 0.25em 0.25em;
+  font-size: 1.25rem;
+  cursor: pointer;
+  line-height: 1.1;
+  background-color: var(--nord5);
+  background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
+  display: grid;
+  grid-template-areas: "select";
+  align-items: center;
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.Select::after {
+  content: "";
+  width: 0.8em;
+  height: 0.5em;
+  background-color: var(--nord0);
+  clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+  justify-self: end;
+}
+
+.Select select,
+.Select:after {
+  grid-area: select;
+}
+
+.Select select {
+  appearance: none;
+  box-sizing: border-box;
+  background-color: transparent;
+  border: none;
+  padding: 0 1em 0 0;
+  margin: 0;
+  width: 100%;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: inherit;
+  line-height: inherit;
+  outline: none;
+}
+
+.Select select:focus + .Focus {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  border: 3px solid var(--nord7);
+  border-radius: inherit;
+}
+
+.Submit {
+  width: 100%;
+  font-size: 25px;
+  border-radius: 0.25em;
+  border: 1px solid var(--nord7);
+  padding: 0.2em 0.2em;
+  box-sizing: border-box;
+  background-color: var(--nord7);
+  color: white;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.Submit:hover {
+  cursor: pointer;
+}
+
+@media (max-width: 610px) {
+  .CreatePostInner {
+    width: 100%;
+  }
 }

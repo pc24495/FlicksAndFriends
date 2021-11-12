@@ -1,5 +1,5 @@
 .Feed {
-  /* height: calc(100vh - 56px); */
+  /* height: calc(100vh - var(--toolbar-height) - var(--footer-height)); */
   position: relative;
   width: 668px;
   left: 0px;
@@ -58,6 +58,11 @@
   font-size: 20px;
   line-height: 35px;
   color: var(--nord3);
+}
+
+.InfiniteScroll {
+  height: calc(100vh - var(--toolbar-height) - var(--footer-height));
+  overflow: hidden;
 }
 
 .ImageContainer {
@@ -176,5 +181,31 @@
 @media (max-width: 960px) {
   .Feed {
     width: 100vw;
+  }
+}
+
+@media (max-width: 610px) {
+  .InputPost {
+    height: 35px;
+    display: none;
+    justify-content: center;
+  }
+
+  .ProfilePic {
+    height: 30px;
+    width: 30px;
+    margin: 0px 5px 0px 5px;
+  }
+
+  .InputPostInput {
+    height: 25px;
+    font-size: 15px;
+    line-height: 25px;
+  }
+
+  .InputPostInput::placeholder {
+    font-size: 15px;
+    line-height: 22.5px;
+    color: var(--nord3);
   }
 }

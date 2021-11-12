@@ -1,20 +1,25 @@
-import React, { Component } from "react";
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Aux from "../hoc/Aux";
 import classes from "./Layout.module.css";
+import Backdrop from "../Backdrop/Backdrop.js";
 import Toolbar from "../Toolbar/Toolbar.js";
+import Footer from "../Footer/Footer.js";
 
-class Layout extends Component {
-  render() {
-    return (
-      <Aux>
-        <Toolbar />
-        <main className={classes.content}>{this.props.children}</main>
-      </Aux>
-    );
-  }
+export default function Layout(props) {
+  const displayBackdrop = useSelector((state) => state.displayBackdrop);
+
+  return (
+    <Aux>
+      <Toolbar />
+      <main className={classes.content}>{props.children}</main>
+      <Footer></Footer>
+      <Backdrop
+        style={{ display: displayBackdrop ? "flex" : "none" }}
+      ></Backdrop>
+    </Aux>
+  );
 }
 
 // Insert below into line 12 to add backdrop
 // <Backdrop></Backdrop>
-
-export default Layout;

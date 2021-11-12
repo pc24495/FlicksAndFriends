@@ -156,6 +156,10 @@
   Styleguide Nord - Aurora
   */
   --nord15: #b48ead;
+
+  --toolbar-height: 56px;
+
+  --footer-height: 0px;
 }
 
 html {
@@ -179,6 +183,13 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+@media (max-width: 610px) {
+  :root {
+    --toolbar-height: 45px;
+    --footer-height: 50px;
+  }
 }
 
 /* :root {

@@ -11,7 +11,7 @@
   box-sizing: border-box;
   align-items: center;
   justify-content: center;
-  height: 200px;
+  height: calc(200px + var(--footer-height));
 }
 
 .loader {
@@ -27,6 +27,7 @@
   -webkit-transform: translateZ(0);
   -ms-transform: translateZ(0);
   transform: translateZ(0);
+  transform: translateY(-20px);
 }
 @-webkit-keyframes load5 {
   0%,

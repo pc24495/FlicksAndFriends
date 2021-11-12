@@ -12,7 +12,7 @@
 }
 
 .Post {
-  min-height: 200px;
+  min-height: 175px;
   height: fit-content;
   width: 100%;
   margin: 0px;
@@ -28,7 +28,7 @@
   position: relative;
   left: 0%;
   min-height: 100%;
-  padding-top: 20px;
+  padding-top: 10px;
   padding-bottom: 0px;
   width: 30%;
   background-color: var(--nord1);
@@ -101,7 +101,7 @@
   color: var(--nord5);
   /* background-color: pink; */
   border-radius: 3px;
-  padding: 3px;
+  /* padding: 3px; */
   /* align-self: flex-start; */
 }
 
@@ -223,6 +223,7 @@
 
 .FriendTagBullet {
   margin: 10px;
+  padding: 3px;
   font-weight: normal;
   color: var(--nord4);
   height: 20px;
@@ -246,8 +247,8 @@
   margin: 0px;
   font-weight: normal;
   color: var(--nord4);
-  height: 20px;
-  line-height: 20px;
+  height: 15px;
+  line-height: 15px;
   overflow-wrap: none;
   display: block;
   /* background-color: violet; */
@@ -283,6 +284,7 @@
   margin-left: 3px;
   margin-bottom: 3px;
   left: -3px;
+  font-weight: bold;
 }
 
 .DropTags {
@@ -322,10 +324,10 @@
 .BodyOuter {
   position: relative;
   width: 100%;
-  height: 100%;
-  min-height: 75px;
-  /* background-color: var(--nord1); */
-  background-color: yellowgreen;
+  /* height: 100%; */
+  min-height: 50px;
+  background-color: var(--nord1);
+  /* background-color: yellowgreen; */
   justify-content: center;
   align-items: center;
   text-overflow: ellipsis;
@@ -419,6 +421,8 @@
 .ThumbUp {
   margin: 10px;
   color: var(--nord5);
+  margin-left: 0px;
+  margin-right: 5px;
 }
 
 .ThumbUp:hover {
@@ -427,7 +431,7 @@
 }
 
 .ThumbUpSelected {
-  margin: 10px;
+  margin-right: 5px;
   color: var(--nord14);
 }
 
@@ -437,12 +441,14 @@
 }
 
 .NumLikes {
+  margin: 0px 0px 0px 0px;
   color: var(--nord6);
 }
 
 .ThumbDown {
   margin: 10px;
   color: var(--nord5);
+  margin-left: 5px;
 }
 
 .ThumbDown:hover {
@@ -451,7 +457,7 @@
 }
 
 .ThumbDownSelected {
-  margin: 10px;
+  margin-left: 5px;
   color: var(--nord11);
 }
 
@@ -654,12 +660,84 @@
 }
 
 @media (max-width: 610px) {
+  .Post {
+    min-height: 150px;
+  }
+
+  .Title {
+    /* background-color: palevioletred; */
+    align-items: center;
+  }
+
+  .TitleMain {
+    min-height: 20px;
+    padding: 4px;
+    padding-left: 0px;
+  }
+
+  .Username {
+    margin: 0px 10px 0px 0px;
+    height: 12px;
+    line-height: 12px;
+    font-size: 14px;
+    padding: 0px;
+  }
+
+  .Bullet {
+    font-size: 14px;
+  }
+
+  .Date {
+    font-size: 14px;
+  }
+
+  .ThreeDotsOuter {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  .ThreeDots {
+    height: 15px;
+    width: 15px;
+  }
+
+  .DropDown {
+    width: 100px;
+    height: 70px;
+    right: 14px;
+    top: 30px;
+  }
+
+  .Tags {
+    min-width: 20px;
+    padding-right: 12px;
+    box-sizing: border-box;
+  }
+
+  .Tag {
+    position: relative;
+    line-height: 15px;
+    font-size: 15px;
+    padding: 5px;
+    border-radius: 18px;
+    color: var(--nord6);
+    background-color: var(--nord7);
+    margin: 0px;
+    margin-left: 3px;
+    margin-bottom: 3px;
+    left: -3px;
+  }
+
   .ProfilePicSection {
     width: 30%;
   }
 
   .BodySection {
     width: 70%;
+  }
+
+  .module p {
+    font-size: 15px;
   }
 
   .ProfilePic {
@@ -669,6 +747,26 @@
     margin: 0px;
     box-sizing: border-box;
     clip-path: circle();
+  }
+
+  .ThumbUp {
+    height: 25px;
+    width: 25px;
+  }
+
+  .ThumbUpSelected {
+    height: 25px;
+    width: 25px;
+  }
+
+  .ThumbDown {
+    height: 25px;
+    width: 25px;
+  }
+
+  .ThumbDownSelected {
+    height: 25px;
+    width: 25px;
   }
 }
 
