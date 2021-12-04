@@ -7,6 +7,10 @@
   justify-content: center;
 }
 
+h2 {
+  color: aliceblue;
+}
+
 .Login {
   width: 1000px;
   height: 600px;
@@ -22,8 +26,14 @@
     padding: 20px;
     box-sizing: border-box; */
   background-color: var(--nord0);
+  background-color: cornflowerblue;
   color: var(--nord5);
   grid-template-columns: 450px 1fr 450px;
+  position: relative;
+}
+
+.MobileLogin {
+  display: none;
 }
 
 .Text {
@@ -35,7 +45,7 @@
 
 .TextInner {
   height: 400px;
-  width: 380px;
+  width: 400px;
   background-color: var(--nord0);
   border-radius: 25px;
   box-sizing: border-box;
@@ -82,9 +92,33 @@
   justify-content: flex-start;
   align-items: center;
   background-color: var(--nord0);
+  /* background-color: chartreuse; */
   overflow-x: hidden;
   overflow-y: hidden;
-  width: 380px;
+  width: 400px;
+}
+
+.LoginDivInner {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  transition: transform 0.5s;
+  flex-shrink: 0;
+}
+
+.SpacingDiv {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  /* background-color: crimson; */
+}
+
+.LoginOrRegister {
 }
 
 .LoginBox {
@@ -95,9 +129,10 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-shrink: 0;
+  /* flex-shrink: 0; */
   border-radius: 25px;
-  transition: transform 0.5s;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .InputSection {
@@ -107,6 +142,16 @@
   align-items: center;
   width: 75%;
   margin-bottom: 10px;
+}
+
+.MobileInput:-webkit-autofill,
+.MobileInput:-webkit-autofill:hover,
+.MobileInput:-webkit-autofill:focus,
+.MobileInput:-webkit-autofill:active,
+.MobileInput:-internal-autofill-selected {
+  /* -webkit-box-shadow: 0 0 0px 1000px yellow inset; */
+  background-color: var(--nord0) !important;
+  transition: background-color 600000s 0s, color 600000s 0s;
 }
 
 .InputSection label {
@@ -180,9 +225,9 @@
   }
 }
 
-@media (max-width: 774px) {
+@media (max-width: 800px) {
   .LoginOuter {
-    height: 1000px;
+    height: 1600px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -203,12 +248,13 @@
   .Login {
     display: flex;
     flex-direction: column-reverse;
-    height: 850px;
+    height: 1200px;
     position: relative;
-    top: 100px;
+    top: 0px;
     overflow: hidden;
     background-color: var(nord0);
     align-items: center;
+    justify-content: flex-end;
   }
 
   .GridGap {
@@ -216,5 +262,129 @@
     height: 50px;
     width: 100%;
     box-sizing: border-box;
+  }
+
+  .TextInner {
+    height: 600px;
+    width: 550px;
+  }
+}
+
+@media (max-width: 550px) {
+  .TextInner {
+    height: 600px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .LoginOuter {
+    height: calc(100vh - 56px);
+    overflow-x: hidden;
+  }
+
+  .Login {
+    display: none;
+  }
+
+  .MobileLogin {
+    display: block;
+    width: 100%;
+    /* background-color: cyan; */
+    background-color: var(--nord0);
+    /* height: fit-content; */
+    height: 300px;
+  }
+
+  .MobileFormContainer {
+    width: 200vw;
+    overflow-x: hidden;
+    height: fit-content;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .MobileForm {
+    width: 100vw;
+    height: 100%;
+    /* background-color: darkblue; */
+    background-color: var(--nord0);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    transition: transform 0.5s;
+  }
+
+  .MobileInputContainer {
+    width: 80%;
+    height: 35px;
+    border: var(--nord5);
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    border-bottom: 3px solid var(--nord5);
+  }
+
+  .InputIcon {
+    width: 37px;
+    height: 37px;
+    background-color: var(--nord0);
+    color: var(--nord5);
+  }
+
+  .MobileInput {
+    border: none;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    font-size: 23px;
+    font-weight: 600;
+    color: var(--nord5);
+    background-color: var(--nord0);
+    padding-left: 10px;
+  }
+
+  .MobileInput:focus {
+    border: none;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    background-color: var(--nord0);
+  }
+
+  .MobileButton {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    height: 32px;
+    border-radius: 7px;
+    border: none;
+    background-color: var(--nord8);
+    color: var(--nord0);
+    font-weight: 700;
+    width: 80%;
+  }
+
+  .MobileButton:hover {
+    cursor: pointer;
+  }
+
+  .LoginOrRegisterMobile {
+    width: 80%;
+    color: var(--nord5);
+  }
+
+  .LoginOrRegisterMobile:hover {
+    cursor: pointer;
+    color: var(--nord7);
+    text-decoration: underline;
+  }
+
+  .MobileWarning {
+    color: var(--nord11);
+    font-size: 14px;
+    margin-top: -6px;
+    margin-bottom: 5px;
   }
 }

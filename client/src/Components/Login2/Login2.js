@@ -3,6 +3,8 @@ import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import classes from "./Login2.module.css";
 import axios from "../../axiosConfig.js";
+import { BiUser } from "react-icons/bi";
+import { AiFillLock } from "react-icons/ai";
 
 const Login2 = (props) => {
   const [loginMode, setLoginMode] = useState(true);
@@ -20,6 +22,7 @@ const Login2 = (props) => {
 
   const submitLogin = (event) => {
     event.preventDefault();
+    console.log("Logging in!");
     const username = event.target.elements.username.value;
     const password = event.target.elements.password.value;
     const newLoginErrors = {
@@ -32,7 +35,7 @@ const Login2 = (props) => {
     if (password === null || password === "") {
       newLoginErrors.passwordErrors.push("Please enter a password");
     }
-
+    console.log(newLoginErrors);
     if (
       newLoginErrors.usernameErrors.length == 0 &&
       newLoginErrors.passwordErrors.length == 0
@@ -54,6 +57,18 @@ const Login2 = (props) => {
     } else {
       setLoginErrors(newLoginErrors);
     }
+  };
+
+  const submitLoginMobile = (event) => {
+    event.preventDefault();
+    console.log("Lol");
+    event.target.elements.username = {};
+    event.target.elements.username.value =
+      event.target.elements.mobileUsername.value;
+    event.target.elements.password = {};
+    event.target.elements.password.value =
+      event.target.elements.mobilePassword.value;
+    submitLogin(event);
   };
 
   const submitRegister = (event) => {
@@ -139,6 +154,21 @@ const Login2 = (props) => {
     }
   };
 
+  const submitRegisterMobile = (event) => {
+    event.preventDefault();
+    console.log("Lol");
+    event.target.elements.username = {};
+    event.target.elements.username.value =
+      event.target.elements.mobileUsername.value;
+    event.target.elements.password = {};
+    event.target.elements.password.value =
+      event.target.elements.mobilePassword.value;
+    event.target.elements.confirmPassword = {};
+    event.target.elements.confirmPassword.value =
+      event.target.elements.mobileConfirmPassword.value;
+    submitRegister(event);
+  };
+
   const changeMode = (event) => {
     setLoginMode((mode) => !mode);
   };
@@ -193,69 +223,178 @@ const Login2 = (props) => {
         </div>
         <div className={classes.GridGap}></div>
         <div className={classes.LoginDiv}>
-          <form
-            className={classes.LoginBox}
-            onSubmit={submitLogin}
+          <div
+            className={classes.LoginDivInner}
             style={{
-              transform: loginMode ? "translateX(0%)" : "translateX(-100%)",
+              transform: loginMode ? "translateX(0px)" : "translateX(-400px)",
             }}
           >
+            <div className={classes.SpacingDiv}>
+              <h1 className={classes.LoginOrRegister}>Login</h1>
+            </div>
+            <form className={classes.LoginBox} onSubmit={submitLogin}>
+              <div className={classes.InputSection}>
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username"></input>
+                {loginErrors.usernameErrors.map((err) => {
+                  return <p className={classes.Warning}>{err}</p>;
+                })}
+              </div>
+              <div className={classes.InputSection}>
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password"></input>
+                {loginErrors.passwordErrors.map((err) => {
+                  return <p className={classes.Warning}>{err}</p>;
+                })}
+              </div>
+              <button className={classes.SubmitButton}>Submit</button>
+              <p className={classes.SwitchModeClick} onClick={changeMode}>
+                Don't have an account? Click here to make one
+              </p>
+            </form>
+            <div className={classes.SpacingDiv}></div>
+          </div>
+          <div
+            className={classes.LoginDivInner}
+            style={{
+              transform: loginMode ? "translateX(0px)" : "translateX(-400px)",
+            }}
+          >
+            <div className={classes.SpacingDiv}>
+              <h1 className={classes.LoginOrRegister}>Register</h1>
+            </div>
+            <form className={classes.LoginBox} onSubmit={submitRegister}>
+              <div className={classes.InputSection}>
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username"></input>
+                {registerErrors.usernameErrors.map((err) => {
+                  return <p className={classes.Warning}>{err}</p>;
+                })}
+              </div>
+              <div className={classes.InputSection}>
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password"></input>
+                {registerErrors.passwordErrors.map((err) => {
+                  return <p className={classes.Warning}>{err}</p>;
+                })}
+              </div>
+              <div className={classes.InputSection}>
+                <label for="confirmPassword">Confirm Password</label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  id="confirmPassword"
+                ></input>
+                {registerErrors.confirmPasswordErrors.map((err) => {
+                  return <p className={classes.Warning}>{err}</p>;
+                })}
+              </div>
+              <button className={classes.SubmitButton}>Submit</button>
+              <p className={classes.SwitchModeClick} onClick={changeMode}>
+                Already have an account? Click here to log in
+              </p>
+            </form>
+            <div className={classes.SpacingDiv}></div>
+          </div>
+        </div>
+      </div>
+      <div className={classes.MobileLogin}>
+        <div className={classes.MobileFormContainer}>
+          <form
+            className={classes.MobileForm}
+            style={{
+              transform: loginMode ? "translateX(0px)" : "translateX(-100vw)",
+            }}
+            onSubmit={submitLoginMobile}
+          >
             <h2>Login</h2>
-            <div className={classes.InputSection}>
-              <label for="username">Username</label>
-              <input type="text" name="username" id="username"></input>
-              {loginErrors.usernameErrors.map((err) => {
-                return <p className={classes.Warning}>{err}</p>;
-              })}
+            <div className={classes.MobileInputContainer}>
+              <BiUser className={classes.InputIcon}></BiUser>
+              <input
+                className={classes.MobileInput}
+                placeholder="Enter a username"
+                id="mobileUsername"
+              ></input>
             </div>
-            <div className={classes.InputSection}>
-              <label for="password">Password</label>
-              <input type="password" name="password" id="password"></input>
-              {loginErrors.passwordErrors.map((err) => {
-                return <p className={classes.Warning}>{err}</p>;
-              })}
+            {loginErrors.usernameErrors.map((err) => {
+              return <p className={classes.MobileWarning}>{err}</p>;
+            })}
+            <div className={classes.MobileInputContainer}>
+              <AiFillLock className={classes.InputIcon}></AiFillLock>
+              <input
+                className={classes.MobileInput}
+                placeholder="Enter a password"
+                id="mobilePassword"
+              ></input>
             </div>
-            <button className={classes.SubmitButton}>Submit</button>
-            <p className={classes.SwitchModeClick} onClick={changeMode}>
+            {loginErrors.passwordErrors.map((err) => {
+              return <p className={classes.MobileWarning}>{err}</p>;
+            })}
+            <button
+              className={classes.MobileButton}
+              style={{ backgroundColor: "var(--nord7)" }}
+            >
+              {" "}
+              Login With Google{" "}
+            </button>
+            <button className={classes.MobileButton}> Login </button>
+            <p className={classes.LoginOrRegisterMobile} onClick={changeMode}>
               Don't have an account? Click here to make one
             </p>
           </form>
+
           <form
-            className={classes.LoginBox}
-            onSubmit={submitRegister}
+            className={classes.MobileForm}
             style={{
-              transform: loginMode ? "translateX(0%)" : "translateX(-100%)",
+              transform: loginMode ? "translateX(0px)" : "translateX(-100vw)",
             }}
+            onSubmit={submitRegisterMobile}
           >
             <h2>Register</h2>
-
-            <div className={classes.InputSection}>
-              <label for="username">Username</label>
-              <input type="text" name="username" id="username"></input>
-              {registerErrors.usernameErrors.map((err) => {
-                return <p className={classes.Warning}>{err}</p>;
-              })}
-            </div>
-            <div className={classes.InputSection}>
-              <label for="password">Password</label>
-              <input type="password" name="password" id="password"></input>
-              {registerErrors.passwordErrors.map((err) => {
-                return <p className={classes.Warning}>{err}</p>;
-              })}
-            </div>
-            <div className={classes.InputSection}>
-              <label for="confirmPassword">Confirm Password</label>
+            <div className={classes.MobileInputContainer}>
+              <BiUser className={classes.InputIcon}></BiUser>
               <input
-                type="password"
-                name="confirmPassword"
-                id="confirmPassword"
+                className={classes.MobileInput}
+                placeholder="Enter a username"
+                id="mobileUsername"
               ></input>
-              {registerErrors.confirmPasswordErrors.map((err) => {
-                return <p className={classes.Warning}>{err}</p>;
-              })}
             </div>
-            <button className={classes.SubmitButton}>Submit</button>
-            <p className={classes.SwitchModeClick} onClick={changeMode}>
+            {registerErrors.usernameErrors.map((err) => {
+              return <p className={classes.MobileWarning}>{err}</p>;
+            })}
+            <div className={classes.MobileInputContainer}>
+              <AiFillLock className={classes.InputIcon}></AiFillLock>
+              <input
+                className={classes.MobileInput}
+                type="password"
+                placeholder="Enter a password"
+                id="mobilePassword"
+              ></input>
+            </div>
+            {registerErrors.passwordErrors.map((err) => {
+              return <p className={classes.MobileWarning}>{err}</p>;
+            })}
+            <div className={classes.MobileInputContainer}>
+              <AiFillLock className={classes.InputIcon}></AiFillLock>
+              <input
+                className={classes.MobileInput}
+                type="password"
+                placeholder="Confirm password"
+                id="mobileConfirmPassword"
+              ></input>
+            </div>
+            {registerErrors.confirmPasswordErrors.map((err) => {
+              return <p className={classes.MobileWarning}>{err}</p>;
+            })}
+            <button
+              className={classes.MobileButton}
+              style={{ backgroundColor: "var(--nord7)" }}
+            >
+              {" "}
+              Login With Google{" "}
+            </button>
+            <button className={classes.MobileButton}> Register </button>
+            <p className={classes.LoginOrRegisterMobile} onClick={changeMode}>
               Already have an account? Click here to log in
             </p>
           </form>
