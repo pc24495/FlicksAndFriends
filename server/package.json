@@ -25,5 +25,9 @@
     "pg": "^8.5.1",
     "qs": "^6.7.0",
     "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "electron-prebuilt": "^1.4.13",
+    "electron-rebuild": "^3.2.5"
   }
 }

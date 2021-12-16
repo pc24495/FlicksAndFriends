@@ -5,6 +5,8 @@ import classes from "./Login2.module.css";
 import axios from "../../axiosConfig.js";
 import { BiUser } from "react-icons/bi";
 import { AiFillLock } from "react-icons/ai";
+import { FcGoogle } from "react-icons/fc";
+import { GoogleLogin } from "react-google-login";
 
 const Login2 = (props) => {
   const [loginMode, setLoginMode] = useState(true);
@@ -330,13 +332,22 @@ const Login2 = (props) => {
             {loginErrors.passwordErrors.map((err) => {
               return <p className={classes.MobileWarning}>{err}</p>;
             })}
-            <button
-              className={classes.MobileButton}
-              style={{ backgroundColor: "var(--nord7)" }}
-            >
-              {" "}
-              Login With Google{" "}
-            </button>
+            <GoogleLogin
+              clientId="GOOGLE_LOGIN"
+              render={(renderProps) => {
+                return (
+                  <button
+                    className={classes.MobileButton}
+                    style={{ backgroundColor: "var(--nord7)" }}
+                    onClick={renderProps.onClick}
+                  >
+                    <FcGoogle className={classes.GoogleIconMobile}></FcGoogle>
+                    Login With Google{" "}
+                  </button>
+                );
+              }}
+              icon={true}
+            ></GoogleLogin>
             <button className={classes.MobileButton}> Login </button>
             <p className={classes.LoginOrRegisterMobile} onClick={changeMode}>
               Don't have an account? Click here to make one
@@ -386,13 +397,24 @@ const Login2 = (props) => {
             {registerErrors.confirmPasswordErrors.map((err) => {
               return <p className={classes.MobileWarning}>{err}</p>;
             })}
-            <button
-              className={classes.MobileButton}
-              style={{ backgroundColor: "var(--nord7)" }}
+            <GoogleLogin
+              clientId="GOOGLE_LOGIN"
+              render={(renderProps) => {
+                return (
+                  <button
+                    className={classes.MobileButton}
+                    style={{ backgroundColor: "var(--nord7)" }}
+                    onClick={renderProps.onClick}
+                  >
+                    <FcGoogle className={classes.GoogleIconMobile}></FcGoogle>
+                    Login With Google{" "}
+                  </button>
+                );
+              }}
+              icon={true}
             >
-              {" "}
               Login With Google{" "}
-            </button>
+            </GoogleLogin>
             <button className={classes.MobileButton}> Register </button>
             <p className={classes.LoginOrRegisterMobile} onClick={changeMode}>
               Already have an account? Click here to log in
@@ -403,5 +425,7 @@ const Login2 = (props) => {
     </div>
   );
 };
+
+// <FcGoogle className={classes.GoogleIconMobile}></FcGoogle>
 
 export default Login2;
