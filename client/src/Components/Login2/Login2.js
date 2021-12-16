@@ -175,6 +175,12 @@ const Login2 = (props) => {
     setLoginMode((mode) => !mode);
   };
 
+  const googleSuccess = (res) => {};
+
+  const googleFailure = () => {
+    console.log("Google login failed, try again later");
+  };
+
   return (
     <div className={classes.LoginOuter}>
       <div className={classes.Login}>
@@ -347,7 +353,12 @@ const Login2 = (props) => {
                 );
               }}
               icon={true}
-            ></GoogleLogin>
+              onSuccess={googleSuccess}
+              onFailure={googleFailure}
+              cookiePolicy="single_host_origin"
+            >
+              Login With Google{" "}
+            </GoogleLogin>
             <button className={classes.MobileButton}> Login </button>
             <p className={classes.LoginOrRegisterMobile} onClick={changeMode}>
               Don't have an account? Click here to make one
@@ -412,6 +423,9 @@ const Login2 = (props) => {
                 );
               }}
               icon={true}
+              onSuccess={googleSuccess}
+              onFailure={googleFailure}
+              cookiePolicy="single_host_origin"
             >
               Login With Google{" "}
             </GoogleLogin>
