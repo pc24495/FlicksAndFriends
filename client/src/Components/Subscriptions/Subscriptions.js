@@ -179,64 +179,70 @@ export default function Subscriptions(props) {
   //   console.log(state.subscriptions);
   return (
     <div className={classes.Subscriptions}>
-      {state.subscriptions ? (
-        <div
-          className={classes.ShowTags}
-          style={{ display: state.subscriptions.length > 0 ? "block" : "none" }}
-        >
+      <div className={classes.FixedElements}>
+        {state.subscriptions ? (
           <div
-            className={classes.ShowTagContainer}
-            style={{ height: expandTags ? "fit-content" : "35px" }}
+            className={classes.ShowTags}
+            style={{
+              display: state.subscriptions.length > 0 ? "block" : "none",
+            }}
           >
-            {state.subscriptions.map((show) => (
-              <p className={classes.ShowTag} key={show.show_title}>
-                {show.show_title}
-                <span
-                  className={classes.CloseButton}
-                  onClick={(event) => removeSubscription(event, show.show_id)}
-                >
-                  {" "}
-                  x
-                </span>
-              </p>
-            ))}
-          </div>
-          <br></br>
-          <div className={classes.ButtonContainer}>
-            <BsCaretUpFill
-              className={classes.BsCaretUpFill}
-              style={{
-                transform: !expandTags ? "rotate(180deg)" : "rotate(0deg)",
-              }}
-              onClick={() => setExpandTags((prevExpandTags) => !prevExpandTags)}
-            ></BsCaretUpFill>
-            <button
-              onClick={(event) => submitSubscriptions(event)}
-              className={classes.Button}
+            <div
+              className={classes.ShowTagContainer}
+              style={{ height: expandTags ? "fit-content" : "35px" }}
             >
-              Submit
-            </button>
-          </div>
-        </div>
-      ) : null}
-      {state.searchMode && mobileCutoff ? (
-        <div className={classes.MobileSearch}>
-          <div className={classes.MobileSearchInner}>
-            <div className={classes.MobileSearchInnerInner}>
-              <BsSearch className={classes.SearchBarIcon}></BsSearch>
-              <div className={classes.MobileSearchbar}>
-                <input></input>
-              </div>
+              {state.subscriptions.map((show) => (
+                <p className={classes.ShowTag} key={show.show_title}>
+                  {show.show_title}
+                  <span
+                    className={classes.CloseButton}
+                    onClick={(event) => removeSubscription(event, show.show_id)}
+                  >
+                    {" "}
+                    x
+                  </span>
+                </p>
+              ))}
             </div>
-            <AiOutlineClose
-              className={classes.CloseSearch}
-              onClick={() => setState({ ...state, searchMode: false })}
-            >
-              x
-            </AiOutlineClose>
+            <br></br>
+            <div className={classes.ButtonContainer}>
+              <BsCaretUpFill
+                className={classes.BsCaretUpFill}
+                style={{
+                  transform: !expandTags ? "rotate(180deg)" : "rotate(0deg)",
+                }}
+                onClick={() =>
+                  setExpandTags((prevExpandTags) => !prevExpandTags)
+                }
+              ></BsCaretUpFill>
+              <button
+                onClick={(event) => submitSubscriptions(event)}
+                className={classes.Button}
+              >
+                Submit
+              </button>
+            </div>
           </div>
-        </div>
-      ) : null}
+        ) : null}
+        {state.searchMode && mobileCutoff ? (
+          <div className={classes.MobileSearch}>
+            <div className={classes.MobileSearchInner}>
+              <div className={classes.MobileSearchInnerInner}>
+                <BsSearch className={classes.SearchBarIcon}></BsSearch>
+                <div className={classes.MobileSearchbar}>
+                  <input></input>
+                </div>
+              </div>
+              <AiOutlineClose
+                className={classes.CloseSearch}
+                onClick={() => setState({ ...state, searchMode: false })}
+              >
+                x
+              </AiOutlineClose>
+            </div>
+          </div>
+        ) : null}
+      </div>
       <div
         style={{
           margin: "auto",

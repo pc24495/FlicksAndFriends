@@ -1,29 +1,23 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import classes from "./Feed.module.css";
 import Post from "../Post/Post.js";
 import PostSpinner from "../Post/PostSpinner.js";
 import axios from "../../../axiosConfig.js";
-import smile from "./smile.png";
-import squareTest from "./SquareTestImage.png";
+// import smile from "./smile.png";
+// import squareTest from "./SquareTestImage.png";
 import Backdrop from "../../Backdrop/Backdrop.js";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useHistory } from "react-router-dom";
 import qs from "qs";
 
 // import TextareaAutosize from "react-textarea-autosize";
 
 export default function Feed(props) {
-  const history = useHistory();
-
   const subscriptions = useSelector((state) => {
     return state.subscriptions;
   });
 
   const profilePic = useSelector((state) => state.profilePic);
-  const showFriendsDropdown = useSelector((state) => state.showFriendsDropdown);
-  const newFriendStatus = useSelector((state) => state.newFriendStatus);
-  const dispatch = useDispatch();
 
   const [shows, setShows] = useState([]);
   // console.log(shows);
@@ -57,6 +51,7 @@ export default function Feed(props) {
           }
         });
     }
+    // eslint-disable-next-line
   }, [subscriptions]);
 
   const [state, setState] = useState({
@@ -68,12 +63,7 @@ export default function Feed(props) {
 
   const likes = [];
   likes.length = 43;
-  const tags = [];
-  const loremText =
-    "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quidem inventore aut dicta non eaque dolorem iste quis praesentium, ipsa suscipit? Nihil quibusdam amet rerum possimus mollitia tempore, eligendi rem deserunt ea labore maxime qui officia totam pariatur veniam voluptates aliquam aliquid. Cum magnam animi cupiditate et quidem eum hic veniam? s";
-  const commentBody =
-    "orem ipsum dolor, sit amet consectetur adipisicing elit. Quidem inventore aut dicta non eaque dolorem iste quis praesentium, ipsa suscipit? Nihil quibusdam amet rerum possimus mollitia tempore, eligendi rem deserunt ea labore maxime qui officia totam pariatur veniam voluptates aliquam aliquid. Cum magnam animi cupiditate et quidem eum hic v";
-  const comments = [{ commentBody: commentBody }];
+
   // console.log(props.initPosts);
   const [postState, setPostState] = useState({
     ...props.initPosts,
@@ -218,7 +208,7 @@ export default function Feed(props) {
       axios
         .post("/api/posts", {
           headers: {
-            "x-access-token": localStorage.getItem("token"),
+            "x-access-token": token,
           },
           post_text: text,
           episode_air_date: currentEpisode.air_date,
@@ -258,7 +248,7 @@ export default function Feed(props) {
       axios
         .post("/api/posts", {
           headers: {
-            "x-access-token": localStorage.getItem("token"),
+            "x-access-token": token,
           },
           post_text: text,
           episode_air_date: currentEpisode.air_date,
@@ -410,13 +400,13 @@ export default function Feed(props) {
     // }
   };
 
-  const linkto = (link) => {
-    if (link === "login") {
-      history.push("/login");
-    } else {
-      history.push("/registration");
-    }
-  };
+  // const linkto = (link) => {
+  //   if (link === "login") {
+  //     history.push("/login");
+  //   } else {
+  //     history.push("/registration");
+  //   }
+  // };
   // console.log(shows);
   // console.log(currentShow);
   // console.log(currentSeason);

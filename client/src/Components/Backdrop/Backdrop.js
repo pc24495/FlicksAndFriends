@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React from "react";
 import classes from "./Backdrop.module.css";
 
 export const Backdrop = (props) => {

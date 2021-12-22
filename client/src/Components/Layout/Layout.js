@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import Aux from "../hoc/Aux";
 import classes from "./Layout.module.css";
 import Backdrop from "../Backdrop/Backdrop.js";

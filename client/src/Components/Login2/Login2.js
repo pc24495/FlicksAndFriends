@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useState } from "react";
+// import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import classes from "./Login2.module.css";
 import axios from "../../axiosConfig.js";
@@ -16,7 +16,7 @@ const Login2 = (props) => {
     confirmPasswordErrors: [],
   });
   const dispatch = useDispatch();
-  const history = useHistory();
+  // const history = useHistory();
 
   const submitLogin = (event) => {
     event.preventDefault();
@@ -34,8 +34,8 @@ const Login2 = (props) => {
     }
 
     if (
-      newLoginErrors.usernameErrors.length == 0 &&
-      newLoginErrors.passwordErrors.length == 0
+      newLoginErrors.usernameErrors.length === 0 &&
+      newLoginErrors.passwordErrors.length === 0
     ) {
       axios.post("/api/login", { username, password }).then((response) => {
         if (response.data.success) {
@@ -68,11 +68,13 @@ const Login2 = (props) => {
       confirmPasswordErrors: [],
     };
     console.log(password.length);
+    // eslint-disable-next-line
     console.log(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?@]/g.test(password));
     if (password === null || password === "") {
       newRegisterErrors.passwordErrors.push("Please enter a password");
     } else if (
       !(password.length >= 10) ||
+      // eslint-disable-next-line
       !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(password) ||
       !/\d/.test(password)
     ) {

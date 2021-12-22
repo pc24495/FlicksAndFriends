@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { Formik, useField, Form } from "formik";
-import { useSelector } from "react-redux";
+import React from "react";
+import { Formik, Form } from "formik";
 import classes from "./CreatePost.module.css";
 
 const CreatePost = (props) => {
-  const subscriptions = useSelector((state) => {
-    return state.subscriptions;
-  });
+  // const subscriptions = useSelector((state) => {
+  //   return state.subscriptions;
+  // });
 
   return (
     <div className={classes.CreatePost}>
