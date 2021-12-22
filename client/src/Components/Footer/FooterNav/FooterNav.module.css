@@ -1,12 +1,12 @@
 .FooterNav a svg {
   width: 30px;
   height: 30px;
-  color: yellow;
+  color: var(--nord6);
   display: inline;
 }
 
 .FooterNav a.active svg {
-  color: pink;
+  color: var(--nord8);
   display: inline;
 }
 
@@ -14,12 +14,12 @@
   .FooterNav a svg {
     width: 30px;
     height: 30px;
-    color: yellow;
+    color: var(--nord6);
     display: none;
   }
 
   .FooterNav a.active svg {
-    color: pink;
+    color: var(--nord8);
     display: none;
   }
 }

@@ -18,6 +18,16 @@
   margin-bottom: 50px;
 }
 
+.SelectorMobile {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-around;
+  position: relative;
+  top: 20px;
+  margin-bottom: 50px;
+}
+
 .ShowTags {
   width: 94vw;
   border-bottom: var(--nord4);
@@ -148,6 +158,7 @@
   justify-content: center;
   align-items: center;
   padding-top: 10px;
+  /* position: fixed; */
 }
 
 .MobileSearchInner {
@@ -161,7 +172,7 @@
 }
 
 .MobileSearchInnerInner {
-  width: 90%;
+  width: 85%;
   /* top: 20px; */
   /* margin: auto auto; */
   height: 50px;
@@ -222,10 +233,12 @@
   position: absolute;
   top: 0px;
   right: 0px;
-  font-size: 40px;
-  line-height: 40px;
+  /* width: 80;
+  height: 80px; */
+  font-size: 25px;
   font-weight: 600;
   margin: 0px;
+  /* background-color: blueviolet; */
 }
 
 .CloseSearch:hover {
@@ -257,6 +270,150 @@
 }
 
 @media (max-width: 610px) {
+  .Selector {
+    /* display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1em; */
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-around;
+    position: relative;
+    top: 20px;
+    margin-bottom: 50px;
+  }
+
+  .SearchIconContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+@media (max-width: 510px) {
+  .MobileSearch {
+    width: 94vw;
+    height: 80px;
+    margin: 0 auto;
+    background-color: var(--nod0);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding-top: 10px;
+    /* position: fixed; */
+  }
+
+  .MobileSearchInner {
+    width: 90%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background-color: blueviolet; */
+    position: relative;
+  }
+
+  .MobileSearchInnerInner {
+    width: 85%;
+    /* top: 20px; */
+    /* margin: auto auto; */
+    height: 50px;
+    background-color: var(--nord0);
+    /* background-color: chartreuse; */
+    border-bottom: 8px solid var(--nord3);
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .SearchBarIcon {
+    width: 50px;
+    height: 50px;
+    color: var(--nord5);
+    margin: 0px;
+    margin-right: 10px;
+  }
+
+  .MobileSearchbar {
+    flex: 1;
+    background-color: var(--nord0);
+    background-color: pink;
+    color: var(--nord5);
+    /* line-height: 50px; */
+    font-size: 30px;
+    border: none;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .MobileSearchbar input {
+    position: relative;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding-bottom: 0px;
+    margin: 0px;
+    border: none;
+    font-size: 30px;
+    line-height: 30px;
+    background-color: var(--nord0);
+    /* background-color: brown; */
+    color: var(--nord5);
+  }
+
+  .MobileSearchbar input:focus {
+    /* flex: 1; */
+    outline: none;
+    /* line-height: 50px; */
+    /* font-size: 50px; */
+  }
+
+  .CloseSearch {
+    color: var(--nord5);
+    font-family: "Roboto", sans-serif;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    /* width: 80;
+    height: 80px; */
+    font-size: 25px;
+    font-weight: 600;
+    margin: 0px;
+    /* background-color: blueviolet; */
+  }
+
+  .CloseSearch:hover {
+    cursor: pointer;
+  }
+
+  .SearchIconContainer {
+    position: fixed;
+    bottom: 60px;
+    right: 15px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--nord5);
+    box-shadow: 0px 0px 10px var(--nord7);
+    z-index: 200;
+    display: none;
+  }
+
+  .SearchIconContainer:hover {
+    cursor: pointer;
+  }
+
+  .SearchIcon {
+    width: 45px;
+    height: 45px;
+    z-index: 210;
+    color: var(--nord0);
+  }
+
   .Selector {
     /* display: grid;
     grid-template-columns: 1fr 1fr;

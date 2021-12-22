@@ -10,6 +10,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import qs from "qs";
 import { BsCaretUpFill } from "react-icons/bs";
 import { BsSearch } from "react-icons/bs";
+import { AiOutlineClose } from "react-icons/ai";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 export default function Subscriptions(props) {
@@ -218,7 +219,7 @@ export default function Subscriptions(props) {
           </div>
         </div>
       ) : null}
-      {state.searchMode ? (
+      {state.searchMode && mobileCutoff ? (
         <div className={classes.MobileSearch}>
           <div className={classes.MobileSearchInner}>
             <div className={classes.MobileSearchInnerInner}>
@@ -227,12 +228,12 @@ export default function Subscriptions(props) {
                 <input></input>
               </div>
             </div>
-            <p
+            <AiOutlineClose
               className={classes.CloseSearch}
               onClick={() => setState({ ...state, searchMode: false })}
             >
               x
-            </p>
+            </AiOutlineClose>
           </div>
         </div>
       ) : null}
@@ -286,7 +287,7 @@ export default function Subscriptions(props) {
         {mobileCutoff && !state.isSearching ? (
           <InfiniteScroll
             dataLength={state.shows.length}
-            className={classes.Selector}
+            className={classes.SelectorMobile}
             loader={<LoadingShowBox></LoadingShowBox>}
             hasMore={true}
             scrollThreshold={0}
