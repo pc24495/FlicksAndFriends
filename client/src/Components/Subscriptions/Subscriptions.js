@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import ShowBox from "./ShowBox/ShowBox.js";
 import LoadingShowBox from "./ShowBox/LoadingShowBox.js";
@@ -29,6 +29,7 @@ export default function Subscriptions(props) {
   const searchValue = useSelector((state) => state.searchValue);
   let source = Axios.CancelToken.source();
   const mobileCutoff = useMediaQuery("(max-width:610px)");
+  const mobileShowboxRef = useRef();
   //Note: "show_id" field in shows corresponds to "tv_id" in subscriptions
   useEffect(async () => {
     if (state.shows.length === 0) {
@@ -157,6 +158,21 @@ export default function Subscriptions(props) {
     });
   };
 
+  const handleBackdropShowBox = (event, tv_id) => {
+    const subscription = JSON.parse(
+      document.getElementById(tv_id + "-mobile").dataset.subscription
+    );
+    setState({
+      ...state,
+      subscriptions: [subscription].concat(state.subscriptions),
+      displayShows: state.displayShows.filter(
+        (show) => parseInt(show.tv_id) !== tv_id
+      ),
+      showBackdrop: false,
+      clickedShow: {},
+    });
+  };
+
   const submitSubscriptions = (event) => {
     let token = localStorage.getItem("token");
     // console.log(state.subscriptions);
@@ -176,6 +192,19 @@ export default function Subscriptions(props) {
       });
   };
 
+  const handleMobileShowClick = (show) => {
+    setState({ ...state, clickedShow: show, showBackdrop: true });
+  };
+
+  const handleBackdropClick = (event) => {
+    if (!mobileShowboxRef.current.contains(event.target)) {
+      setState({ ...state, showBackdrop: false, clickedShow: {} });
+    }
+  };
+
+  const handleMobileSearch = (event) => {
+    dispatch({ type: "SEARCH", searchValue: event.target.value });
+  };
   //   console.log(state.subscriptions);
   return (
     <div className={classes.Subscriptions}>
@@ -230,7 +259,7 @@ export default function Subscriptions(props) {
               <div className={classes.MobileSearchInnerInner}>
                 <BsSearch className={classes.SearchBarIcon}></BsSearch>
                 <div className={classes.MobileSearchbar}>
-                  <input></input>
+                  <input onChange={handleMobileSearch}></input>
                 </div>
               </div>
               <AiOutlineClose
@@ -301,7 +330,23 @@ export default function Subscriptions(props) {
           >
             {state.displayShows.map((show, index) => (
               <div className={classes.ShowTitleBox}>
-                <p>{show.title}</p>
+                <p onClick={() => handleMobileShowClick(show)}>{show.title}</p>
+              </div>
+            ))}
+          </InfiniteScroll>
+        ) : null}
+        {mobileCutoff && state.isSearching ? (
+          <InfiniteScroll
+            dataLength={state.shows.length}
+            className={classes.SelectorMobile}
+            loader={<LoadingShowBox></LoadingShowBox>}
+            hasMore={true}
+            scrollThreshold={0}
+            next={getMoreShows}
+          >
+            {state.filteredShows.map((show, index) => (
+              <div className={classes.ShowTitleBox}>
+                <p onClick={() => handleMobileShowClick(show)}>{show.title}</p>
               </div>
             ))}
           </InfiniteScroll>
@@ -310,11 +355,32 @@ export default function Subscriptions(props) {
       {!state.searchMode ? (
         <div
           className={classes.SearchIconContainer}
-          onClick={() => setState({ ...state, searchMode: true })}
+          onClick={() => {
+            dispatch({ type: "SEARCH", searchValue: "" });
+            setState({ ...state, searchMode: true });
+          }}
         >
           <BsSearch className={classes.SearchIcon}></BsSearch>
         </div>
       ) : null}
+
+      <Backdrop showBackdrop={state.showBackdrop} onClick={handleBackdropClick}>
+        {Object.keys(state.clickedShow).length !== 0 ? (
+          <ShowBox
+            key={`${state.clickedShow.tv_id}`}
+            id={state.clickedShow.tv_id + "-mobile"}
+            title={state.clickedShow.title}
+            poster={state.clickedShow.poster}
+            show={state.clickedShow}
+            maxHeight={342}
+            submitFunc={(event) =>
+              handleBackdropShowBox(event, state.clickedShow.tv_id)
+            }
+            style={{ margin: "auto auto", top: "calc(50% - 171px)" }}
+            ref={mobileShowboxRef}
+          ></ShowBox>
+        ) : null}
+      </Backdrop>
     </div>
   );
 }

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import classes from "./ShowBox.module.css";
 
-export default function ShowBox(props) {
+const ShowBox = React.forwardRef((props, ref) => {
   // console.log(
   //   props.show.episodes.length + "-" + props.show.title + "-" + props.show.tv_id
   // );
@@ -63,8 +62,9 @@ export default function ShowBox(props) {
     <div
       className={classes.ShowBox}
       id={props.id}
-      style={{ height: `${props.maxHeight}px` }}
+      style={{ ...props.style, height: `${props.maxHeight}px` }}
       data-subscription={JSON.stringify(subscription)}
+      ref={ref}
     >
       <img
         src={"data:image/jpeg;base64," + props.poster}
@@ -116,4 +116,6 @@ export default function ShowBox(props) {
       </div>
     </div>
   );
-}
+});
+
+export default ShowBox;

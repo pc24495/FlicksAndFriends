@@ -12,6 +12,7 @@
   flex-direction: column;
   height: 600px;
   margin-bottom: 20px;
+  top: calc(100% -);
 }
 
 .Poster {
