@@ -76,10 +76,6 @@ export default function Post(props) {
   }, [props.body]);
 
   useEffect(() => {
-    if (parseInt(props.post_id) === 284) {
-      console.log(props.num_likes);
-      console.log(props.user_liked_post);
-    }
     setNumLikes(props.num_likes);
   }, [props.num_likes]);
 

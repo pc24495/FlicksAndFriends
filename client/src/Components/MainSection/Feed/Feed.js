@@ -198,12 +198,8 @@ export default function Feed(props) {
   };
 
   const submitPost = (event) => {
-    // console.log("Text: " + text);
-    // console.log(currentEpisode);
-    // console.log(currentShow);
-
     const token = localStorage.getItem("token");
-    // console.log(currentShow);
+    console.log(currentEpisode);
     if (state.showDropdowns) {
       axios
         .post("/api/posts", {
