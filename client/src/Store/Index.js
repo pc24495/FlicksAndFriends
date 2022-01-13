@@ -41,7 +41,7 @@ const reducer = (state = initialState, action) => {
   }
 
   if (action.type === "LOGIN") {
-    // console.log(action);
+    console.log(action);
     return {
       ...state,
       loggedIn: true,

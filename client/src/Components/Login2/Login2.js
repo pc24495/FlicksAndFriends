@@ -24,9 +24,10 @@ const Login2 = (props) => {
 
   const submitLogin = (event) => {
     event.preventDefault();
-    console.log("Logging in!");
+    console.log("Logging in");
     const username = event.target.elements.username.value;
     const password = event.target.elements.password.value;
+    console.log(password);
     const newLoginErrors = {
       usernameErrors: [],
       passwordErrors: [],
@@ -38,6 +39,8 @@ const Login2 = (props) => {
       newLoginErrors.passwordErrors.push("Please enter a password");
     }
     console.log(newLoginErrors);
+    console.log(newLoginErrors.usernameErrors.length);
+    console.log(newLoginErrors.passwordErrors.length);
     if (
       newLoginErrors.usernameErrors.length == 0 &&
       newLoginErrors.passwordErrors.length == 0
@@ -46,17 +49,22 @@ const Login2 = (props) => {
         if (response.data.success) {
           localStorage.setItem("token", response.data.token);
           console.log(response.data.result);
+          console.log("Pushing!!");
           dispatch({
             type: "LOGIN",
             username: response.data.result.username,
             profilePic: response.data.result.profile_pic,
             userID: response.data.result.user_id,
           });
+          console.log("Pushing!!");
+          history.push("/");
         } else {
+          console.log(response.data.errors);
           setLoginErrors(response.data.errors);
         }
       });
     } else {
+      console.log("Login failed");
       setLoginErrors(newLoginErrors);
     }
   };
@@ -175,10 +183,20 @@ const Login2 = (props) => {
     setLoginMode((mode) => !mode);
   };
 
-  const googleSuccess = (res) => {};
+  const googleSuccess = async (res) => {
+    const { googleId, email } = res.profileObj;
+    axios.post("/api/login/google", { googleId, email }).then((res) => {
+      if (res.data.success) {
+        console.log("Success logging in!");
+      } else {
+        console.log("Google could not log in at this time!");
+      }
+    });
+  };
 
-  const googleFailure = () => {
+  const googleFailure = (err) => {
     console.log("Google login failed, try again later");
+    console.log(err);
   };
 
   return (
@@ -330,7 +348,8 @@ const Login2 = (props) => {
             <div className={classes.MobileInputContainer}>
               <AiFillLock className={classes.InputIcon}></AiFillLock>
               <input
-                className={classes.MobileInput}
+                className={classes.MobilePasswordInput}
+                type="password"
                 placeholder="Enter a password"
                 id="mobilePassword"
               ></input>
@@ -339,7 +358,6 @@ const Login2 = (props) => {
               return <p className={classes.MobileWarning}>{err}</p>;
             })}
             <GoogleLogin
-              clientId="GOOGLE_LOGIN"
               render={(renderProps) => {
                 return (
                   <button
@@ -356,6 +374,7 @@ const Login2 = (props) => {
               onSuccess={googleSuccess}
               onFailure={googleFailure}
               cookiePolicy="single_host_origin"
+              clientId="939099194810-laea0a5iagfve6irop01euk4rqpdlu94.apps.googleusercontent.com"
             >
               Login With Google{" "}
             </GoogleLogin>
@@ -387,7 +406,7 @@ const Login2 = (props) => {
             <div className={classes.MobileInputContainer}>
               <AiFillLock className={classes.InputIcon}></AiFillLock>
               <input
-                className={classes.MobileInput}
+                className={classes.MobilePasswordInput}
                 type="password"
                 placeholder="Enter a password"
                 id="mobilePassword"
@@ -409,7 +428,7 @@ const Login2 = (props) => {
               return <p className={classes.MobileWarning}>{err}</p>;
             })}
             <GoogleLogin
-              clientId="GOOGLE_LOGIN"
+              clientId="939099194810-laea0a5iagfve6irop01euk4rqpdlu94.apps.googleusercontent.com"
               render={(renderProps) => {
                 return (
                   <button

@@ -5,11 +5,13 @@ const db = require("../database");
 const arrayToAllInts = require("../helpers/ArrayToAllInts.js");
 
 router.get("/", async (req, res) => {
+  // console.log("Getting shows");
   const limit = req.query.limit || null;
   const excludeIDs = Array.isArray(req.query.excludeIDs)
     ? req.query.excludeIDs
     : null;
   const searchTerm = req.query.searchTerm;
+  // console.log(req.query);
   const subscribedShowIDs = req.query.subscriptionIDs
     ? arrayToAllInts(req.query.subscriptionIDs)
     : [];
@@ -53,10 +55,12 @@ router.get("/", async (req, res) => {
       .then((result) => {
         res.json({ shows: result.rows });
       });
-  } else {
+  } else if (limit) {
     await db
       .query("SELECT * FROM shows ORDER BY popularity DESC LIMIT $1", [limit])
       .then((result) => res.json({ shows: result.rows }));
+  } else {
+    return res.json({ auth: false });
   }
 });
 

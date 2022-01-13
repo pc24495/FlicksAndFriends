@@ -46,20 +46,25 @@ export default function Feed(props) {
           })
         : null;
     if (subscriptions && subscriptions.length > 0) {
+      console.log(localStorage.getItem("token"));
+      console.log(subscriptionIDs);
       axios
-        .post("/api/shows", {
+        .get("/api/shows", {
           headers: {
             "x-access-token": localStorage.getItem("token"),
           },
           subscriptionIDs: subscriptionIDs,
+          limit: 20,
         })
         .then((res) => {
+          console.log("Trying to get shows.");
           if (res.data.auth) {
-            // console.log("Setting shows from subscriptions useEffect");
+            console.log("Setting shows from subscriptions useEffect");
             setShows(res.data.shows);
-          } else {
-            props.history.push("/login");
           }
+          // else {
+          //   props.history.push("/login");
+          // }
         });
     }
   }, [subscriptions]);
