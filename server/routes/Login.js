@@ -71,15 +71,54 @@ router.post("/google", async (req, res) => {
       //Now create a new user using the assignedUsername as username and googleId as password and put it in the database
       bcrypt.hash(googleId, saltRounds, (err, hash) => {
         db.query(
-          "INSERT INTO users(username, password) values($1,$2) RETURNING *",
-          [assignedUsername, hash]
-        ).then((res) => console.log(res.rows));
+          "INSERT INTO users(username, password, email) values($1,$2,$3) RETURNING *",
+          [assignedUsername, hash, email]
+        ).then((result) => {
+          console.log(result.rows);
+          const id = result.rows[0].user_id;
+          const token = jwt.sign({ id }, process.env.SECRET, {
+            expiresIn: "10800s",
+          });
+          return res.status(201).json({
+            success: true,
+            firstTime: true,
+            token,
+            result: result.rows[0],
+          });
+        });
       });
     } else {
-      //needs finishing
-    }
+      const user = await db
+        .query("SELECT * FROM users WHERE email=$1", [email])
+        .then((res) => res.rows[0]);
+      console.log(user);
 
-    return res.json({ success: true });
+      bcrypt.compare(googleId, user.password, (error, response) => {
+        if (response) {
+          req.session.user = user;
+
+          const id = user.user_id;
+          const token = jwt.sign({ id }, process.env.SECRET, {
+            expiresIn: "10800s",
+          });
+          console.log("Success logging in a second time!");
+          return res.status(200).json({
+            success: true,
+            auth: true,
+            token,
+            user,
+            firstTime: false,
+          });
+        } else {
+          console.log("Failure to login a second time :(");
+          return res.status(401).json({
+            auth: false,
+            success: false,
+            message: "Wrong username/password combination!",
+          });
+        }
+      });
+    }
   }
 });
 

@@ -8,10 +8,9 @@ import { Route, Switch, useHistory } from "react-router-dom";
 import Registration from "./Components/Registration/Registration.js";
 import ProfilePicUpload from "./Components/Registration/ProfilePicUpload/ProfilePicUpload.js";
 // import Login from "./Components/Login/Login.js";
-import Login from "./Components/Login2/Login2.js";
+import Login from "./Components/Login/Login.js";
 import CreatePost from "./Components/CreatePost/CreatePost.js";
 import { useEffect } from "react";
-// import logo from "./logo.svg";
 // import TestComponent from "./Components/TestComponent.js";
 // import TestComponent from "./Components/TestComponent.js";
 

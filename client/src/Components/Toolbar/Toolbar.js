@@ -5,6 +5,7 @@ import NavigationItem from "../NavigationItems/NavigationItem/NavigationItem.js"
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { FaUserFriends } from "react-icons/fa";
+import { AiFillCaretDown } from "react-icons/ai";
 import { useEffect } from "react";
 import axios from "../../../../server/node_modules/axios";
 // import axios from "../../axiosConfig.js";

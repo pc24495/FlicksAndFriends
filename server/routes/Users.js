@@ -101,4 +101,12 @@ router.patch("/profilePic", verifyJWT, (req, res) => {
   );
 });
 
+router.patch("/username", verifyJWT, async (request, response) => {
+  await db.query("UPDATE users SET username=$1 WHERE user_id=$2", [
+    request.body.username,
+    request.userID,
+  ]);
+  return response.status(200).json({ success: true });
+});
+
 module.exports = router;

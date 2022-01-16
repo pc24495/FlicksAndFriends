@@ -1,0 +1,15 @@
+.Login {
+  width: 54%;
+  /* height: calc((100vh - 56px) / 3); */
+  min-height: 300px;
+  top: calc((100vh - 306px) / 3);
+  left: 23%;
+  display: block;
+  /* border: 1px solid black; */
+  position: relative;
+  margin: 0px;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: var(--nord2);
+  color: var(--nord5);
+}
