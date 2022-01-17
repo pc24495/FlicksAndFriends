@@ -1,39 +1,23 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import classes from "./Feed.module.css";
 import Post from "../Post/Post.js";
 import PostSpinner from "../Post/PostSpinner.js";
 import axios from "../../../axiosConfig.js";
-import smile from "./smile.png";
-import squareTest from "./SquareTestImage.png";
+// import smile from "./smile.png";
+// import squareTest from "./SquareTestImage.png";
 import Backdrop from "../../Backdrop/Backdrop.js";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useHistory } from "react-router-dom";
 import qs from "qs";
 
 // import TextareaAutosize from "react-textarea-autosize";
 
 export default function Feed(props) {
-  //STATE VARIABLES
-  // console.log(props.initPosts);
-  // console.log("Rendering feed");
-  // const showList = useSelector((state) => {
-  //   return state.shows;
-  // });
-
-  const history = useHistory();
-
   const subscriptions = useSelector((state) => {
-    // console.log(state.subscriptions);
     return state.subscriptions;
   });
 
   const profilePic = useSelector((state) => state.profilePic);
-  const showFriendsDropdown = useSelector((state) => state.showFriendsDropdown);
-  const newFriendStatus = useSelector((state) => state.newFriendStatus);
-  const dispatch = useDispatch();
-
-  // console.log(subscriptionIDs);
 
   const [shows, setShows] = useState([]);
   // console.log(shows);
@@ -46,20 +30,25 @@ export default function Feed(props) {
           })
         : null;
     if (subscriptions && subscriptions.length > 0) {
-      console.log(localStorage.getItem("token"));
-      console.log(subscriptionIDs);
+      // console.log(localStorage.getItem("token"));
+      // console.log(subscriptionIDs);
       axios
         .get("/api/shows", {
           headers: {
             "x-access-token": localStorage.getItem("token"),
           },
-          subscriptionIDs: subscriptionIDs,
-          limit: 20,
+          params: {
+            subscriptionIDs,
+            limit: 20,
+          },
+          paramsSerializer: (params) => {
+            return qs.stringify(params);
+          },
         })
         .then((res) => {
-          console.log("Trying to get shows.");
+          // console.log("Trying to get shows.");
           if (res.data.auth) {
-            console.log("Setting shows from subscriptions useEffect");
+            // console.log("Setting shows from subscriptions useEffect");
             setShows(res.data.shows);
           }
           // else {
@@ -67,29 +56,8 @@ export default function Feed(props) {
           // }
         });
     }
+    // eslint-disable-next-line
   }, [subscriptions]);
-
-  useEffect(() => {
-    // if (newFriendStatus) {
-    //   setPostState((prevState) => {
-    //     return {
-    //       ...prevState,
-    //       posts: prevState.posts.map((post) => {
-    //         if (newFriendStatus.user_id === post.user_id) {
-    //           return {
-    //             ...post,
-    //             friend_status: newFriendStatus.friend_status,
-    //           };
-    //         } else {
-    //           return post;
-    //         }
-    //       }),
-    //     };
-    //   });
-    // }
-  }, [newFriendStatus]);
-
-  // const
 
   const [state, setState] = useState({
     imageArray: null,
@@ -100,14 +68,7 @@ export default function Feed(props) {
 
   const likes = [];
   likes.length = 43;
-  const tags = [
-    // "ShadowAndBone", "TestingTag", "TestingTag2"
-  ];
-  const loremText =
-    "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quidem inventore aut dicta non eaque dolorem iste quis praesentium, ipsa suscipit? Nihil quibusdam amet rerum possimus mollitia tempore, eligendi rem deserunt ea labore maxime qui officia totam pariatur veniam voluptates aliquam aliquid. Cum magnam animi cupiditate et quidem eum hic veniam? s";
-  const commentBody =
-    "orem ipsum dolor, sit amet consectetur adipisicing elit. Quidem inventore aut dicta non eaque dolorem iste quis praesentium, ipsa suscipit? Nihil quibusdam amet rerum possimus mollitia tempore, eligendi rem deserunt ea labore maxime qui officia totam pariatur veniam voluptates aliquam aliquid. Cum magnam animi cupiditate et quidem eum hic v";
-  const comments = [{ commentBody: commentBody }];
+
   // console.log(props.initPosts);
   const [postState, setPostState] = useState({
     ...props.initPosts,
@@ -242,17 +203,13 @@ export default function Feed(props) {
   };
 
   const submitPost = (event) => {
-    // console.log("Text: " + text);
-    // console.log(currentEpisode);
-    // console.log(currentShow);
-
     const token = localStorage.getItem("token");
-    // console.log(currentShow);
+    // console.log(currentEpisode);
     if (state.showDropdowns) {
       axios
         .post("/api/posts", {
           headers: {
-            "x-access-token": localStorage.getItem("token"),
+            "x-access-token": token,
           },
           post_text: text,
           episode_air_date: currentEpisode.air_date,
@@ -266,7 +223,7 @@ export default function Feed(props) {
         .then((res) => {
           // console.log(res.data);
           const posts = res.data.posts;
-          console.log(posts);
+          // console.log(posts);
           let newUserPics;
           const profilePicLoaded = newPosts.userPics.has(res.data.user_id);
           // console.log(profilePicLoaded);
@@ -292,7 +249,7 @@ export default function Feed(props) {
       axios
         .post("/api/posts", {
           headers: {
-            "x-access-token": localStorage.getItem("token"),
+            "x-access-token": token,
           },
           post_text: text,
           episode_air_date: currentEpisode.air_date,
@@ -306,7 +263,7 @@ export default function Feed(props) {
         .then((res) => {
           // console.log(res.data);
           const posts = res.data.posts;
-          console.log(posts);
+          // console.log(posts);
           let newUserPics;
           const profilePicLoaded = newPosts.userPics.has(res.data.user_id);
           if (!profilePicLoaded) {
@@ -393,7 +350,7 @@ export default function Feed(props) {
             // const { posts, userPics } = { ...res.data };
             // console.log(posts);
             const posts = res.data.posts;
-            console.log(posts);
+            // console.log(posts);
             const userPics = new Map(JSON.parse(res.data.userPics));
             // console.log(userPics);
             // console.log(postState);
@@ -444,13 +401,13 @@ export default function Feed(props) {
     // }
   };
 
-  const linkto = (link) => {
-    if (link === "login") {
-      history.push("/login");
-    } else {
-      history.push("/registration");
-    }
-  };
+  // const linkto = (link) => {
+  //   if (link === "login") {
+  //     history.push("/login");
+  //   } else {
+  //     history.push("/registration");
+  //   }
+  // };
   // console.log(shows);
   // console.log(currentShow);
   // console.log(currentSeason);
@@ -572,6 +529,7 @@ export default function Feed(props) {
           next={getMorePosts}
           hasMore={postState.loadMore}
           scrollThreshold={0}
+          className={classes.InfiniteScroll}
         >
           {postState.posts.map((post) => {
             // console.log(post.comments);

@@ -6,6 +6,8 @@ const initialState = {
   loggedIn: false,
   backdropComponent: "Modal",
   showBackdrop: true,
+  displayBackdrop: false,
+  backdropData: { type: "" },
   showAlert: false,
   shows: [
     // { title: "Breaking Bad" },
@@ -41,7 +43,6 @@ const reducer = (state = initialState, action) => {
   }
 
   if (action.type === "LOGIN") {
-    console.log(action);
     return {
       ...state,
       loggedIn: true,
@@ -141,6 +142,20 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       newFriendStatus: action.newFriendStatus,
+    };
+  }
+
+  if (action.type === "DISPLAY BACKDROP") {
+    return {
+      ...state,
+      displayBackdrop: true,
+    };
+  }
+
+  if (action.type === "CLOSE BACKDROP") {
+    return {
+      ...state,
+      displayBackdrop: false,
     };
   }
 

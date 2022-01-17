@@ -12,18 +12,6 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import TextareaAutosize from "react-textarea-autosize";
 import axios from "../../../axiosConfig.js";
-// <p
-//             style={{
-//               margin: "10px",
-//               fontWeight: "bold",
-//               color: "var(--nord5)",
-//               height: "20px",
-//               lineHeight: "20px",
-//               verticalAlign: "sub",
-//             }}
-//           >
-//             \2022
-//           </p>
 
 export default function Post(props) {
   const [tags, setTags] = useState({
@@ -88,10 +76,6 @@ export default function Post(props) {
   }, [props.body]);
 
   useEffect(() => {
-    if (parseInt(props.post_id) === 284) {
-      console.log(props.num_likes);
-      console.log(props.user_liked_post);
-    }
     setNumLikes(props.num_likes);
   }, [props.num_likes]);
 
@@ -181,7 +165,7 @@ export default function Post(props) {
 
   const closeDropdown = (event) => {
     // console.log(event.target.className);
-    const className = event.target.className.animVal || event.target.className;
+    const className = event.target.className.animVal ?? event.target.className;
     if (className.includes("Post_Edit")) {
       event.preventDefault();
       // console.log(event.target.className);
@@ -509,33 +493,37 @@ export default function Post(props) {
         </div>
         <div className={classes.BodySection}>
           <div className={classes.Title}>
-            <p
-              className={classes.Username}
-              onMouseEnter={hoverUsername}
-              id={`${props.post_id}-username`}
-            >
-              {props.username}
-            </p>
-            <li className={classes.Bullet}>
-              <ul></ul>
-            </li>
-            <p className={classes.Date}>
-              {timeSince(Date.parse(props.post_date))}
-            </p>
-            {tags.friendStatus === "Unfriend User" ? (
-              <li className={classes.FriendTagBullet}>
+            <div className={classes.TitleMain}>
+              <p
+                className={classes.Username}
+                onMouseEnter={hoverUsername}
+                id={`${props.post_id}-username`}
+              >
+                {props.username}
+              </p>
+              <li className={classes.Bullet}>
                 <ul></ul>
               </li>
-            ) : null}
-            {tags.friendStatus === "Unfriend User" ? (
-              <p className={classes.FriendTag}>Friend</p>
-            ) : null}
-            {userID === parseInt(props.user_id) ? (
-              <BsThreeDotsVertical
-                className={classes.ThreeDots}
-                onClick={dropdown}
-              ></BsThreeDotsVertical>
-            ) : null}
+              <p className={classes.Date}>
+                {timeSince(Date.parse(props.post_date))}
+              </p>
+              {tags.friendStatus === "Unfriend User" ? (
+                <li className={classes.FriendTagBullet}>
+                  <ul></ul>
+                </li>
+              ) : null}
+              {tags.friendStatus === "Unfriend User" ? (
+                <p className={classes.FriendTag}>Friend</p>
+              ) : null}
+            </div>
+            <div className={classes.ThreeDotsOuter}>
+              {userID === parseInt(props.user_id) ? (
+                <BsThreeDotsVertical
+                  className={classes.ThreeDots}
+                  onClick={dropdown}
+                ></BsThreeDotsVertical>
+              ) : null}
+            </div>
           </div>
 
           <div className={classes.Tags} id={postID + "-tags"}>

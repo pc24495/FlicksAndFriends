@@ -3,43 +3,47 @@ const router = express.Router();
 const verifyJWT = require("../middlewares/VerifyJWT.js");
 const db = require("../database");
 const arrayToAllInts = require("../helpers/ArrayToAllInts.js");
+const qs = require("qs");
 
 router.get("/", async (req, res) => {
-  // console.log("Getting shows");
   const limit = req.query.limit || null;
   const excludeIDs = Array.isArray(req.query.excludeIDs)
     ? req.query.excludeIDs
     : null;
+
   const searchTerm = req.query.searchTerm;
-  // console.log(req.query);
   const subscribedShowIDs = req.query.subscriptionIDs
     ? arrayToAllInts(req.query.subscriptionIDs)
     : [];
-
   if (subscribedShowIDs.length > 0) {
-    db.query(
-      "SELECT * FROM shows WHERE tv_id = ANY ($1)",
-      [subscribedShowIDs],
-      (err, result) => {
-        if (err) {
-          console.log("Error getting shows from subscription IDs");
+    const shows = await db
+      .query("SELECT * FROm shows WHERE tv_id=ANY($1)", [subscribedShowIDs])
+      .then((result) => {
+        if (result.rows.length > 0) {
+          return result.rows;
         } else {
-          if (result.rows.length > 0) {
-            return res.status(200).json({
-              auth: true,
-              shows: result.rows,
-            });
-          } else {
-            return res.json({
-              auth: true,
-            });
-          }
+          return null;
         }
-      }
-    );
+      });
+
+    if (shows) {
+      return res.status(200).json({ shows, auth: true });
+    } else {
+      console.log(shows);
+      return res.status(400).json({ auth: true, shows: [] });
+    }
+  } else {
+    console.log("Bla");
   }
 
-  if (searchTerm && limit) {
+  if (searchTerm && limit && excludeIDs) {
+    await db
+      .query(
+        "SELECT * FROM shows WHERE position(lower($1) in lower(title))>0 AND NOT show_id = ANY($3) ORDER BY popularity DESC LIMIT $2",
+        [searchTerm, limit, excludeIDs]
+      )
+      .then((result) => res.json({ shows: result.rows }));
+  } else if (searchTerm && limit) {
     await db
       .query(
         "SELECT * FROM shows WHERE position(lower($1) in lower(title))>0 ORDER BY popularity DESC LIMIT $2",
@@ -53,12 +57,13 @@ router.get("/", async (req, res) => {
         [excludeIDs, limit]
       )
       .then((result) => {
-        res.json({ shows: result.rows });
+        return res.json({ shows: result.rows });
       });
   } else if (limit) {
-    await db
+    const shows = await db
       .query("SELECT * FROM shows ORDER BY popularity DESC LIMIT $1", [limit])
-      .then((result) => res.json({ shows: result.rows }));
+      .then((result) => result.shows);
+    return res.status(200).json({ shows });
   } else {
     return res.json({ auth: false });
   }

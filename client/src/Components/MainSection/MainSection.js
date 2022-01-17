@@ -58,7 +58,6 @@ export default function MainSection(props) {
               // const { posts, userPics } = { ...res.data };
               // console.log(posts);
               const posts = res.data.posts;
-              console.log(posts);
               const userPics = new Map(JSON.parse(res.data.userPics));
               // console.log(posts);
               setInitPosts((prevState) => ({

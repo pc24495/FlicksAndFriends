@@ -20,8 +20,10 @@ const usersRoute = require("./routes/Users.js");
 const showsRoute = require("./routes/Shows.js");
 const verifyJWT = require("./middlewares/VerifyJWT.js");
 const jwt = require("jsonwebtoken");
+const qs = require("qs");
 const app = express();
 
+app.set("query parser", (str) => qs.parse(str, { arrayLimit: 1000 }));
 app.use(express.json({ limit: "50mb" }));
 app.use(
   cors({
@@ -31,7 +33,7 @@ app.use(
   })
 );
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
+app.use(bodyParser.urlencoded({ extended: false, limit: "50mb" }));
 app.use(
   session({
     key: "userID",
@@ -50,8 +52,8 @@ app.use("/api/login", loginRoute);
 app.use("/api/friend-requests", friendRequestsRoute);
 app.use("/api/friends", friendsRoute);
 app.use("/api/posts", postsRoute);
-app.use("/api/comments/", commentsRoute);
-app.use("/api/shows/", showsRoute);
+app.use("/api/comments", commentsRoute);
+app.use("/api/shows", showsRoute);
 
 const PORT = process.env.port || 5000;
 

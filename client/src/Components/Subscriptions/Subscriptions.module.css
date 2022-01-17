@@ -18,24 +18,48 @@
   margin-bottom: 50px;
 }
 
+.SelectorMobile {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-around;
+  position: relative;
+  top: 20px;
+  margin-bottom: 50px;
+}
+
+.FixedElements {
+  position: sticky;
+  top: var(--toolbar-height);
+  width: 100vw;
+  margin: 0px;
+  z-index: 10;
+  background-color: var(--nord0);
+}
+
 .ShowTags {
   width: 94vw;
-  left: 4vw;
   border-bottom: var(--nord4);
   position: fixed;
   min-height: 40px;
   position: sticky;
   z-index: 10;
-  top: 56px;
+  top: var(--toolbar-height);
   margin-bottom: 10px;
+  margin: 0 auto;
   background-color: var(--nord2);
   display: block;
 }
 
 .ShowTagContainer {
+  min-height: 38px;
+  /* height: fit-content; */
+  /* height: 35px; */
   position: relative;
   display: block;
   top: 15px;
+  overflow: hidden;
+  transition: height 0.3s;
 }
 
 .ShowTag {
@@ -50,6 +74,7 @@
   /* background-color: #e7eff9; */
   background-color: var(--nord7);
   color: var(--nord6);
+  font-weight: 600;
   /* background-image: linear-gradient(315deg, #e7eff9 0%, #cfd6e6 74%); */
 }
 
@@ -60,6 +85,7 @@
   flex-direction: row;
   justify-content: flex-end;
   margin-top: 0px;
+  align-items: center;
 }
 
 .Button {
@@ -82,11 +108,338 @@
   right: 20px;
 }
 
-.Button {
+.Button:hover {
+  cursor: pointer;
+}
+
+.BsCaretUpFill {
+  /* justify-self: flex-start; */
+  position: relative;
+  right: 20px;
+  right: calc(50% - 41.49px - 24px - 25px);
+  width: 50px;
+  height: 30px;
+  /* background-color: palevioletred; */
+  transition: transform 0.3s;
+}
+
+.BsCaretUpFill:hover {
   cursor: pointer;
 }
 
 .CloseButton:hover {
   text-decoration: underline;
   cursor: pointer;
+}
+
+.ShowTitleBox {
+  width: calc(50% - 10px);
+  height: 100px;
+  margin: 5px;
+  /* background-color: rebeccapurple; */
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.ShowTitleBox p {
+  font-size: 25px;
+  font-weight: 700;
+  /* background-color: royalblue; */
+}
+
+.ShowTitleBox p:hover {
+  font-size: 25px;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+  /* background-color: royalblue; */
+}
+
+.MobileSearch {
+  width: 94vw;
+  height: 80px;
+  margin: 0 auto;
+  background-color: var(--nord0);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding-top: 10px;
+  z-index: 10;
+  /* position: fixed; */
+}
+
+.MobileSearchInner {
+  width: 90%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background-color: blueviolet; */
+  position: relative;
+}
+
+.MobileSearchInnerInner {
+  width: 85%;
+  /* top: 20px; */
+  /* margin: auto auto; */
+  height: 50px;
+  background-color: var(--nord0);
+  /* background-color: chartreuse; */
+  border-bottom: 8px solid var(--nord3);
+  display: flex;
+  justify-content: flex-start;
+}
+
+.SearchBarIcon {
+  width: 50px;
+  height: 50px;
+  color: var(--nord5);
+  margin: 0px;
+  margin-right: 10px;
+}
+
+.MobileSearchbar {
+  flex: 1;
+  background-color: var(--nord0);
+  /* background-color: var; */
+  color: var(--nord5);
+  /* line-height: 50px; */
+  font-size: 40px;
+  border: none;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.MobileSearchbar input {
+  position: relative;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0px;
+  margin: 0px;
+  border: none;
+  font-size: 40px;
+  background-color: var(--nord0);
+  color: var(--nord5);
+}
+
+.MobileSearchbar input:focus {
+  /* flex: 1; */
+  outline: none;
+  /* line-height: 50px; */
+  /* font-size: 50px; */
+}
+
+.CloseSearch {
+  color: var(--nord5);
+  font-family: "Roboto", sans-serif;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  /* width: 80;
+  height: 80px; */
+  font-size: 25px;
+  font-weight: 600;
+  margin: 0px;
+  /* background-color: blueviolet; */
+}
+
+.CloseSearch:hover {
+  cursor: pointer;
+}
+
+.SearchIconContainer {
+  position: fixed;
+  bottom: 60px;
+  right: 15px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--nord5);
+  box-shadow: 0px 0px 10px var(--nord7);
+  z-index: 200;
+  display: none;
+}
+
+.SearchIconContainer:hover {
+  cursor: pointer;
+}
+
+.SearchIcon {
+  width: 45px;
+  height: 45px;
+  z-index: 210;
+  color: var(--nord0);
+}
+
+@media (max-width: 610px) {
+  .Selector {
+    /* display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1em; */
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-around;
+    position: relative;
+    top: 20px;
+    margin-bottom: 50px;
+  }
+
+  .SearchIconContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+@media (max-width: 510px) {
+  .MobileSearch {
+    width: 94vw;
+    height: 80px;
+    margin: 0 auto;
+    background-color: var(--nod0);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding-top: 10px;
+    /* position: fixed; */
+  }
+
+  .MobileSearchInner {
+    width: 90%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background-color: blueviolet; */
+    position: relative;
+  }
+
+  .MobileSearchInnerInner {
+    width: 85%;
+    /* top: 20px; */
+    /* margin: auto auto; */
+    height: 50px;
+    background-color: var(--nord0);
+    /* background-color: chartreuse; */
+    border-bottom: 8px solid var(--nord3);
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .SearchBarIcon {
+    width: 50px;
+    height: 50px;
+    color: var(--nord5);
+    margin: 0px;
+    margin-right: 10px;
+  }
+
+  .MobileSearchbar {
+    flex: 1;
+    background-color: var(--nord0);
+    background-color: pink;
+    color: var(--nord5);
+    /* line-height: 50px; */
+    font-size: 30px;
+    border: none;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .MobileSearchbar input {
+    position: relative;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding-bottom: 0px;
+    margin: 0px;
+    border: none;
+    font-size: 30px;
+    line-height: 30px;
+    background-color: var(--nord0);
+    /* background-color: brown; */
+    color: var(--nord5);
+  }
+
+  .MobileSearchbar input:focus {
+    /* flex: 1; */
+    outline: none;
+    /* line-height: 50px; */
+    /* font-size: 50px; */
+  }
+
+  .CloseSearch {
+    color: var(--nord5);
+    font-family: "Roboto", sans-serif;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    /* width: 80;
+    height: 80px; */
+    font-size: 25px;
+    font-weight: 600;
+    margin: 0px;
+    /* background-color: blueviolet; */
+  }
+
+  .CloseSearch:hover {
+    cursor: pointer;
+  }
+
+  .SearchIconContainer {
+    position: fixed;
+    bottom: 60px;
+    right: 15px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--nord5);
+    box-shadow: 0px 0px 10px var(--nord7);
+    z-index: 200;
+    display: none;
+  }
+
+  .SearchIconContainer:hover {
+    cursor: pointer;
+  }
+
+  .SearchIcon {
+    width: 45px;
+    height: 45px;
+    z-index: 210;
+    color: var(--nord0);
+  }
+
+  .Selector {
+    /* display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1em; */
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-around;
+    position: relative;
+    top: 20px;
+    margin-bottom: 50px;
+  }
+
+  .SearchIconContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }

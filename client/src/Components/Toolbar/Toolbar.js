@@ -1,28 +1,33 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import classes from "./Toolbar.module.css";
 import NavigationItems from "../NavigationItems/NavigationItems.js";
 import NavigationItem from "../NavigationItems/NavigationItem/NavigationItem.js";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
+import useOnClickOutside from "../../Helpers/useOnClickOutside.js";
 import { FaUserFriends } from "react-icons/fa";
 import { AiFillCaretDown } from "react-icons/ai";
-import { useEffect } from "react";
+import { GiHamburgerMenu } from "react-icons/gi";
 import axios from "../../../../server/node_modules/axios";
-// import axios from "../../axiosConfig.js";
 
 const Toolbar = (props) => {
   const loggedIn = useSelector((state) => state.loggedIn);
   const windowWidth = useSelector((state) => state.windowWidth);
   const windowHeight = useSelector((state) => state.windowHeight);
+  const username = useSelector((state) => state.username);
   const [friendRequests, setFriendRequests] = useState({
     requests: [],
     showDropdown: false,
     numUnread: 0,
   });
+  const [showMobileDropdown, setShowMobileDropdown] = useState(false);
   const newFriendStatus = useSelector((state) => state.newFriendStatus);
   const changedID = useRef(null);
+  const ref = useRef();
   // const counter = useSelector((state) => state.counter);
-
+  useOnClickOutside(ref, () => {
+    setShowMobileDropdown(false);
+  });
   const dispatch = useDispatch();
 
   // console.log(loggedIn); //
@@ -219,6 +224,10 @@ const Toolbar = (props) => {
     });
   };
 
+  const openMobileDropdown = (event) => {
+    setShowMobileDropdown(true);
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     // console.log(friendRequests);
@@ -370,6 +379,25 @@ const Toolbar = (props) => {
           )}
         </NavigationItems>
       </nav>
+      <nav className={classes.MobileOnly}>
+        <GiHamburgerMenu className={classes.SidebarMenu}></GiHamburgerMenu>
+        <p className={classes.Username}>{username}</p>
+        <AiFillCaretDown
+          className={classes.DropdownIcon}
+          onClick={openMobileDropdown}
+          style={{
+            color: showMobileDropdown ? "var(--nord7)" : "var(--nord5)",
+          }}
+        ></AiFillCaretDown>
+      </nav>
+      {showMobileDropdown ? (
+        <div className={classes.MobileDropdown} ref={ref}>
+          {" "}
+          <p className={classes.MobileLogout} onClick={logout}>
+            Logout
+          </p>{" "}
+        </div>
+      ) : null}
     </header>
   );
 };

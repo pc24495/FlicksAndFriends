@@ -1,0 +1,25 @@
+.FooterNav a svg {
+  width: 30px;
+  height: 30px;
+  color: var(--nord6);
+  display: inline;
+}
+
+.FooterNav a.active svg {
+  color: var(--nord8);
+  display: inline;
+}
+
+@media (min-width: 611px) {
+  .FooterNav a svg {
+    width: 30px;
+    height: 30px;
+    color: var(--nord6);
+    display: none;
+  }
+
+  .FooterNav a.active svg {
+    color: var(--nord8);
+    display: none;
+  }
+}

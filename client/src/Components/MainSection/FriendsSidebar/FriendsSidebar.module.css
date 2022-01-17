@@ -1,9 +1,9 @@
 .FriendsSidebar {
   background-color: var(--nord1);
   flex: 1;
-  height: calc(100vh - 56px);
+  height: calc(100vh - var(--toolbar-height) - var(--footer-height));
   left: 0px;
-  top: 56px;
+  top: var(--toolbar-height);
   position: sticky;
   align-items: center;
   justify-content: center;

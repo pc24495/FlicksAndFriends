@@ -4,9 +4,9 @@
   display: flex;
   flex-direction: row;
   flex-shrink: 2;
-  min-height: calc(100vh - 56px);
-  height: (100% - 56px);
-  top: 56px;
+  min-height: calc(100vh - var(--toolbar-height) - var(--footer-height));
+  height: (100% - var(--toolbar-height) - var(--footer-height));
+  top: var(--toolbar-height);
   width: 100%;
   background-color: var(--nord0);
   position: fixed;
@@ -19,9 +19,9 @@
 .TestClass {
   background-color: var(--nord1);
   flex: 1;
-  height: calc(100vh - 56px);
+  height: calc(100vh - var(--toolbar-height) - var(--footer-height));
   left: 0px;
-  top: 56px;
+  top: var(--toolbar-height);
   position: sticky;
   align-items: center;
   justify-content: center;

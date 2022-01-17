@@ -1,4 +1,5 @@
 .content {
-  margin-top: 56px;
-  min-height: 100vh - 56px;
+  margin-top: var(--toolbar-height);
+  min-height: calc(100vh - var(--toolbar-height) - var(--footer-height));
+  margin-bottom: var(--footer-height);
 }

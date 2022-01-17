@@ -1,12 +1,12 @@
 /* @import "../../../../node_modules/nord/src/nord.css"; */
 
 .Sidebar {
-  height: calc(100vh - 56px);
+  height: calc(100vh - var(--toolbar-height) - var(--footer-height));
   flex: 1;
   left: 0px;
   /* background-color: var(--nord0); Set back to this when you're done testing*/
   background-color: var(--nord1);
-  top: 56px;
+  top: var(--toolbar-height);
   margin: 0px;
   /* border-top: solid var(--nord3) 3px; */
   overflow: auto;

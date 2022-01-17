@@ -1,7 +1,7 @@
 /* @import "../../../node_modules/nord/src/nord.css"; */
 
 .Toolbar {
-  height: 56px;
+  height: var(--toolbar-height);
   width: 100%;
   position: fixed;
   top: 0px;
@@ -213,6 +213,79 @@
   color: var(--nord4);
 }
 
+.MobileOnly {
+  height: 100%;
+  width: 100%;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.MobileDropdown {
+  width: 80px;
+  height: 25px;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--nord2);
+  right: 5px;
+  top: 35px;
+  border-radius: 10px;
+  padding: 6px;
+  padding-right: 2px;
+  overflow: hidden;
+  z-index: 100;
+}
+
+.MobileLogout {
+  font-size: 20px;
+  color: var(--nord5);
+}
+
+.MobileLogout:hover {
+  cursor: pointer;
+}
+
+.SidebarMenu {
+  height: 20px;
+  width: 20px;
+  color: var(--nord5);
+}
+
+.SidebarMenu:hover {
+  cursor: pointer;
+}
+
+.DropdownIcon {
+  height: 20px;
+  width: 20px;
+  color: var(--nord5);
+}
+
+.DropdownIcon:hover {
+  color: var(--nord7);
+  cursor: pointer;
+}
+
+/* @media (max-width: 610px) {
+  .Toolbar {
+    height: 35px;
+    justify-content: center;
+  }
+
+
+} */
+
+.Username {
+  color: var(--nord5);
+}
+
+.Username:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 @media (min-width: 500px) {
   .Logout {
     margin: 0px;
@@ -236,8 +309,12 @@
   }
 }
 
-@media (max-width: 499px) {
+@media (max-width: 610px) {
   .DesktopOnly {
     display: none;
+  }
+
+  .MobileOnly {
+    display: flex;
   }
 }

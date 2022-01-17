@@ -24,17 +24,6 @@ function App(props) {
   let token = localStorage.getItem("token");
 
   console.log("Starting main page");
-  const resizeWindow = (event) => {
-    dispatch({
-      type: "SET_WINDOW_WIDTH",
-      windowWidth: window.innerWidth,
-      windowHeight: window.innerHeight,
-    });
-  };
-
-  useEffect(() => {
-    window.addEventListener("resize", resizeWindow);
-  }, [resizeWindow]);
 
   const getSubscriptions = () => {
     axios
@@ -54,6 +43,7 @@ function App(props) {
   };
 
   const updateLogin = () => {
+    // eslint-disable-next-line
     token = localStorage.getItem("token");
     // console.log(loggedIn);
     // console.log(token);
@@ -102,10 +92,10 @@ function App(props) {
     <div>
       <Layout>
         <Switch>
-          <Route path="/submitpost" component={CreatePost} />
           <Route path="/subscriptions" component={Subscriptions}></Route>
           <Route path="/registration" component={Registration} />
           <Route path="/profilepic" component={ProfilePicUpload}></Route>
+          <Route path="/create-post" component={CreatePost}></Route>
           <Route path="/login" component={Login} />
           {loggedIn || localStorage.getItem("token") ? (
             <Route path="/" component={MainSection} />
