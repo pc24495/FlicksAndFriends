@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import classes from "./FriendBox.module.css";
 import { useSelector } from "react-redux";
-import axios from "../../../../../../server/node_modules/axios";
+import axios from "../../../../axiosConfig";
 
 const FriendBox = (props) => {
   const [state, setState] = useState({

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import classes from "./FriendsSidebar.module.css";
 import { useSelector, useDispatch } from "react-redux";
-import axios from "../../../../../server/node_modules/axios";
+import axios from "../../../axiosConfig.js";
 import FriendBox from "./FriendBox/FriendBox.js";
 
 const FriendsSidebar = (props) => {

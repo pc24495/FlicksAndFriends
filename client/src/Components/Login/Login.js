@@ -200,7 +200,8 @@ const Login = (props) => {
     axios.post("/api/login/google", { googleId, email }).then((res) => {
       if (res.data.success) {
         if (res.data.firstTime) {
-          // console.log(res.data);
+          console.log("First time!");
+          console.log(res.data);
           setGoogleState({
             ...googleState,
             showBackdrop: true,
@@ -208,6 +209,7 @@ const Login = (props) => {
             userID: parseInt(res.data.user.user_id),
           });
         } else {
+          console.log("Not first time!");
           localStorage.setItem("token", res.data.token);
           dispatch({
             type: "LOGIN",

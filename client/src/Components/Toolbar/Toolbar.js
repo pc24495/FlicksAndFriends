@@ -8,7 +8,7 @@ import useOnClickOutside from "../../Helpers/useOnClickOutside.js";
 import { FaUserFriends } from "react-icons/fa";
 import { AiFillCaretDown } from "react-icons/ai";
 import { GiHamburgerMenu } from "react-icons/gi";
-import axios from "../../../../server/node_modules/axios";
+import axios from "../../axiosConfig.js";
 
 const Toolbar = (props) => {
   const loggedIn = useSelector((state) => state.loggedIn);
