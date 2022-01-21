@@ -1,11 +1,9 @@
-/* @import "../../../node_modules/nord/src/nord.css"; */
-
 .MainSection {
   display: flex;
   flex-direction: row;
   flex-shrink: 2;
   min-height: calc(100vh - var(--toolbar-height) - var(--footer-height));
-  height: (100% - var(--toolbar-height) - var(--footer-height));
+  height: calc(100% - var(--toolbar-height) - var(--footer-height));
   top: var(--toolbar-height);
   width: 100%;
   background-color: var(--nord0);

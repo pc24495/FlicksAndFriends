@@ -83,7 +83,7 @@ router.post("/google", async (req, res) => {
             success: true,
             firstTime: true,
             token,
-            result: result.rows[0],
+            user: result.rows[0],
           });
         });
       });
