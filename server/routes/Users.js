@@ -102,11 +102,20 @@ router.patch("/profilePic", verifyJWT, (req, res) => {
 });
 
 router.patch("/username", verifyJWT, async (request, response) => {
-  await db.query("UPDATE users SET username=$1 WHERE user_id=$2", [
-    request.body.username,
-    request.userID,
-  ]);
-  return response.status(200).json({ success: true });
+  // console.log(request.body.username);
+  // console.log(request.userID);
+  const result = await db
+    .query("UPDATE users SET username=$1 WHERE user_id=$2 RETURNING *", [
+      request.body.username,
+      request.userID,
+    ])
+    .then((res) => {
+      console.log(res.rows[0]);
+      return res.rows[0];
+    });
+  console.log("Returning changed user: ");
+  console.log(result);
+  return response.status(200).json({ success: true, result });
 });
 
 module.exports = router;

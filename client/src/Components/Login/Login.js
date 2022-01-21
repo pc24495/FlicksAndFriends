@@ -24,6 +24,7 @@ const Login = (props) => {
     showBackdrop: false,
     username: "",
     userID: "",
+    token: null,
   });
   const dispatch = useDispatch();
   const history = useHistory();
@@ -207,6 +208,7 @@ const Login = (props) => {
             showBackdrop: true,
             username: res.data.user.username,
             userID: parseInt(res.data.user.user_id),
+            token: res.data.token,
           });
         } else {
           console.log("Not first time!");
@@ -237,13 +239,19 @@ const Login = (props) => {
   };
 
   const handleSubmitUsername = (event) => {
+    event.preventDefault();
+    console.log(event.target.elements.username_change.value);
     axios
       .patch(`/api/users/username`, {
-        username: event.target.elements.username_change,
+        username: event.target.elements.username_change.value,
+        headers: {
+          "x-access-token": googleState.token,
+        },
       })
       .then((res) => {
+        console.log(res.data);
         if (res.data.success) {
-          localStorage.setItem("token", res.data.token);
+          localStorage.setItem("token", googleState.token);
           dispatch({
             type: "LOGIN",
             username: res.data.result.username,
@@ -251,8 +259,14 @@ const Login = (props) => {
             userID: res.data.result.user_id,
           });
           history.push("/profilepic");
+        } else {
+          console.log("Could not update username!");
         }
       });
+  };
+
+  const onUsernameChange = (event) => {
+    setGoogleState({ ...googleState, username: event.target.value });
   };
 
   return (
@@ -519,9 +533,10 @@ const Login = (props) => {
               className={classes.UsernameInput}
               value={googleState.username}
               id="username_change"
+              onChange={onUsernameChange}
             ></input>
+            <button>Submit</button>
           </form>
-          <button>Submit</button>
         </div>
       </Backdrop>
     </div>

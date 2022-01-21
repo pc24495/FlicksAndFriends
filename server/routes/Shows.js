@@ -33,7 +33,7 @@ router.get("/", async (req, res) => {
       return res.status(400).json({ auth: true, shows: [] });
     }
   } else {
-    console.log("Bla");
+    console.log("Not subscribed to any shows");
   }
 
   if (searchTerm && limit && excludeIDs) {

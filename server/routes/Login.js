@@ -74,7 +74,7 @@ router.post("/google", async (req, res) => {
           "INSERT INTO users(username, password, email) values($1,$2,$3) RETURNING *",
           [assignedUsername, hash, email]
         ).then((result) => {
-          console.log(result.rows);
+          // console.log(result.rows);
           const id = result.rows[0].user_id;
           const token = jwt.sign({ id }, process.env.SECRET, {
             expiresIn: "10800s",
