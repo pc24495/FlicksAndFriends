@@ -6,7 +6,6 @@ import classes from "./CreatePost.module.css";
 import * as Yup from "yup";
 import axios from "axios";
 import qs from "qs";
-import Select from "react-select";
 
 const CreatePost = (props) => {
   const subscriptions = useSelector((state) => {
@@ -96,7 +95,6 @@ const CreatePost = (props) => {
     const selectedEpisode = state.currentSeason.episodes.find((episode) => {
       return episode.episode_id === selected_episode_episode_id;
     });
-    console.log(selectedEpisode);
     setState({
       ...state,
       currentEpisode: selectedEpisode,
@@ -200,20 +198,24 @@ const CreatePost = (props) => {
                     </div>
 
                     <div className={classes.Select}>
-                      <Field name="show" as="select" onChange={onShowChange}>
-                        {state.shows.map((show, index) => {
-                          if (index === 0) {
-                            return (
-                              <option value={show.tv_id} selected>
-                                {show.title}
-                              </option>
-                            );
-                          } else {
+                      <Field
+                        name="show"
+                        as="select"
+                        onChange={onShowChange}
+                        value={state.currentShow.tv_id}
+                      >
+                        <option value={state.currentShow.tv_id}>
+                          {state.currentShow.title}
+                        </option>
+                        {state.shows
+                          .filter(
+                            (show) => show.tv_id !== state.currentShow.tv_id
+                          )
+                          .map((show, index) => {
                             return (
                               <option value={show.tv_id}>{show.title}</option>
                             );
-                          }
-                        })}
+                          })}
                       </Field>
                       <span className={classes.Focus}></span>
                     </div>
@@ -222,6 +224,7 @@ const CreatePost = (props) => {
                         as="select"
                         name="season"
                         onChange={onSeasonChange}
+                        value={state.currentSeason.season_id}
                       >
                         {state.currentShow.episodes.map((season, index) => {
                           if (index === 0) {
@@ -246,6 +249,7 @@ const CreatePost = (props) => {
                         name="episode"
                         onChange={onEpisodeChange}
                         component="select"
+                        value={state.currentEpisode.episode_id}
                       >
                         {state.currentSeason.episodes.map((episode, index) => {
                           return (

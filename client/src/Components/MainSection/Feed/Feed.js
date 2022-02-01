@@ -72,6 +72,7 @@ export default function Feed(props) {
   // console.log(props.initPosts);
   const [postState, setPostState] = useState({
     ...props.initPosts,
+    loadMore: true,
     showBackdrop: false,
   }); //userPics entries are of the form [userID, picture]
   // console.log(postState);
@@ -489,7 +490,11 @@ export default function Feed(props) {
 
       {loggedIn ? (
         <div className={classes.InputPost}>
-          <img src={profilePic} className={classes.ProfilePic}></img>
+          <img
+            src={profilePic}
+            className={classes.ProfilePic}
+            alt="Profile"
+          ></img>
           <input
             className={classes.InputPostInput}
             placeholder="Create a post..."
@@ -527,7 +532,7 @@ export default function Feed(props) {
           dataLength={postState.posts.length}
           loader={<PostSpinner></PostSpinner>}
           next={getMorePosts}
-          hasMore={postState.loadMore}
+          hasMore={true}
           scrollThreshold={0}
           className={classes.InfiniteScroll}
         >

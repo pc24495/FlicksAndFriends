@@ -7,12 +7,11 @@ import axios from "./axiosConfig.js";
 import { Route, Switch, useHistory } from "react-router-dom";
 import Registration from "./Components/Registration/Registration.js";
 import ProfilePicUpload from "./Components/Registration/ProfilePicUpload/ProfilePicUpload.js";
-// import Login from "./Components/Login/Login.js";
 import Login from "./Components/Login/Login.js";
 import CreatePost from "./Components/CreatePost/CreatePost.js";
 import { useEffect } from "react";
-// import TestComponent from "./Components/TestComponent.js";
-// import TestComponent from "./Components/TestComponent.js";
+import FriendRequests from "./Components/FriendRequests/FriendRequests.js";
+import Friends from "./Components/Friends/Friends.js";
 
 function App(props) {
   const history = useHistory();
@@ -22,8 +21,6 @@ function App(props) {
   const dispatch = useDispatch();
 
   let token = localStorage.getItem("token");
-
-  console.log("Starting main page");
 
   const getSubscriptions = () => {
     axios
@@ -45,11 +42,8 @@ function App(props) {
   const updateLogin = () => {
     // eslint-disable-next-line
     token = localStorage.getItem("token");
-    // console.log(loggedIn);
-    // console.log(token);
+
     if (!(token === null)) {
-      // console.log("Token valid!");
-      // console.log(token);
       axios
         .get("/api/users", {
           headers: {
@@ -82,11 +76,6 @@ function App(props) {
 
   updateLogin();
   getSubscriptions();
-  // getShows();
-
-  // getShows();
-  // console.log(Registration);
-  // console.log(ProfilePicUpload);
 
   return (
     <div>
@@ -96,6 +85,8 @@ function App(props) {
           <Route path="/registration" component={Registration} />
           <Route path="/profilepic" component={ProfilePicUpload}></Route>
           <Route path="/create-post" component={CreatePost}></Route>
+          <Route path="/friend-requests" component={FriendRequests}></Route>
+          <Route path="/friends" component={Friends}></Route>
           <Route path="/login" component={Login} />
           {loggedIn || localStorage.getItem("token") ? (
             <Route path="/" component={MainSection} />

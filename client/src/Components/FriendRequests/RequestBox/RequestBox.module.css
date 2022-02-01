@@ -1,0 +1,75 @@
+.FriendBox {
+  width: 100%;
+  height: 120px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  /* border-bottom: 3px solid var(--nord5); */
+}
+
+.ProfilePicContainer {
+  height: 120px;
+  width: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Body {
+  height: 120px;
+  width: calc(100% - 120px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.Username {
+  margin-left: 10px;
+  color: var(--nord5);
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.Username:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.Buttons {
+  height: 80px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.Button1 {
+  border: none;
+  border-radius: 5px;
+  width: 70px;
+  height: 30px;
+  margin-left: 10px;
+  background-color: var(--nord9);
+}
+
+.Button1:hover {
+  cursor: pointer;
+}
+
+.Button2 {
+  border: none;
+  border-radius: 5px;
+  width: 70px;
+  height: 30px;
+  margin-left: 10px;
+  background-color: var(--nord4);
+}
+
+.Button2:hover {
+  cursor: pointer;
+}
+
+.ProfilePicture {
+  height: 100px;
+  border-radius: 50%;
+}

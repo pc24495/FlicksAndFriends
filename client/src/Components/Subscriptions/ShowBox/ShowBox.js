@@ -36,6 +36,7 @@ const ShowBox = React.forwardRef((props, ref) => {
       current_episode_number: currentEpisode.episode_number,
       current_episode_order: currentEpisode.episodeOrder,
     });
+    // eslint-disable-next-line
   }, [currentEpisode]);
 
   const changeSeason = (event) => {
@@ -69,7 +70,7 @@ const ShowBox = React.forwardRef((props, ref) => {
       <img
         src={"data:image/jpeg;base64," + props.poster}
         className={classes.Poster}
-        alt="Image not found"
+        alt="Not found"
         height="192px"
         width="342px"
       ></img>

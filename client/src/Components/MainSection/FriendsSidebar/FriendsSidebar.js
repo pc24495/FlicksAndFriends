@@ -25,15 +25,14 @@ const FriendsSidebar = (props) => {
       })
       .then((res) => {
         if (res.data.success) {
-          // console.log(res.data);
           setState({ isLoaded: true, friendsList: res.data.friends });
         }
       });
   }, []);
 
   const removeFriend = (event, userID) => {
-    console.log(userID);
-    console.log(state.friendsList);
+    // console.log(userID);
+    // console.log(state.friendsList);
     axios.delete(`/api/friends/${userID}`, {
       headers: {
         "x-access-token": localStorage.getItem("token"),
@@ -50,41 +49,16 @@ const FriendsSidebar = (props) => {
       return {
         ...prevState,
         friendsList: prevState.friendsList.filter(
-          (friend) => friend.user_id != userID
+          (friend) => friend.user_id !== userID
         ),
       };
     });
   };
 
   useEffect(() => {
-    // console.log(newFriendStatus);
-    // console.log(typeof props.user_id);
-    // console.log(typeof newFriendStatus.userID);
-    // console.log(Object.keys(newFriendStatus).length);
     if (Object.keys(newFriendStatus).length !== 0) {
       switch (newFriendStatus.update) {
-        // case "Add Friend":
-        //   axios
-        //     .get(`/api/friends/${newFriendStatus.userID}`, {
-        //       headers: {
-        //         "x-access-token": localStorage.getItem("token"),
-        //       },
-        //     })
-        //     .then((res) => {
-        //       if (res.data.sucess) {
-        //         const newFriendsList = state.friendsList.append(
-        //           res.data.friends
-        //         );
-        //         setState({ ...state, friendsList: newFriendsList });
-        //       }
-        //     });
-        //   break;
-        // case "Unsend Friend Request":
-        //   setTags({ ...tags, friendStatus: "Add Friend" });
-        //   break;
         case "Accept Friend Request":
-          console.log("Accepting");
-          console.log(newFriendStatus.userID);
           const newFriendsListAccepting = state.friendsList.concat([
             {
               username: newFriendStatus.username,
@@ -97,15 +71,17 @@ const FriendsSidebar = (props) => {
         case "Unfriend User":
           const newFriendsListUnfriending = state.friendsList.filter(
             (friend) =>
-              parseInt(friend.user_id) != parseInt(newFriendStatus.userID)
+              parseInt(friend.user_id) !== parseInt(newFriendStatus.userID)
           );
           setState({ ...state, friendsList: newFriendsListUnfriending });
           break;
+        default:
         // case "Decline Friend Request":
         //   setTags({ ...tags, friendStatus: "Add Friend" });
         //   break;
       }
     }
+    // eslint-disable-next-line
   }, [newFriendStatus]);
 
   return (
@@ -134,7 +110,3 @@ const FriendsSidebar = (props) => {
 };
 
 export default FriendsSidebar;
-
-// {state.friendsList.map((friend) => {
-//   <div>{friend.username}</div>;
-// })}

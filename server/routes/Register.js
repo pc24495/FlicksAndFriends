@@ -18,7 +18,7 @@ router.post("/", async (req, res) => {
     newRegisterErrors.passwordErrors.push("Please enter a password");
   } else if (
     !(password.length >= 10) ||
-    !/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(password) ||
+    !/[~`!#$%\^&*@+=\-\[\]\\';,/{}|\\":<>\?]/g.test(password) ||
     !/\d/.test(password)
   ) {
     newRegisterErrors.passwordErrors.push(

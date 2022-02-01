@@ -8,13 +8,11 @@ const fixShow = async (showID) => {
   const seasons = await db
     .query("SELECT * FROM shows WHERE tv_id=$1", [tv_id])
     .then((res) => res.rows[0].episodes);
-  //   console.log(seasons[0].season_name.toLowerCase());
   if (seasons.length > 1) {
     if (
       seasons[0].season_name.toLowerCase().includes("specials") &&
       seasons[1].season_name.toLowerCase().includes("season")
     ) {
-      //   console.log(seasons);
       const specialsSeason = seasons.splice(0, 1);
       const newSeasons = JSON.stringify(seasons.concat(specialsSeason));
       console.log(newSeasons);
@@ -23,8 +21,6 @@ const fixShow = async (showID) => {
         tv_id,
       ]);
 
-      //   console.log("NEW SEASONS: ");
-      //   console.log(newSeasons);
       counter += 1;
       console.log(counter);
     }

@@ -15,8 +15,27 @@
   border-top: 1px solid var(--nord0);
 }
 
+.NumNotifications {
+  position: absolute;
+  font-size: 13px;
+  top: -30px;
+  left: 30px;
+  border-radius: 50%;
+  background-color: var(--nord11);
+  color: var(--nord6);
+  width: 15px;
+  height: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 @media (min-width: 611px) {
   .Footer {
+    display: none;
+  }
+
+  .NumNotifications {
     display: none;
   }
 }

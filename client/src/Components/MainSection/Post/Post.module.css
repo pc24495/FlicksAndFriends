@@ -768,6 +768,11 @@
     height: 25px;
     width: 25px;
   }
+
+  .UserAdd {
+    left: 30vw;
+    top: 22px;
+  }
 }
 
 /* @media (max-width: 510px) {

@@ -5,7 +5,7 @@ export const Backdrop = (props) => {
   return (
     <div
       className={classes.Backdrop}
-      style={{ display: props.showBackdrop ? "block" : "none" }}
+      style={{ ...props.style, display: props.showBackdrop ? "block" : "none" }}
       onClick={props.onClick}
       id={props.id}
     >

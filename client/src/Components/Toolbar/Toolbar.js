@@ -24,18 +24,14 @@ const Toolbar = (props) => {
   const newFriendStatus = useSelector((state) => state.newFriendStatus);
   const changedID = useRef(null);
   const ref = useRef();
-  // const counter = useSelector((state) => state.counter);
   useOnClickOutside(ref, () => {
     setShowMobileDropdown(false);
   });
   const dispatch = useDispatch();
 
-  // console.log(loggedIn); //
   const pathname = useLocation().pathname;
-  // console.log(pathname);
 
   const logout = () => {
-    console.log("LOGGING OUT");
     localStorage.removeItem("token");
     dispatch({ type: "LOGOUT" });
   };
@@ -49,10 +45,8 @@ const Toolbar = (props) => {
 
   const handleFriendNotifications = (event) => {
     const token = localStorage.getItem("token");
-    // console.log(friendRequests);
 
     if (!friendRequests.showDropdown) {
-      // console.log("opening dropdown");
       axios.patch("/api/friend-requests", {
         headers: {
           "x-access-token": token,
@@ -66,7 +60,6 @@ const Toolbar = (props) => {
         document.addEventListener("click", closeFriendsDropdown);
       }, 20);
 
-      // console.log("opening dropdown");
       const newRequests = friendRequests.requests.map((req) => {
         return { ...req, read: true };
       });
@@ -80,15 +73,12 @@ const Toolbar = (props) => {
   };
 
   const closeFriendsDropdown = (event) => {
-    // console.log("bla");
     const FriendRequestDropdown = document.getElementById(
       "FriendRequestDropdown"
     );
     const FriendRequestDropdownIcon = document.getElementById(
       "FriendRequestDropdownIcon"
     );
-    // console.log(event.target);
-    // console.log(FriendRequestDropdown.contains(event.target));
     if (FriendRequestDropdown) {
       if (
         FriendRequestDropdownIcon.contains(event.target) ||
@@ -96,17 +86,13 @@ const Toolbar = (props) => {
         event.target.id.includes("DeclineButton")
       ) {
         if (event.target.id.includes("AcceptButton")) {
-          // console.log("handling accept!!!");
-          // console.log(event.target.id.slice(13));
           const id = parseInt(event.target.id.slice(13));
-          // console.log(friendRequests.requests);
-          console.log(friendRequests.requests[0].sender_id);
-          console.log(id);
+
           const filteredRequests = friendRequests.requests.filter(
-            (req) => parseInt(req.sender_id) != id
+            (req) => parseInt(req.sender_id) !== id
           );
           const selectedRequest = friendRequests.requests.filter(
-            (req) => parseInt(req.sender_id) == id
+            (req) => parseInt(req.sender_id) === id
           )[0];
           changedID.current = id;
           // console.log(filteredRequests);
@@ -131,7 +117,7 @@ const Toolbar = (props) => {
             };
           });
         } else if (event.target.id.includes("DeclineButton")) {
-          // console.log("handling decline");
+          console.log("handling decline");
           const id = parseInt(event.target.id.slice(14));
           changedID.current = id;
           axios.delete(`/api/friend-requests/${id}`, {
@@ -150,17 +136,15 @@ const Toolbar = (props) => {
             return {
               ...friendRequests,
               requests: friendRequests.requests.filter(
-                (req) => parseInt(req.sender_id) != id
+                (req) => parseInt(req.sender_id) !== id
               ),
             };
           });
           // previous condition: else if and condition was !FriendRequestDropdown.contains(event.target)
         } else {
-          // console.log("closing dropdown");
-          // console.log(friendRequests);
           const id = changedID.current;
           const filteredRequests = friendRequests.requests.filter(
-            (req) => parseInt(req.sender_id) != id
+            (req) => parseInt(req.sender_id) !== id
           );
           document.removeEventListener("click", closeFriendsDropdown);
           setFriendRequests({
@@ -193,7 +177,6 @@ const Toolbar = (props) => {
         },
       })
       .then((res) => {
-        // console.log(res.data);
         if (res.data.friend_requests) {
           setFriendRequests({
             ...friendRequests,
@@ -203,26 +186,8 @@ const Toolbar = (props) => {
         }
       });
     return () => {};
+    // eslint-disable-next-line
   }, []);
-
-  const handleAccept = (event, id) => {
-    // console.log("handling accept");
-    setFriendRequests((friendRequests) => {
-      return {
-        ...friendRequests,
-        requests: friendRequests.requests.filter((req) => req.sender_id != id),
-      };
-    });
-  };
-
-  const handleDecline = (event, id) => {
-    setFriendRequests((friendRequests) => {
-      return {
-        ...friendRequests,
-        requests: friendRequests.requests.filter((req) => req.sender_id != id),
-      };
-    });
-  };
 
   const openMobileDropdown = (event) => {
     setShowMobileDropdown(true);
@@ -230,7 +195,6 @@ const Toolbar = (props) => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    // console.log(friendRequests);
     if (loggedIn && friendRequests.requests.length === 0) {
       axios
         .get("/api/friend-requests", {
@@ -243,7 +207,6 @@ const Toolbar = (props) => {
           },
         })
         .then((res) => {
-          // console.log(res.data);
           if (res.data.friend_requests) {
             setFriendRequests({
               ...friendRequests,
@@ -256,25 +219,24 @@ const Toolbar = (props) => {
       setFriendRequests({ requests: [], showDropdown: false, numUnread: 0 });
     }
     return () => {};
+    // eslint-disable-next-line
   }, [loggedIn]);
 
   useEffect(() => {
-    // console.log(newFriendStatus);
     if (Object.keys(newFriendStatus).length !== 0) {
+      const isInNotifications = friendRequests.requests.find(
+        (friend) =>
+          parseInt(friend.sender_id) === parseInt(newFriendStatus.userID)
+      );
+      let changeUnread = 0;
+      if (!(isInNotifications === undefined)) {
+        changeUnread = -1;
+      }
+      const newRequests = friendRequests.requests.filter(
+        (req) => parseInt(req.sender_id) !== parseInt(newFriendStatus.userID)
+      );
       switch (newFriendStatus.update) {
         case "Accept Friend Request":
-          console.log(friendRequests.requests[0]);
-          const isInNotifications = friendRequests.requests.find(
-            (friend) =>
-              parseInt(friend.sender_id) === parseInt(newFriendStatus.userID)
-          );
-          let changeUnread = 0;
-          if (!(isInNotifications === undefined)) {
-            changeUnread = -1;
-          }
-          const newRequests = friendRequests.requests.filter(
-            (req) => parseInt(req.sender_id) != parseInt(newFriendStatus.userID)
-          );
           setFriendRequests((prevState) => {
             return {
               ...prevState,
@@ -283,15 +245,22 @@ const Toolbar = (props) => {
             };
           });
           break;
-
         case "Decline Friend Request":
-        // setTags({ ...tags, friendStatus: "Add Friend" });
-        // break;
+          setFriendRequests((prevState) => {
+            return {
+              ...prevState,
+              requests: newRequests,
+              numUnread: prevState.numUnread + changeUnread,
+            };
+          });
+          break;
+        default:
+          break;
       }
     }
+    // eslint-disable-next-line
   }, [newFriendStatus]);
 
-  // <div className={classes.Notification}></div>
   return (
     <header
       className={classes.Toolbar}
@@ -308,6 +277,7 @@ const Toolbar = (props) => {
                   <img
                     src={friendRequest.profile_pic}
                     className={classes.NotificationProfilePic}
+                    alt="Not found"
                   ></img>
                   <div className={classes.NotificationBody}>
                     <p className={classes.FriendRequestUsername}>
@@ -402,7 +372,4 @@ const Toolbar = (props) => {
   );
 };
 
-// <p>
-//           {windowWidth} {windowHeight}
-//         </p>
 export default Toolbar;

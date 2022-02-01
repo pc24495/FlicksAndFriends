@@ -159,7 +159,6 @@ class Registration extends Component {
                 password: updatedOrderForm.password.value,
               })
               .then((res) => {
-                console.log("Setting token");
                 localStorage.setItem("token", res.data.token);
 
                 this.props.login(res.data);

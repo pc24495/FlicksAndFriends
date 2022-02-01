@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import classes from "./FriendBox.module.css";
-import { useSelector } from "react-redux";
-import axios from "../../../../axiosConfig";
 
 const FriendBox = (props) => {
   const [state, setState] = useState({
@@ -18,7 +16,8 @@ const FriendBox = (props) => {
       username: props.username,
       hover: false,
     });
-  }, []);
+    // eslint-disable-next-line
+  }, [props]);
 
   const handleHover = (event) => {
     setState({ ...state, hover: true });
@@ -39,6 +38,7 @@ const FriendBox = (props) => {
       document.addEventListener("mouseover", closeHover);
     }
     return () => {};
+    // eslint-disable-next-line
   }, [state.hover]);
 
   return (
@@ -48,7 +48,11 @@ const FriendBox = (props) => {
       id={`FriendBox-${props.user_id}`}
     >
       <div className={classes.ProfilePicContainer}>
-        <img src={state.profilePic} className={classes.ProfilePic}></img>
+        <img
+          src={state.profilePic}
+          className={classes.ProfilePic}
+          alt="Profile"
+        ></img>
       </div>
       <div className={classes.FriendBoxBody}>
         <p className={classes.Username}>{state.username}</p>

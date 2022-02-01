@@ -68,6 +68,20 @@ router.get("/subscriptions-and-shows", verifyJWT, async (req, res) => {
   });
 });
 
+router.get(
+  "/subscription_explanation",
+  verifyJWT,
+  async (request, response) => {
+    const subscriptionExplanation = await db
+      .query("SELECT subscription_explanation FROM users WHERE user_id=$1", [
+        request.userID,
+      ])
+      .then((res) => res.rows[0].subscription_explanation);
+    // console.log(subscriptionExplanation);
+    return response.json({ subscription_explanation: subscriptionExplanation });
+  }
+);
+
 router.patch("/subscriptions", verifyJWT, (req, res) => {
   db.query(
     "UPDATE users SET subscriptions = $1 WHERE user_id=$2",
@@ -117,5 +131,16 @@ router.patch("/username", verifyJWT, async (request, response) => {
   console.log(result);
   return response.status(200).json({ success: true, result });
 });
+
+router.patch(
+  "/subscription_explanation",
+  verifyJWT,
+  async (request, response) => {
+    db.query("UPDATE users SET subscription_explanation=$1 WHERE user_id=$2", [
+      request.body.subscription_explanation,
+      request.userID,
+    ]);
+  }
+);
 
 module.exports = router;

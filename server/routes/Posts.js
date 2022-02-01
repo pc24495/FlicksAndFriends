@@ -33,6 +33,8 @@ router.get("/", verifyJWT, async (req, res) => {
       }
     });
 
+  // console.log(subscriptions);
+
   subscriptions.forEach((subscription) =>
     subscriptionsMap.set(subscription.show_id, subscription)
   );
@@ -133,7 +135,7 @@ router.get("/", verifyJWT, async (req, res) => {
 
       const episodeTag =
         post.type === "spoiler"
-          ? `S${post.season_number === 0 ? "SP" : post.season_number}E${
+          ? `S${post.season_number === 0 ? "P" : post.season_number}E${
               post.episode_number
             }`
           : null;
@@ -211,6 +213,10 @@ router.get("/", verifyJWT, async (req, res) => {
 
 router.post("/", verifyJWT, async (req, result) => {
   // console.log(req.body.type);
+  if (req.body.episode_air_date.toString() === "Invalid Date") {
+    return res.status(400).json({ error: "Invalid date" });
+  }
+
   const [
     username,
     userProfilepic,

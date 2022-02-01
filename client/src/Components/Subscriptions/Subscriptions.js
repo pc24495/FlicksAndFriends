@@ -24,43 +24,57 @@ export default function Subscriptions(props) {
     showBackdrop: false,
     clickedShow: {},
     searchMode: false,
+    explanationBackdrop: false,
   });
   const [expandTags, setExpandTags] = useState(false);
+  // const [explanationBackdrop, setExplanationBackdrop] = useState(false);
   const searchValue = useSelector((state) => state.searchValue);
   let source = Axios.CancelToken.source();
   const mobileCutoff = useMediaQuery("(max-width:610px)");
   const mobileShowboxRef = useRef();
   //Note: "show_id" field in shows corresponds to "tv_id" in subscriptions
-  useEffect(async () => {
-    if (state.shows.length === 0) {
-      console.log("Querying backend");
-      const token = localStorage.getItem("token");
-      const SHOW_LIMIT = 6;
-      const shows = await axios
-        .get("/api/users/subscriptions-and-shows", {
+  useEffect(() => {
+    async function onComponentLoad() {
+      const explanationBackdrop = await axios
+        .get("/api/users/subscription_explanation", {
           headers: {
-            "x-access-token": token,
-          },
-          params: {
-            limit: 12,
+            "x-access-token": localStorage.getItem("token"),
           },
         })
-        .then((res) => {
-          console.log(res.data.shows.length);
-          setState({
-            ...state,
-            displayShows: res.data.displayShows,
-            shows: res.data.shows,
-            subscriptions: res.data.subscriptions,
+        .then((res) => res.data.subscription_explanation);
+
+      if (state.shows.length === 0) {
+        const token = localStorage.getItem("token");
+        await axios
+          .get("/api/users/subscriptions-and-shows", {
+            headers: {
+              "x-access-token": token,
+            },
+            params: {
+              limit: 12,
+            },
+          })
+          .then((res) => {
+            setState({
+              ...state,
+              displayShows: res.data.displayShows,
+              shows: res.data.shows,
+              subscriptions: res.data.subscriptions,
+              explanationBackdrop,
+            });
           });
-        });
+      } else {
+        setState({ ...state, explanationBackdrop });
+      }
     }
+    onComponentLoad();
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
     source.cancel();
+    // eslint-disable-next-line
     source = Axios.CancelToken.source();
-    console.log(searchValue);
     const token = localStorage.getItem("token");
     setTimeout(() => {
       if (
@@ -68,7 +82,6 @@ export default function Subscriptions(props) {
         searchValue.trim() !== null &&
         searchValue.trim() !== ""
       ) {
-        console.log("not null");
         axios
           .get("/api/shows/", {
             headers: {
@@ -84,9 +97,6 @@ export default function Subscriptions(props) {
             },
           })
           .then((res) => {
-            console.log(state.filteredShows);
-            console.log(res.data.shows);
-            console.log(searchValue);
             const newFilteredShows = res.data.shows;
             setState((prevState) => {
               return {
@@ -97,10 +107,7 @@ export default function Subscriptions(props) {
             });
           });
       } else {
-        console.log("null");
-        console.log(state.filteredShows);
         setState({ ...state, isSearching: false, filteredShows: [] });
-        console.log(state.isSearching);
       }
     }, 1);
   }, [searchValue]);
@@ -204,6 +211,19 @@ export default function Subscriptions(props) {
 
   const handleMobileSearch = (event) => {
     dispatch({ type: "SEARCH", searchValue: event.target.value });
+  };
+
+  const handleExplanationForm = async (event) => {
+    event.preventDefault();
+    if (event.target.elements.explanation.checked) {
+      axios.patch("/api/users/subscription_explanation", {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+        subscription_explanation: false,
+      });
+    }
+    setState({ ...state, explanationBackdrop: false });
   };
   //   console.log(state.subscriptions);
   return (
@@ -381,6 +401,55 @@ export default function Subscriptions(props) {
           ></ShowBox>
         ) : null}
       </Backdrop>
+      <div
+        className={classes.ExplanationBackdrop}
+        style={{ display: state.explanationBackdrop ? "flex" : "none" }}
+      >
+        <form className={classes.Explanation} onSubmit={handleExplanationForm}>
+          <h2>Subscriptions</h2>
+          <div className={classes.InstructionsContainer}>
+            <p className={classes.Instructions}>
+              Follow these instructions to ensure the best experience:
+            </p>
+            <p className={classes.MobileInstructions}>
+              Click on the magnifying glass icon in the bottom-right to bring up
+              the search bar. Then, click on the title of the show you want to
+              add to your subscriptions. Select the LAST season and episode of
+              the show you watched from the popup box. We will be sure not to
+              show you posts tagged with spoilers for episodes past this point.
+              Clicking submit on the popup box will add the show to your list at
+              the top of the screen. Click the x next to the show's title in the
+              top section to remove it from your list. Remember to click submit
+              under this list of shows to save your subscriptions.
+            </p>
+          </div>
+          <div className={classes.CheckboxContainer}>
+            <label for="explanation">Don't show this message again</label>
+            <input type="checkbox" id="explanation" name="explanation"></input>
+          </div>
+
+          <button
+            type="submit"
+            className={classes.Button}
+            style={{
+              right: "0px",
+              backgroundColor: "var(--nord9)",
+              marginTop: "10px",
+            }}
+          >
+            Submit
+          </button>
+
+          <p
+            className={classes.CloseInstructions}
+            onClick={() => {
+              setState({ ...state, explanationBackdrop: false });
+            }}
+          >
+            CLOSE
+          </p>
+        </form>
+      </div>
     </div>
   );
 }

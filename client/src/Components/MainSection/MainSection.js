@@ -4,21 +4,15 @@ import classes from "./MainSection.module.css";
 import Feed from "./Feed/Feed.js";
 import Sidebar from "./Sidebar/Sidebar.js";
 import FriendsSidebar from "./FriendsSidebar/FriendsSidebar.js";
-// import Modal from "../MovieSelectorComponents/Modal.js";
-// import Backdrop from "../MovieSelectorComponents/Backdrop.js";
-import { withRouter, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import axios from "../../axiosConfig.js";
 import qs from "qs";
 
 export default function MainSection(props) {
   const history = useHistory();
-  // render() {
   const subscriptions = useSelector((state) => {
-    // console.log(state.subscriptions);
     return state.subscriptions;
   });
-
-  const loggedIn = useSelector((state) => state.loggedIn);
 
   const ref = useRef(0);
 

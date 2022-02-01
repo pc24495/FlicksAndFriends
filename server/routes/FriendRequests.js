@@ -19,6 +19,7 @@ router.get("/", verifyJWT, async (req, res) => {
             num_unread: results.rows.reduce((acc, curr) => {
               return acc + (!curr.read ? 1 : 0);
             }, 0),
+            auth: true,
           });
         }
       });
@@ -35,6 +36,7 @@ router.get("/", verifyJWT, async (req, res) => {
             num_unread: results.rows.reduce((acc, curr) => {
               return acc + (!curr.read ? 1 : 0);
             }, 0),
+            auth: true,
           });
         }
       });
@@ -91,11 +93,11 @@ router.patch("/", verifyJWT, async (req, res) => {
   }
 });
 
-router.delete("/:receiver_id", verifyJWT, async (req, res) => {
-  const receiver_id = req.params.receiver_id;
+router.delete("/:sender_id", verifyJWT, async (req, res) => {
+  const sender_id = req.params.sender_id;
   db.query(
     "DELETE FROM friend_requests WHERE sender_id = $1 AND receiver_id = $2",
-    [req.userID, receiver_id]
+    [sender_id, req.userID]
   ).then((result) => {
     res.json({ success: true });
   });

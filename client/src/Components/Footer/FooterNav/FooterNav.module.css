@@ -1,16 +1,26 @@
+.FooterNav a {
+  position: relative;
+}
+
 .FooterNav a svg {
   width: 30px;
   height: 30px;
   color: var(--nord6);
   display: inline;
+  position: relative;
 }
 
 .FooterNav a.active svg {
   color: var(--nord8);
   display: inline;
+  position: relative;
 }
 
 @media (min-width: 611px) {
+  .FooterNav {
+    position: relative;
+  }
+
   .FooterNav a svg {
     width: 30px;
     height: 30px;

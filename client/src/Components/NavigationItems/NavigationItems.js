@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import classes from "./NavigationItems.module.css";
-import axios from "../../axiosConfig.js";
 import { connect } from "react-redux";
 
 class NavigationItems extends Component {

@@ -9,13 +9,6 @@ import Button from "../../../Components/Button/Button.js";
 import axios from "../../../axiosConfig.js";
 
 const ProfilePicUpload = (props) => {
-  // const [src, setSrc] = useState(null);
-  // const [crop, setCrop] = useState({
-  //   unit: "%",
-  //   width: 30,
-  //   aspect: 16 / 9,
-  // });
-
   const [state, setState] = useState({
     src: null,
     crop: { x: 0, y: 0 },
@@ -28,16 +21,8 @@ const ProfilePicUpload = (props) => {
   });
 
   const [imageCrop, setImageCrop] = useState(null);
-  // const [croppedImageSrc, setCroppedImageSrc] = useState(null);
 
   const dispatch = useDispatch();
-
-  // const toBase64 = file => new Promise((resolve, reject) => {
-  //   const reader = new FileReader();
-  //   reader.readAsDataURL(file);
-  //   reader.onload = () => resolve(reader.result);
-  //   reader.onerror = error => reject(error);
-  // });
 
   const onSelectFile = (event) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -51,55 +36,23 @@ const ProfilePicUpload = (props) => {
   };
 
   const onBackdropClose = (event) => {
-    // console.log(event.target);
     let randomString = Math.random().toString(36);
     setState({ ...state, showBackdrop: false, inputKey: randomString });
   };
 
-  // const getCroppedImage = (image, crop) => {
-  //   const canvas = document.createElement("canvas");
-  //   const scaleX = image.naturalWidth / image.width;
-  //   const scaleY = image.naturalHeight / image.height;
-  //   canvas.width = crop.width;
-  //   canvas.height = crop.height;
-  //   const ctx = canvas.getContext("2d");
+  useEffect(() => {
+    async function onComponentLoad() {
+      let blob = await fetch(empty).then((r) => r.blob());
+      let dataUrl = await new Promise((resolve) => {
+        let reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
+      });
+      setState({ ...state, emptySrc: dataUrl });
+    }
 
-  //   ctx.drawImage(
-  //     image,
-  //     crop.x * scaleX,
-  //     crop.y * scaleY,
-  //     crop.width * scaleX,
-  //     crop.height * scaleY,
-  //     0,
-  //     0,
-  //     crop.width,
-  //     crop.height
-  //   );
-
-  //   return new Promise((resolve, reject) => {
-  //     canvas.toDataURL();
-  //   }, "image/jpeg");
-  // };
-
-  useEffect(async () => {
-    // const canvas = document.createElement("canvas");
-    // const context = canvas.getContext("2d");
-
-    // const base_image = new Image();
-    // base_image.src = empty;
-    // base_image.onload = function () {
-    //   context.drawImage(base_image, 100, 100);
-    // };
-
-    let blob = await fetch(empty).then((r) => r.blob());
-    let dataUrl = await new Promise((resolve) => {
-      let reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.readAsDataURL(blob);
-    });
-    // var jpegUrl = canvas.toDataURL();
-    console.log(dataUrl);
-    setState({ ...state, emptySrc: dataUrl });
+    onComponentLoad();
+    // eslint-disable-next-line
   }, []);
 
   const prepareImage = async (event) => {
@@ -122,7 +75,6 @@ const ProfilePicUpload = (props) => {
     });
 
   const getCroppedImg = async (imageSrc, pixelCrop, rotation = 0) => {
-    console.log(pixelCrop);
     const image = await createImage(imageSrc);
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
@@ -153,56 +105,6 @@ const ProfilePicUpload = (props) => {
     canvas.width = pixelCrop.width;
     canvas.height = pixelCrop.height;
 
-    // paste generated rotate image with correct offsets for x,y crop values.
-    ctx.putImageData(
-      data,
-      0 - safeArea / 2 + image.width * 0.5 - pixelCrop.x,
-      0 - safeArea / 2 + image.height * 0.5 - pixelCrop.y
-    );
-
-    // As Base64 string
-    return canvas.toDataURL("image/jpeg");
-    // return canvas;
-  };
-
-  const getCroppedEmpty = async (imageSrc, rotation = 0) => {
-    const image = await createImage(imageSrc);
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-
-    const maxSize = Math.max(image.width, image.height);
-    const safeArea = 2 * ((maxSize / 2) * Math.sqrt(2));
-
-    // set each dimensions to double largest dimension to allow for a safe area for the
-    // image to rotate in without being clipped by canvas context
-    canvas.width = safeArea;
-    canvas.height = safeArea;
-
-    // translate canvas context to a central location on image to allow rotating around the center.
-    ctx.translate(safeArea / 2, safeArea / 2);
-    ctx.rotate(getRadianAngle(rotation));
-    ctx.translate(-safeArea / 2, -safeArea / 2);
-
-    // draw rotated image and store data.
-    ctx.drawImage(
-      image,
-      safeArea / 2 - image.width * 0.5,
-      safeArea / 2 - image.height * 0.5
-    );
-
-    const data = ctx.getImageData(0, 0, safeArea, safeArea);
-
-    const pixelCrop = {
-      width: image.width,
-      height: image.height,
-    };
-    console.log(pixelCrop);
-
-    // set canvas width to final desired crop size - this will clear existing context
-    canvas.width = pixelCrop.width;
-    canvas.height = pixelCrop.height;
-
-    console.log(ctx);
     // paste generated rotate image with correct offsets for x,y crop values.
     ctx.putImageData(
       data,
@@ -220,8 +122,6 @@ const ProfilePicUpload = (props) => {
   };
 
   const onCropComplete = (croppedArea, croppedAreaPixels) => {
-    // console.log(croppedArea);
-    // console.log(croppedAreaPixels);
     setImageCrop(croppedAreaPixels);
   };
 
@@ -230,9 +130,7 @@ const ProfilePicUpload = (props) => {
   };
 
   const submitImage = async (event) => {
-    console.log(state.emptySrc);
     let token = localStorage.getItem("token");
-    console.log(state.croppedImageSrc);
     // console.log(emptySrc);
     axios
       .patch("/api/users/profilePic", {
@@ -281,6 +179,7 @@ const ProfilePicUpload = (props) => {
         <img
           src={state.croppedImageSrc || empty}
           className={classes.ProfilePicture}
+          alt="Profile"
         ></img>
         <Button onClick={submitImage}>Submit</Button>
       </div>

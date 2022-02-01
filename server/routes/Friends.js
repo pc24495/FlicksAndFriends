@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router();
 const verifyJWT = require("../middlewares/VerifyJWT.js");
 const db = require("../database");
+const isAlphaNumeric = require("../helpers/isAlphaNumeric.js");
 
 router.get("/", verifyJWT, async (request, response) => {
-  const profile_pics = request.query.profile_pics;
   db.query(
     "SELECT friend_list.select_user_id, users.username, users.profile_pic, users.user_id FROM (SELECT (CASE WHEN friend_1_id = $1 THEN friend_2_id WHEN friend_2_id = $1 THEN friend_1_id END) AS select_user_id FROM friends) AS friend_list JOIN users ON friend_list.select_user_id = users.user_id",
     [request.userID]
@@ -31,7 +31,11 @@ router.get("/:friend_id", verifyJWT, async (request, response) => {
 });
 
 router.post("/:friend_id", verifyJWT, async (req, res) => {
-  const friend_id = req.params.friend_id;
+  let friend_id = req.params.friend_id;
+  if (!isAlphaNumeric(friend_id)) {
+    return res.status(400).json({ success: false });
+  }
+  friend_id = parseInt(friend_id);
   const isUserAlreadyFriend = await db
     .query(
       "(SELECT * FROM friends WHERE friend_1_id=$1 AND friend_2_id=$2) UNION (SELECT * FROM friends WHERE friend_1_id=$2 AND friend_2_id=$1)",

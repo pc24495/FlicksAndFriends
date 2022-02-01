@@ -3,20 +3,20 @@ import classes from "./Sidebar.module.css";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 
-//Requires: username, users subscribed shows
-
 class Sidebar extends Component {
   render() {
-    // console.log(this.props);
     let fontSize = "30px";
     if (this.props.username) {
       fontSize = this.props.username.length >= 18 ? "26px" : "30px";
     }
-    // console.log(this.props.profilePic);
     return (
       <div className={classes.Sidebar}>
         {this.props.profilePic && (
-          <img src={this.props.profilePic} className={classes.ProfilePic}></img>
+          <img
+            src={this.props.profilePic}
+            className={classes.ProfilePic}
+            alt="Profile"
+          ></img>
         )}
         <p className={classes.Username} style={{ fontSize: fontSize }}>
           {this.props.username}

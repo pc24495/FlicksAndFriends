@@ -1,13 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import classes from "./Post.module.css";
-// import ClampLines from "react-clamp-lines";
-import LinesEllipsis from "react-lines-ellipsis";
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";
-import smile from "./smile.png";
-import squareTest from "./SquareTestImage.png";
 import { IoMdThumbsDown, IoMdThumbsUp } from "react-icons/io";
-import { FaChevronCircleDown, FaArrowAltCircleRight } from "react-icons/fa";
+import { FaChevronCircleDown } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import TextareaAutosize from "react-textarea-autosize";
@@ -20,27 +16,18 @@ export default function Post(props) {
     tagList: [],
     friendStatus: null,
   });
-  // console.log(tags.tagList[0].text);
   const postID = "57";
   const [showFullPost, setShowFullPost] = useState(false);
-  // const [commentInputRows, setCommentInputRows] = useState(1);
-  const [commentInputHeight, setCommentInputHeight] = useState("42px");
   const [showDropdown, setShowDropdown] = useState(false);
   const [showUserAdd, setShowUserAdd] = useState(false);
-  const [commentText, setCommentText] = useState("");
-  const [comments, setComments] = useState([]);
-  const [newComments, setNewComments] = useState([]);
-  const textAreaRef = React.createRef();
 
-  const friendsLikedIDs = useState([]);
   const [userLiked, setUserLiked] = useState(props.user_liked_post);
   const [body, setBody] = useState({
     bodyText: props.body,
     editMode: false,
     editText: props.body,
   });
-  const profilePic = useSelector((state) => state.profilePic);
-  const dropdownRef = useRef();
+
   const newFriendStatus = useSelector((state) => state.newFriendStatus);
   const dispatch = useDispatch();
   const [numLikes, setNumLikes] = useState(0);
@@ -49,12 +36,6 @@ export default function Post(props) {
   const likes = [];
 
   useEffect(() => {
-    // document
-    //   .getElementById(`post_body-${props.post_id}`)
-    //   .removeEventListener("keydown", postInputChange);
-    // document
-    //   .getElementById(`post_body-${props.post_id}`)
-    //   .addEventListener("keydown", postInputChange);
     setTags({
       ...tags,
       tagList: props.tags.map((tag) => {
@@ -62,17 +43,13 @@ export default function Post(props) {
       }),
       friendStatus: props.friend_status,
     });
+    // eslint-disable-next-line
   }, [props]);
 
   useEffect(() => {
-    // console.log(props.comments);
-    if (props.comments) {
-      setComments(props.comments);
-    }
-  }, [props.comments]);
-
-  useEffect(() => {
-    setBody({ ...body, bodyText: props.body, editText: props.body });
+    setBody((body) => {
+      return { ...body, bodyText: props.body, editText: props.body };
+    });
   }, [props.body]);
 
   useEffect(() => {
@@ -145,10 +122,6 @@ export default function Post(props) {
     setShowFullPost(true);
   };
 
-  const handleTextAreaOnChange = (event) => {
-    setCommentText(event.target.value);
-  };
-
   const dropdown = (event) => {
     if (showDropdown) {
       closeDropdown(event);
@@ -208,6 +181,7 @@ export default function Post(props) {
       // console.log("User add displaying");
       document.addEventListener("mouseover", closeHoverUsername);
     }
+    // eslint-disable-next-line
   }, [showUserAdd]);
 
   const postInputChange = (event) => {
@@ -217,11 +191,6 @@ export default function Post(props) {
   };
 
   const thumbsUpHandler = (event) => {
-    // console.log("click");
-    // console.log(props);
-    // console.log(userID);
-    // console.log(props.user_id);
-    console.log(tags);
     const token = localStorage.getItem("token");
     if (userLiked === 1) {
       // console.log("Alreadyliked");
@@ -247,7 +216,6 @@ export default function Post(props) {
   const thumbsDownHandler = (event) => {
     const token = localStorage.getItem("token");
     if (userLiked === -1) {
-      console.log("Alreadyliked");
       axios.delete(`/api/posts/${props.post_id}/likes`, {
         headers: {
           "x-access-token": token,
@@ -269,24 +237,7 @@ export default function Post(props) {
   };
   // console.log(document.getElementById("57-0").getBoundingClientRect());
 
-  const submitComment = (event) => {
-    const token = localStorage.getItem("token");
-    console.log(props);
-    axios
-      .post(`/api/comments/${props.post_id}`, {
-        headers: {
-          "x-access-token": localStorage.getItem("token"),
-        },
-        text: commentText,
-      })
-      .then((res) => {
-        // console.log([]);
-        setNewComments([...res.data.comments, ...newComments]);
-      });
-  };
-
   const friendRequestHandler = (event) => {
-    console.log(tags.friendStatus);
     switch (tags.friendStatus) {
       case "Add Friend":
         axios
@@ -370,20 +321,18 @@ export default function Post(props) {
             }
           });
         break;
+      default:
     }
   };
 
   const saveEdit = (event) => {
     // console.log(body.editText);
-    console.log(props.post_id);
-    axios
-      .patch(`/api/posts/${props.post_id}`, {
-        headers: {
-          "x-access-token": localStorage.getItem("token"),
-        },
-        post_text: body.editText,
-      })
-      .then((response) => console.log(response.data));
+    axios.patch(`/api/posts/${props.post_id}`, {
+      headers: {
+        "x-access-token": localStorage.getItem("token"),
+      },
+      post_text: body.editText,
+    });
     setBody((prevBody) => {
       return {
         ...prevBody,
@@ -411,7 +360,6 @@ export default function Post(props) {
           setTags({ ...tags, friendStatus: "Add Friend" });
           break;
         case "Accept Friend Request":
-          console.log("working correctly");
           setTags({ ...tags, friendStatus: "Unfriend User" });
           break;
         case "Unfriend User":
@@ -420,8 +368,11 @@ export default function Post(props) {
         case "Decline Friend Request":
           setTags({ ...tags, friendStatus: "Add Friend" });
           break;
+        default:
+          break;
       }
     }
+    // eslint-disable-next-line
   }, [newFriendStatus]);
 
   props.user_pic_map.get(props.user_id);
@@ -443,7 +394,7 @@ export default function Post(props) {
           </div>
         </div>
       ) : null}
-      {showUserAdd && tags.friendStatus == "Add Friend" ? (
+      {showUserAdd && tags.friendStatus === "Add Friend" ? (
         <div className={classes.UserAdd} id={`${props.post_id}-useradd`}>
           <button
             className={classes.UserAddButton}
@@ -453,7 +404,7 @@ export default function Post(props) {
           </button>
         </div>
       ) : null}
-      {showUserAdd && tags.friendStatus == "Unsend Friend Request" ? (
+      {showUserAdd && tags.friendStatus === "Unsend Friend Request" ? (
         <div className={classes.UserAdd} id={`${props.post_id}-useradd`}>
           <button
             className={classes.UserAddButton}
@@ -463,7 +414,7 @@ export default function Post(props) {
           </button>
         </div>
       ) : null}
-      {showUserAdd && tags.friendStatus == "Accept Friend Request" ? (
+      {showUserAdd && tags.friendStatus === "Accept Friend Request" ? (
         <div className={classes.UserAdd} id={`${props.post_id}-useradd`}>
           <button
             className={classes.UserAddButton}
@@ -473,7 +424,7 @@ export default function Post(props) {
           </button>
         </div>
       ) : null}
-      {showUserAdd && tags.friendStatus == "Unfriend User" ? (
+      {showUserAdd && tags.friendStatus === "Unfriend User" ? (
         <div className={classes.UserAdd} id={`${props.post_id}-useradd`}>
           <button
             className={classes.UserAddButton}
@@ -529,7 +480,6 @@ export default function Post(props) {
           <div className={classes.Tags} id={postID + "-tags"}>
             {tags.display
               ? tags.tagList.map((tag, index) => {
-                  console.log(tag);
                   let backgroundColor;
                   if (tag.type === "type") {
                     backgroundColor = "var(--nord11)";
@@ -610,10 +560,12 @@ export default function Post(props) {
                 maxLine={showFullPost ? "100" : "5"}
                 basedOn="words"
                 ellipsisHTML={seeMore}
-                style={{ color: "var(--nord5)" }}
                 className={classes.PostText}
                 onClick={showFull}
-                style={{ display: body.editMode ? "none" : "block" }}
+                style={{
+                  color: "var(--nord5)",
+                  display: body.editMode ? "none" : "block",
+                }}
               ></HTMLEllipsis>
             </div>
           </div>
@@ -626,7 +578,7 @@ export default function Post(props) {
                 size={30}
                 onClick={thumbsUpHandler}
               ></IoMdThumbsUp>
-              {numLikes + userLiked != 0 ? (
+              {numLikes + userLiked !== 0 ? (
                 <p className={classes.NumLikes}>{numLikes + userLiked}</p>
               ) : null}
               <IoMdThumbsDown
@@ -674,81 +626,3 @@ export default function Post(props) {
     </div>
   );
 }
-
-// <div className={classes.CommentSection}>
-// <div className={classes.AddComment}>
-//   <img
-//     src={profilePic}
-//     className={classes.FriendsLiked}
-//     style={{
-//       position: "relative",
-//       width: "30px",
-//       height: "30px",
-//       padding: "10px",
-//       top: "0px",
-//       left: "0px",
-//     }}
-//     alt=""
-//   ></img>
-//   <TextareaAutosize
-//     className={classes.CommentInput}
-//     onChange={handleTextAreaOnChange}
-//   ></TextareaAutosize>
-//   <div className={classes.SubmitCommentContainer}>
-//     <FaArrowAltCircleRight
-//       className={classes.SubmitComment}
-//       onClick={submitComment}
-//     ></FaArrowAltCircleRight>
-//   </div>
-// </div>
-// {newComments.map((comment) => (
-//   <div className={classes.Comment}>
-//     <div className={classes.CommentInner}>
-//       <img
-//         src={profilePic}
-//         style={{
-//           position: "relative",
-//           width: "30px",
-//           height: "30px",
-//           padding: "10px",
-//           top: "0px",
-//           left: "0px",
-//         }}
-//         alt=""
-//         className={classes.CommentProfilePic}
-//       ></img>
-//       <div className={classes.CommentText}>{comment.comment_body}</div>
-//     </div>
-//     <div className={classes.Options}>
-//       <p className={classes.Option}>Like</p>
-//       <p className={classes.Option}>Edit</p>
-//       <p className={classes.Option}>Delete</p>
-//     </div>
-//   </div>
-// ))}
-// {comments.map((comment) => (
-//   <div className={classes.Comment}>
-//     <div className={classes.CommentInner}>
-//       <img
-//         src={profilePic}
-//         style={{
-//           position: "relative",
-//           width: "30px",
-//           height: "30px",
-//           padding: "10px",
-//           top: "0px",
-//           left: "0px",
-//         }}
-//         alt=""
-//         className={classes.CommentProfilePic}
-//       ></img>
-//       <div className={classes.CommentText}>{comment.comment_body}</div>
-//     </div>
-//     <div className={classes.Options}>
-//       <p className={classes.Option}>Like</p>
-//       <p className={classes.Option}>Edit</p>
-//       <p className={classes.Option}>Delete</p>
-//     </div>
-//   </div>
-// ))}
-// </div>
