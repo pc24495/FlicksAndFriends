@@ -17,7 +17,7 @@ router.get("/", async (req, res) => {
     : [];
   if (subscribedShowIDs.length > 0) {
     const shows = await db
-      .query("SELECT * FROm shows WHERE tv_id=ANY($1)", [subscribedShowIDs])
+      .query("SELECT * FROM shows WHERE tv_id=ANY($1)", [subscribedShowIDs])
       .then((result) => {
         if (result.rows.length > 0) {
           return result.rows;
@@ -29,7 +29,6 @@ router.get("/", async (req, res) => {
     if (shows) {
       return res.status(200).json({ shows, auth: true });
     } else {
-      console.log(shows);
       return res.status(400).json({ auth: true, shows: [] });
     }
   } else {

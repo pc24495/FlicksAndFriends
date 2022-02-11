@@ -71,46 +71,7 @@ export default function Subscriptions(props) {
     // eslint-disable-next-line
   }, []);
 
-  useEffect(() => {
-    source.cancel();
-    // eslint-disable-next-line
-    source = Axios.CancelToken.source();
-    const token = localStorage.getItem("token");
-    setTimeout(() => {
-      if (
-        searchValue &&
-        searchValue.trim() !== null &&
-        searchValue.trim() !== ""
-      ) {
-        axios
-          .get("/api/shows/", {
-            headers: {
-              "x-access-token": token,
-            },
-            cancelToken: source.token,
-            params: {
-              limit: 12,
-              searchTerm: searchValue,
-            },
-            paramsSerializer: (params) => {
-              return qs.stringify(params);
-            },
-          })
-          .then((res) => {
-            const newFilteredShows = res.data.shows;
-            setState((prevState) => {
-              return {
-                ...prevState,
-                isSearching: true,
-                filteredShows: newFilteredShows,
-              };
-            });
-          });
-      } else {
-        setState({ ...state, isSearching: false, filteredShows: [] });
-      }
-    }, 1);
-  }, [searchValue]);
+  useEffect(() => {}, [searchValue]);
 
   const getMoreShows = async (event) => {
     // console.log(state.shows);

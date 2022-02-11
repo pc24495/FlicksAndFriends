@@ -177,7 +177,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
   background-color: var(--nord0);
-  overflow: none;
+  overflow: hidden;
+  /* scroll-behavior: unset; */
 }
 
 code {
@@ -191,6 +192,33 @@ code {
     --footer-height: 50px;
   }
 }
+
+/* html {
+  overscroll-behavior: none;
+}
+
+body {
+  overscroll-behavior: none;
+  margin: 0;
+  font-family: "Source Sans Pro", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+  background-color: var(--nord0);
+  overflow: none;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+@media (max-width: 610px) {
+  :root {
+    --toolbar-height: 45px;
+    --footer-height: 50px;
+  }
+} */
 
 /* :root {
 

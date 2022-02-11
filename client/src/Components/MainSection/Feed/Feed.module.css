@@ -61,8 +61,6 @@
 }
 
 .InfiniteScroll {
-  height: calc(100vh - var(--toolbar-height) - var(--footer-height));
-  overflow: hidden;
 }
 
 .ImageContainer {
@@ -178,6 +176,19 @@
   cursor: pointer;
 }
 
+.EndMessageContainer {
+  height: 100px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.EndMessage {
+  margin: 5px auto;
+  color: var(--nord5);
+}
+
 @media (max-width: 960px) {
   .Feed {
     width: 100vw;
@@ -185,6 +196,10 @@
 }
 
 @media (max-width: 610px) {
+  .Feed {
+    border: none;
+  }
+
   .InputPost {
     height: 35px;
     display: none;

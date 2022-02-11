@@ -47,18 +47,10 @@
   margin-bottom: 5px;
 }
 
-/* .Username {
-    max-width: 80%;
-    width: fit-content;
-    position: relative;
-    font: inherit;
-    text-decoration: underline;
-    font-weight: bold;
-    left: 15%;
-    top: 20px;
-    display: block;
-    margin: 0px;
-  } */
+.Username:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
 
 .ShowTagContainer {
   width: 260px;
@@ -142,6 +134,24 @@
   text-decoration: underline;
   position: relative;
   top: 30px;
+}
+
+.ChangePicLink {
+  position: absolute;
+  background-color: var(--nord5);
+  opacity: 0;
+  width: 150px;
+  height: 150px;
+  margin-top: 10px;
+  border-radius: 50%;
+  display: flex;
+  justify-self: center;
+  align-items: center;
+}
+
+.ChangePicLink:hover {
+  opacity: 0.4;
+  cursor: pointer;
 }
 
 @media (max-width: 960px) {

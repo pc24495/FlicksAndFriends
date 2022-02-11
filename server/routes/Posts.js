@@ -29,7 +29,7 @@ router.get("/", verifyJWT, async (req, res) => {
       if (response.rows.length > 0) {
         return response.rows[0].subscriptions;
       } else {
-        res.json({ message: "No subscriptions" });
+        return res.json({ message: "No subscriptions" });
       }
     });
 
@@ -39,13 +39,13 @@ router.get("/", verifyJWT, async (req, res) => {
     subscriptionsMap.set(subscription.show_id, subscription)
   );
   let posts = [];
-  //
+
   await Promise.all(
     //Iterating through shows
     subscribedShowIDs.map(async (showID) => {
       const postsAboutShow = await db
         .query(
-          "SELECT * FROM posts WHERE ((NOT post_id = ANY($1))) AND (tv_id = $2) AND ( (type = $3) OR ( (type = $4 ) AND ( episode_order <= $5) )) ORDER BY num_likes DESC LIMIT 3",
+          "SELECT * FROM posts WHERE ((NOT post_id = ANY($1))) AND (tv_id = $2) AND ( (type = $3) OR ( (type = $4 ) AND ( episode_order <= $5) )) ORDER BY num_likes, post_date DESC LIMIT 3",
           [
             alreadyLoadedPostIDs,
             showID,
@@ -208,11 +208,12 @@ router.get("/", verifyJWT, async (req, res) => {
       };
     })
   );
-  res.json({ posts: posts, userPics: JSON.stringify([...userPicsMap]) });
+  return res.json({ posts: posts, userPics: JSON.stringify([...userPicsMap]) });
 });
 
 router.post("/", verifyJWT, async (req, result) => {
   // console.log(req.body.type);
+  console.log();
   if (req.body.episode_air_date.toString() === "Invalid Date") {
     return res.status(400).json({ error: "Invalid date" });
   }
@@ -258,7 +259,6 @@ router.post("/", verifyJWT, async (req, result) => {
         { type: "title", text: res.rows[0].show_title },
         { type: "episode_tag", text: episodeTag },
       ];
-      // console.log(tags);
       result.json({
         posts: [
           {

@@ -379,7 +379,7 @@ export default function Post(props) {
   const seeMore = "<i>...see more</i>";
 
   return (
-    <div className={classes.PostContainer}>
+    <div className={classes.PostContainer} key={props.key}>
       {showDropdown ? (
         <div className={classes.DropDown}>
           <div className={classes.Edit}>

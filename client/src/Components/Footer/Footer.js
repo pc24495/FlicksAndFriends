@@ -31,7 +31,6 @@ const Footer = (props) => {
       })
       .then((res) => {
         if (res.data.friend_requests) {
-          console.log(res.data.friend_requests);
           setFriendRequests({
             ...friendRequests,
             requests: res.data.friend_requests,

@@ -55,17 +55,20 @@ router.get("/subscriptions-and-shows", verifyJWT, async (req, res) => {
   const subscribedShows = await db
     .query("SELECT * FROM shows WHERE tv_id=ANY($1)", [subscribedShowIDs])
     .then((result) => result.rows);
+  // const subscribedShows = await db
   const shows = await db
     .query(
       "SELECT * FROM shows WHERE NOT tv_id=ANY($1) ORDER BY popularity DESC LIMIT $2",
       [subscribedShowIDs, limit]
     )
     .then((result) => result.rows);
-  res.json({
-    shows: [...shows, ...subscribedShows],
-    displayShows: shows,
-    subscriptions,
-  });
+  //OLD SUBSCRIPTIONS PAGE SYSTEM
+  // res.json({
+  //   shows: [...shows, ...subscribedShows],
+  //   displayShows: shows,
+  //   subscriptions,
+  // });
+  res.status(200).json({ shows, subscribedShows, subscriptions });
 });
 
 router.get(

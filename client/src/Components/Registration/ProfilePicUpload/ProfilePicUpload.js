@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import classes from "./ProfilePicUpload.module.css";
 import empty from "./EmptyProfilePic.png";
 import ReactEasyCrop from "react-easy-crop";
@@ -21,7 +21,7 @@ const ProfilePicUpload = (props) => {
   });
 
   const [imageCrop, setImageCrop] = useState(null);
-
+  const redirectLink = useSelector((state) => state.redirectLink);
   const dispatch = useDispatch();
 
   const onSelectFile = (event) => {
@@ -145,7 +145,7 @@ const ProfilePicUpload = (props) => {
             type: "UPDATE_PROFILE_PIC",
             profilePic: state.croppedImageSrc || state.emptySrc,
           });
-          props.history.push("/subscriptions");
+          props.history.push(redirectLink);
         }
       });
   };

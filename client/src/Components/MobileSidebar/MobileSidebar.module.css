@@ -1,0 +1,39 @@
+.Sidebar {
+  z-index: 500;
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0px;
+  background-color: var(--nord3);
+  transition: left 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 40px;
+}
+
+.CloseButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 25px;
+}
+
+.CloseButton path {
+  color: var(--nord5);
+}
+
+.CloseButton:hover {
+  cursor: pointer;
+}
+
+.Option {
+  font-size: 25px;
+  color: var(--nord5);
+}
+
+.Option:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}

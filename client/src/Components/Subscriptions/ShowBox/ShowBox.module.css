@@ -12,6 +12,8 @@
   flex-direction: column;
   height: 600px;
   margin-bottom: 20px;
+  margin-left: 5px;
+  margin-right: 5px;
   /* top: calc(100% -); */
 }
 

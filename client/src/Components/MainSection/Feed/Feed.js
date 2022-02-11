@@ -48,7 +48,6 @@ export default function Feed(props) {
         .then((res) => {
           // console.log("Trying to get shows.");
           if (res.data.auth) {
-            // console.log("Setting shows from subscriptions useEffect");
             setShows(res.data.shows);
           }
           // else {
@@ -77,9 +76,9 @@ export default function Feed(props) {
   }); //userPics entries are of the form [userID, picture]
   // console.log(postState);
   const [newPosts, setNewPosts] = useState({ posts: [], userPics: new Map() });
-  useEffect(() => {
-    setPostState({ ...props.initPosts, showBackdrop: false });
-  }, [props.initPosts]);
+  // useEffect(() => {
+  //   setPostState({ ...props.initPosts, showBackdrop: false });
+  // }, [props.initPosts]);
   const loggedIn = useSelector((state) => state.loggedIn);
   // console.log(subscriptions);
   // console.log(shows[0]);
@@ -128,19 +127,16 @@ export default function Feed(props) {
   const [text, setText] = useState("");
 
   useEffect(() => {
-    // console.log("UseEffect Shows");
     setCurrentShow(setInitShow(shows));
   }, [shows]);
 
   useEffect(() => {
     // console.log("Show has been changed");
-    // console.log("UseEffect seasons");
     setCurrentSeason(setInitSeason(currentShow));
   }, [currentShow]);
 
   useEffect(() => {
     // console.log("Season has been changed");
-    // console.log("UseEffect episodes");
     setCurrentEpisode(setInitEpisode(currentSeason));
   }, [currentSeason]);
 
@@ -286,7 +282,6 @@ export default function Feed(props) {
           setCurrentShow(shows[0]);
         });
     }
-    // setPostState({ ...postState, showBackdrop: false });
   };
 
   const deletePosts = (event, postID) => {
@@ -321,7 +316,7 @@ export default function Feed(props) {
   // let profilePicBase64 = null;
 
   const getMorePosts = async () => {
-    // console.log("Fetching posts");
+    console.log("Fetching posts");
     setTimeout(async () => {
       const subscriptionIDs =
         subscriptions && subscriptions.length > 0
@@ -329,6 +324,13 @@ export default function Feed(props) {
               return sub.show_id;
             })
           : null;
+      // console.log(subscriptionIDs);
+      console.log(postState);
+      console.log(
+        postState.posts
+          .map((post) => post.post_id)
+          .concat(newPosts.posts.map((post) => post.post_id))
+      );
       if (subscriptionIDs) {
         await axios
           .get("/api/posts", {
@@ -372,49 +374,14 @@ export default function Feed(props) {
     }, 200);
   };
 
-  const friendRequestHandler = (friend_status, user_id) => {
-    // const token = localStorage.getItem("token");
-    // console.log(tags.friendStatus);
-    // if (friend_status === "Add Friend") {
-    //   axios
-    //     .post(`/api/friend-requests/${user_id}`, {
-    //       headers: {
-    //         "x-access-token": token,
-    //       },
-    //     })
-    //     .then((res) => {
-    //       if (res.data.success) {
-    //         setPostState({
-    //           ...postState,
-    //           posts: postState.posts.map((post) => {
-    //             if (post.user_id === user_id) {
-    //               return {
-    //                 ...post,
-    //                 friend_status: "Unsend Friend Request",
-    //               };
-    //             } else {
-    //               return post;
-    //             }
-    //           }),
-    //         });
-    //       }
-    //     });
-    // }
-  };
+  useEffect(getMorePosts, []);
+  useEffect(getMorePosts, [loggedIn]);
 
-  // const linkto = (link) => {
-  //   if (link === "login") {
-  //     history.push("/login");
-  //   } else {
-  //     history.push("/registration");
-  //   }
-  // };
-  // console.log(shows);
-  // console.log(currentShow);
-  // console.log(currentSeason);
-  //RETURN
-  // console.log(postState.posts);
-  // console.log(newPosts.posts.forEach((post) => console.log(post.tags)));
+  useEffect(() => {
+    // console.log(postState.posts.length);
+    // console.log(postState.posts);
+  }, [postState]);
+
   return (
     <div className={classes.Feed}>
       {postState.showBackdrop ? (
@@ -533,7 +500,7 @@ export default function Feed(props) {
           loader={<PostSpinner></PostSpinner>}
           next={getMorePosts}
           hasMore={true}
-          scrollThreshold={0}
+          scrollThreshold={50}
           className={classes.InfiniteScroll}
         >
           {postState.posts.map((post) => {
@@ -552,9 +519,6 @@ export default function Feed(props) {
                 episode_tag={post.episode}
                 tags={post.tags}
                 post_id={post.post_id}
-                friend_request_handler={() =>
-                  friendRequestHandler(post.friend_status, post.user_id)
-                }
                 friend_status={post.friend_status}
                 num_likes={post.num_likes}
                 delete_posts={deletePosts}

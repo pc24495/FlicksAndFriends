@@ -18,6 +18,7 @@ class Sidebar extends Component {
             alt="Profile"
           ></img>
         )}
+        {this.props.profilePic && <div className={classes.ChangePicLink}></div>}
         <p className={classes.Username} style={{ fontSize: fontSize }}>
           {this.props.username}
         </p>

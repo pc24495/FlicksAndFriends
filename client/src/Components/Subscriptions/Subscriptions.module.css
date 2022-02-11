@@ -6,9 +6,6 @@
 }
 
 .Selector {
-  /* display: grid;
-  grid-template-columns: 33.3% 33.3% 33.3%;
-  grid-gap: 1em; */
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
@@ -26,12 +23,14 @@
   position: relative;
   top: 20px;
   margin-bottom: 50px;
-  overflow: hidden;
+  overflow: scroll;
+  height: 300px;
 }
 
 .FixedElements {
-  position: sticky;
+  position: fixed;
   top: var(--toolbar-height);
+  /* top: 0px; */
   width: 100vw;
   margin: 0px;
   z-index: 10;
@@ -469,19 +468,6 @@
 
   .CloseSearch:hover {
     cursor: pointer;
-  }
-
-  .SearchIconContainer {
-    position: fixed;
-    bottom: 60px;
-    right: 15px;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background-color: var(--nord5);
-    box-shadow: 0px 0px 10px var(--nord7);
-    z-index: 200;
-    display: none;
   }
 
   .SearchIconContainer:hover {

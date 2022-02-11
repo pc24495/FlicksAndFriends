@@ -193,6 +193,10 @@ const Toolbar = (props) => {
     setShowMobileDropdown(true);
   };
 
+  const displaySidebar = (event) => {
+    dispatch({ type: "DISPLAY SIDEBAR" });
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (loggedIn && friendRequests.requests.length === 0) {
@@ -310,9 +314,6 @@ const Toolbar = (props) => {
       ) : null}
       <nav className={classes.DesktopOnly}>
         <NavigationItems>
-          <p>
-            {windowWidth} {windowHeight}
-          </p>
           <input
             className={classes.SearchBar}
             style={{
@@ -350,7 +351,10 @@ const Toolbar = (props) => {
         </NavigationItems>
       </nav>
       <nav className={classes.MobileOnly}>
-        <GiHamburgerMenu className={classes.SidebarMenu}></GiHamburgerMenu>
+        <GiHamburgerMenu
+          className={classes.SidebarMenu}
+          onClick={displaySidebar}
+        ></GiHamburgerMenu>
         <p className={classes.Username}>{username}</p>
         <AiFillCaretDown
           className={classes.DropdownIcon}

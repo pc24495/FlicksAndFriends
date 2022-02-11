@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import classes from "./MainSection.module.css";
-import Feed from "./Feed/Feed.js";
+import Feed from "./Feed/Feed3.js";
 import Sidebar from "./Sidebar/Sidebar.js";
 import FriendsSidebar from "./FriendsSidebar/FriendsSidebar.js";
 import { useHistory } from "react-router-dom";
@@ -19,7 +19,7 @@ export default function MainSection(props) {
   const [initPosts, setInitPosts] = useState({
     posts: [],
     userPics: [],
-    loadMore: false,
+    loadMore: true,
   });
 
   useEffect(() => {
@@ -48,12 +48,8 @@ export default function MainSection(props) {
               },
             })
             .then((res) => {
-              // console.log("Fetched posts");
-              // const { posts, userPics } = { ...res.data };
-              // console.log(posts);
               const posts = res.data.posts;
               const userPics = new Map(JSON.parse(res.data.userPics));
-              // console.log(posts);
               setInitPosts((prevState) => ({
                 ...prevState,
                 posts: prevState.posts.concat(posts),

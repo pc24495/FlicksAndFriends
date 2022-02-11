@@ -25,6 +25,8 @@ const initialState = {
   searchValue: "",
   newFriendStatus: {},
   userID: null,
+  sidebarOn: false,
+  redirectLink: "/subscriptions",
 };
 
 const reducer = (state = initialState, action) => {
@@ -60,6 +62,7 @@ const reducer = (state = initialState, action) => {
       username: null,
       shows: [],
       profilePic: null,
+      redirectLink: "/subscriptions",
     };
   }
 
@@ -156,6 +159,20 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       displayBackdrop: false,
+    };
+  }
+
+  if (action.type === "DISPLAY SIDEBAR") {
+    return {
+      ...state,
+      sidebarOn: true,
+    };
+  }
+
+  if (action.type === "CLOSE SIDEBAR") {
+    return {
+      ...state,
+      sidebarOn: false,
     };
   }
 

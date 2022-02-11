@@ -1,7 +1,7 @@
 .Footer {
   height: var(--footer-height);
   width: 100%;
-  position: fixed;
+  position: sticky;
   bottom: 0px;
   left: 0px;
   background-color: var(--nord1);
