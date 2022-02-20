@@ -103,7 +103,6 @@ function useFetch(
   };
 
   const searchShow = () => {
-    console.log(searchValue);
     source.cancel();
     // eslint-disable-next-line
     source = axios.CancelToken.source();
@@ -129,7 +128,6 @@ function useFetch(
             },
           })
           .then(async (res) => {
-            console.log(res.data);
             const newFilteredShows = res.data.shows;
             await setIsFiltering(true);
             await setFilteredShows(newFilteredShows);

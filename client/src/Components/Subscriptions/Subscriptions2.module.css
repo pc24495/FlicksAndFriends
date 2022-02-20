@@ -132,7 +132,7 @@
   margin-bottom: 0px;
   overflow: scroll;
   flex-grow: 1;
-  background-color: green;
+  background-color: var(--nord0);
 }
 
 .SelectorMobile {
@@ -141,11 +141,11 @@
   flex-direction: row;
   justify-content: space-around;
   position: relative;
-  top: -40px;
+  top: 0px;
   margin-bottom: 50px;
   overflow: scroll;
   height: calc(100vh - var(--toolbar-height) - var(--footer-height) - 130px);
-  /* flex-grow: 1; */
+  flex-grow: 1;
 }
 
 .ShowTitleBox {

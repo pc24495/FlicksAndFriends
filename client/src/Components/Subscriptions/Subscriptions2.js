@@ -209,7 +209,15 @@ const Subscriptions2 = (props) => {
       </div>
       <div
         className={classes.SelectorContainer}
-        style={{ top: searchMode ? "180px" : "100px" }}
+        style={{
+          top: searchMode
+            ? subscriptions.length === 0 || !subscriptions
+              ? "80px"
+              : "180px"
+            : subscriptions.length === 0 || !subscriptions
+            ? "0px"
+            : "100px",
+        }}
       >
         {!mobileCutoff && !isFiltering && (
           <div className={classes.Selector}>
@@ -254,7 +262,9 @@ const Subscriptions2 = (props) => {
                   ></ShowBox>
                 );
               })}
-            <div style={{ height: "300px", width: "300px" }}></div>
+            <div style={{ height: "340px", width: "340px" }}></div>
+            <div style={{ height: "340px", width: "340px" }}></div>
+            <div style={{ height: "340px", width: "340px" }}></div>
           </div>
         )}
         {mobileCutoff && !isFiltering && (

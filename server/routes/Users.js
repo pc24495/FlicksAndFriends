@@ -146,4 +146,9 @@ router.patch(
   }
 );
 
+router.delete("/", verifyJWT, (request, response) => {
+  console.log(request.userID);
+  db.query("DELETE FROM users WHERE user_id=$1", [request.userID]);
+});
+
 module.exports = router;

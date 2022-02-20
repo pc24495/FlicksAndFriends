@@ -8,6 +8,9 @@ import useOnClickOutside from "../../Helpers/useOnClickOutside.js";
 import { FaUserFriends } from "react-icons/fa";
 import { AiFillCaretDown } from "react-icons/ai";
 import { GiHamburgerMenu } from "react-icons/gi";
+import { FiLogOut } from "react-icons/fi";
+import { TiUserDelete } from "react-icons/ti";
+import { GrClose } from "react-icons/gr";
 import axios from "../../axiosConfig.js";
 
 const Toolbar = (props) => {
@@ -21,11 +24,20 @@ const Toolbar = (props) => {
     numUnread: 0,
   });
   const [showMobileDropdown, setShowMobileDropdown] = useState(false);
+  const [showDesktopDropdown, setShowDesktopDropdown] = useState(false);
+  const [backdropState, setBackdropState] = useState({
+    showBackdrop: false,
+    errorMessage: false,
+  });
   const newFriendStatus = useSelector((state) => state.newFriendStatus);
   const changedID = useRef(null);
-  const ref = useRef();
-  useOnClickOutside(ref, () => {
+  const mobileRef = useRef();
+  const desktopRef = useRef();
+  useOnClickOutside(mobileRef, () => {
     setShowMobileDropdown(false);
+  });
+  useOnClickOutside(desktopRef, () => {
+    setShowDesktopDropdown(false);
   });
   const dispatch = useDispatch();
 
@@ -161,6 +173,31 @@ const Toolbar = (props) => {
           showDropdown: false,
         });
       }
+    }
+  };
+
+  const openDesktopDropdown = (event) => {
+    setShowDesktopDropdown(true);
+  };
+
+  const closeDesktopDropdown = (event) => {
+    setShowDesktopDropdown(false);
+  };
+
+  const handleDelete = async (event) => {
+    event.preventDefault();
+    if (
+      ["delete", "Delete"].includes(
+        event.target.elements.delete_account_input.value
+      )
+    ) {
+      axios.delete("/api/users", {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+      });
+      await dispatch({ type: "LOGOUT" });
+      setBackdropState({ ...backdropState, showBackdrop: false });
     }
   };
 
@@ -341,7 +378,17 @@ const Toolbar = (props) => {
               <p>Logout</p>
             </div>
           ) : null}
-
+          {loggedIn ? (
+            <div className={classes.DesktopDropdownCaretContainer}>
+              <AiFillCaretDown
+                className={classes.DesktopDropdownCaret}
+                onClick={openDesktopDropdown}
+                style={{
+                  color: showDesktopDropdown ? "var(--nord7)" : "var(--nord5)",
+                }}
+              ></AiFillCaretDown>
+            </div>
+          ) : null}
           {loggedIn ? null : (
             <NavigationItem link="/registration">Registration</NavigationItem>
           )}
@@ -365,13 +412,73 @@ const Toolbar = (props) => {
         ></AiFillCaretDown>
       </nav>
       {showMobileDropdown ? (
-        <div className={classes.MobileDropdown} ref={ref}>
+        <div className={classes.MobileDropdown} ref={mobileRef}>
           {" "}
-          <p className={classes.MobileLogout} onClick={logout}>
-            Logout
-          </p>{" "}
+          <div className={classes.MobileOption} onClick={logout}>
+            <FiLogOut className={classes.MobileOptionIcon}></FiLogOut>
+            <p className={classes.MobileLogout}>Logout</p>{" "}
+          </div>
+          <div
+            className={classes.MobileOption}
+            onClick={() =>
+              setBackdropState({ ...backdropState, showBackdrop: true })
+            }
+          >
+            <TiUserDelete className={classes.MobileOptionIcon}></TiUserDelete>
+            <p className={classes.MobileLogout}>Delete Account</p>
+          </div>
         </div>
       ) : null}
+      {
+        <div
+          className={classes.DesktopDropdown}
+          style={{ display: showDesktopDropdown ? "flex" : "none" }}
+          ref={desktopRef}
+        >
+          <div
+            className={classes.DesktopOption}
+            onClick={() =>
+              setBackdropState({ ...backdropState, showBackdrop: true })
+            }
+          >
+            <TiUserDelete className={classes.DesktopOptionIcon}></TiUserDelete>
+            <p className={classes.DesktopIconLabel}>Delete Account</p>
+          </div>
+        </div>
+      }
+      <div
+        className={classes.Backdrop}
+        style={{ display: backdropState.showBackdrop ? "flex" : "none" }}
+      >
+        <div className={classes.DeleteBox}>
+          <div className={classes.DeleteBox_CloseSection}>
+            <GrClose
+              className={classes.DeleteClose}
+              onClick={() =>
+                setBackdropState({ ...backdropState, showBackdrop: false })
+              }
+            ></GrClose>
+          </div>
+          <p className={classes.WarningMessage}>
+            Warning: this action will permanently delete your account and all
+            associated posts and likes. Please enter the word "delete" and press
+            submit to continue.{" "}
+          </p>
+          <form className={classes.DeleteForm} onSubmit={handleDelete}>
+            <input
+              className={classes.DeleteInput}
+              id="delete_account_input"
+              autocomplete="off"
+            ></input>
+            <button className={classes.SubmitButton}>Submit</button>
+          </form>
+          {backdropState.errorMessage && (
+            <p className={classes.ErrorMessage}>
+              Error: Wrong spelling of "delete" entered
+            </p>
+          )}
+        </div>
+      </div>
     </header>
   );
 };

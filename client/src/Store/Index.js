@@ -63,6 +63,7 @@ const reducer = (state = initialState, action) => {
       shows: [],
       profilePic: null,
       redirectLink: "/subscriptions",
+      sidebarOn: false,
     };
   }
 
