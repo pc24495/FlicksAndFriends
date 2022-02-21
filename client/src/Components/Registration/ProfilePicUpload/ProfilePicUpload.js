@@ -28,9 +28,10 @@ const ProfilePicUpload = (props) => {
     if (event.target.files && event.target.files.length > 0) {
       const reader = new FileReader();
       reader.addEventListener("load", () => {
-        console.log(reader.result);
+        // console.log(reader.result);
         setState({ ...state, src: reader.result, showBackdrop: true });
       });
+      // console.log(typeof event.target.files[0]);
       reader.readAsDataURL(event.target.files[0]);
     }
   };

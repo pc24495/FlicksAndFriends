@@ -1,10 +1,12 @@
 import React, { useState, useRef } from "react";
+import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import classes from "./MobileSidebar.module.css";
 import { GrClose } from "react-icons/gr";
 import axios from "../../axiosConfig.js";
 
 export default function MobileSidebar(props) {
+  const history = useHistory();
   const sidebarOn = useSelector((state) => state.sidebarOn);
   const dispatch = useDispatch();
   const [backdropState, setBackdropState] = useState({
@@ -37,6 +39,11 @@ export default function MobileSidebar(props) {
     }
   };
 
+  const changeProfilePicture = (event) => {
+    dispatch({ type: "CHANGE_PROFILE_PICTURE_LINK", redirectLink: "/" });
+    history.push("/profilepic");
+  };
+
   return (
     <div
       className={classes.Sidebar}
@@ -47,6 +54,9 @@ export default function MobileSidebar(props) {
         style={{ opacity: sidebarOn ? "1" : "0" }}
         onClick={() => dispatch({ type: "CLOSE SIDEBAR" })}
       ></GrClose>
+      <p className={classes.Option} onClick={changeProfilePicture}>
+        Change Profile Picture
+      </p>
       <p className={classes.Option} onClick={handleDeleteBackdrop}>
         Delete Account
       </p>
@@ -84,19 +94,3 @@ export default function MobileSidebar(props) {
     </div>
   );
 }
-
-// <p className={classes.WarningMessage}>
-//   Warning: this action will permanently delete your account and all associated
-//   posts and likes. Please enter the word "delete" and press submit to continue.{" "}
-// </p>
-// <form onSubmit={handleDelete}>
-// <div className={classes.DeleteInputContainer}>
-// <input
-//   className={classes.DeleteInput}
-//   id="delete_account_input"
-// ></input>
-// <button className={classes.SubmitButton}>Submit</button>
-//   <p className={classes.WarningMessage}>Error: wrong spelling</p>
-// </div>
-// <GrClose className={classes.DeleteClose}></GrClose>
-// </form>

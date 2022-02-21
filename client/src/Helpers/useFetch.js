@@ -51,15 +51,12 @@ function useFetch(query, page, subscriptions, removedID) {
       });
 
       await setList(postList.concat(res.data.posts));
-      //   console.log(new Map(JSON.parse(res.data.userPics)));
       await setUserPicsMap(
         (prev) => new Map([...prev, ...new Map(JSON.parse(res.data.userPics))])
       );
-      if (res.data.posts.length < 3) {
-        // console.log(res.data.posts.length);
+      if (res.data.posts.length < 4) {
         await setDone(true);
       }
-      //   console.log("Unsetting loading");
       setLoading(false);
     } catch (err) {
       setError(err);

@@ -177,6 +177,14 @@ const reducer = (state = initialState, action) => {
     };
   }
 
+  if (action.type === "CHANGE_PROFILE_PICTURE_LINK") {
+    return {
+      ...state,
+      redirectLink: action.redirectLink,
+      sidebarOn: false,
+    };
+  }
+
   return state;
 };
 

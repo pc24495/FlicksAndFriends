@@ -33,8 +33,6 @@ router.get("/", verifyJWT, async (req, res) => {
       }
     });
 
-  // console.log(subscriptions);
-
   subscriptions.forEach((subscription) =>
     subscriptionsMap.set(subscription.show_id, subscription)
   );
@@ -45,7 +43,7 @@ router.get("/", verifyJWT, async (req, res) => {
     subscribedShowIDs.map(async (showID) => {
       const postsAboutShow = await db
         .query(
-          "SELECT * FROM posts WHERE ((NOT post_id = ANY($1))) AND (tv_id = $2) AND ( (type = $3) OR ( (type = $4 ) AND ( episode_order <= $5) )) ORDER BY num_likes, post_date DESC LIMIT 3",
+          "SELECT * FROM posts WHERE ((NOT post_id = ANY($1))) AND (tv_id = $2) AND ( (type = $3) OR ( (type = $4 ) AND ( episode_order <= $5) )) ORDER BY num_likes, post_date DESC LIMIT 4",
           [
             alreadyLoadedPostIDs,
             showID,
@@ -73,7 +71,6 @@ router.get("/", verifyJWT, async (req, res) => {
       }
     })
     .slice(0, 6);
-  // console.log(posts);
   posts = await Promise.all(
     posts.map(async (post) => {
       if (!userIDs.includes(post.user_id)) {
@@ -93,7 +90,6 @@ router.get("/", verifyJWT, async (req, res) => {
         .query("SELECT * FROM post_likes WHERE post_id = $1", [post.post_id])
         .then((res) => {
           res.rows.forEach(async (row) => {
-            // console.log(post.post_id + " " + row.user_id + " " + req.userID);
             if (row.user_id === req.userID) {
               userLikedPost = row.is_like ? 1 : -1;
             }
@@ -169,7 +165,6 @@ router.get("/", verifyJWT, async (req, res) => {
           [post.user_id, req.userID]
         )
         .then((res) => (res.rows.length !== 0 ? "Unfriend User" : null));
-      // console.log(post.user_id + " " + req.userID);
       const userStatus = post.user_id === req.userID ? "Current User" : null;
       //
       let friend_status =
@@ -212,8 +207,6 @@ router.get("/", verifyJWT, async (req, res) => {
 });
 
 router.post("/", verifyJWT, async (req, result) => {
-  // console.log(req.body.type);
-  console.log();
   if (req.body.episode_air_date.toString() === "Invalid Date") {
     return res.status(400).json({ error: "Invalid date" });
   }
@@ -298,7 +291,6 @@ router.post("/", verifyJWT, async (req, result) => {
       const userLikedPost = 0;
       const comments = [];
       const postLikes = [];
-      console.log(res.rows[0]);
       const episodeTag =
         res.rows[0].type === "spoiler"
           ? `S${
@@ -313,7 +305,6 @@ router.post("/", verifyJWT, async (req, result) => {
         { type: "title", text: res.rows[0].show_title },
         { type: "episode_tag", text: episodeTag },
       ];
-      // console.log(tags);
       result.json({
         posts: [
           {
