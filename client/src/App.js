@@ -2,7 +2,7 @@ import "./App.css";
 import Layout from "./Components/Layout/Layout.js";
 import { useSelector, useDispatch } from "react-redux";
 import MainSection from "./Components/MainSection/MainSection.js";
-import Subscriptions from "./Components/Subscriptions/Subscriptions2.js";
+import Subscriptions from "./Components/Subscriptions/Subscriptions.js";
 import axios from "./axiosConfig.js";
 import { Route, Switch, useHistory } from "react-router-dom";
 import Registration from "./Components/Registration/Registration.js";

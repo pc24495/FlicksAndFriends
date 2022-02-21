@@ -3,6 +3,8 @@ import classes from "./Sidebar.module.css";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 
+// const Sidebar = (props) => {};
+
 class Sidebar extends Component {
   render() {
     let fontSize = "30px";

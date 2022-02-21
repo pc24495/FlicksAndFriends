@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import ShowBox from "./ShowBox/ShowBox.js";
 import LoadingShowBox from "./ShowBox/LoadingShowBox.js";
@@ -12,133 +12,97 @@ import { BsCaretUpFill } from "react-icons/bs";
 import { BsSearch } from "react-icons/bs";
 import { AiOutlineClose } from "react-icons/ai";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import useFetch from "./useFetch.js";
 
-export default function Subscriptions(props) {
-  const dispatch = useDispatch();
-  const [state, setState] = useState({
-    shows: [],
-    displayShows: [],
-    subscriptions: [],
-    isSearching: false,
-    filteredShows: [],
+const Subscriptions = (props) => {
+  const loader = useRef(null);
+  const loaderMobile = useRef(null);
+  const mobileShowboxRef = useRef();
+  const [page, setPage] = useState(0);
+  const [option2, setOption2] = useState({
+    root: null,
+    rootMargin: "20px",
+    threshold: 0,
+  });
+  const currentSubscriptions = useSelector((state) => state.Subscriptions);
+  const [latestAddedSubscription, setLatestAddedSubscription] = useState({
+    invalid: true,
+  });
+  const [latestRemovedSubscription, setLatestRemovedSubscription] = useState({
+    invalid: true,
+  });
+  const [searchMode, setSearchMode] = useState(false);
+  const searchValue = useSelector((state) => state.searchValue);
+  const {
+    notSubscribedShows,
+    subscriptions,
+    filteredShows,
+    isFiltering,
+  } = useFetch(
+    page,
+    currentSubscriptions,
+    latestAddedSubscription,
+    latestRemovedSubscription,
+    searchValue
+  );
+  const [dropTags, setDropTags] = useState(false);
+  const mobileCutoff = useMediaQuery("(max-width:610px)");
+  const [mobileState, setMobileState] = useState({
     showBackdrop: false,
     clickedShow: {},
-    searchMode: false,
-    explanationBackdrop: false,
   });
-  const [expandTags, setExpandTags] = useState(false);
-  // const [explanationBackdrop, setExplanationBackdrop] = useState(false);
-  const searchValue = useSelector((state) => state.searchValue);
-  let source = Axios.CancelToken.source();
-  const mobileCutoff = useMediaQuery("(max-width:610px)");
-  const mobileShowboxRef = useRef();
-  //Note: "show_id" field in shows corresponds to "tv_id" in subscriptions
-  useEffect(() => {
-    async function onComponentLoad() {
-      const explanationBackdrop = await axios
-        .get("/api/users/subscription_explanation", {
-          headers: {
-            "x-access-token": localStorage.getItem("token"),
-          },
-        })
-        .then((res) => res.data.subscription_explanation);
-
-      if (state.shows.length === 0) {
-        const token = localStorage.getItem("token");
-        await axios
-          .get("/api/users/subscriptions-and-shows", {
-            headers: {
-              "x-access-token": token,
-            },
-            params: {
-              limit: 12,
-            },
-          })
-          .then((res) => {
-            setState({
-              ...state,
-              displayShows: res.data.displayShows,
-              shows: res.data.shows,
-              subscriptions: res.data.subscriptions,
-              explanationBackdrop,
-            });
-          });
-      } else {
-        setState({ ...state, explanationBackdrop });
-      }
+  const dispatch = useDispatch();
+  const handleObserver = useCallback((entries) => {
+    const target = entries[0];
+    if (target.isIntersecting) {
+      setPage((prev) => prev + 1);
     }
-    onComponentLoad();
-    // eslint-disable-next-line
   }, []);
 
-  useEffect(() => {}, [searchValue]);
+  const handleObserver2 = useCallback((entries) => {
+    const target = entries[0];
+    if (target.isIntersecting) {
+      setPage((prev) => prev + 1);
+    }
+  }, []);
 
-  const getMoreShows = async (event) => {
-    // console.log(state.shows);
-    const excludeIDs = state.shows.map((show) => show.show_id);
-    // console.log(excludeIDs);
-    const token = localStorage.getItem("token");
-    setTimeout(async () => {
-      await axios
-        .get("/api/shows/", {
-          headers: {
-            "x-access-token": token,
-          },
-          params: {
-            limit: 12,
-            excludeIDs,
-          },
-          paramsSerializer: (params) => {
-            // console.log(qs.stringify(params));
-            return qs.stringify(params);
-          },
-        })
-        .then((res) => {
-          setState({
-            ...state,
-            shows: state.shows.concat(res.data.shows),
-            displayShows: state.displayShows.concat(res.data.shows),
-          });
-        });
-    }, 1000);
-  };
+  useEffect(() => {
+    const option = {
+      root: null,
+      rootMargin: "20px",
+      threshold: 0,
+    };
+    const observer = new IntersectionObserver(handleObserver, option);
+    const observer2 = new IntersectionObserver(handleObserver2, option2);
+    if (loader.current) observer.observe(loader.current);
+    if (loaderMobile.current) observer2.observe(loaderMobile.current);
+  }, [handleObserver, option2]);
 
-  const removeSubscription = (event, tv_id) => {
-    setState({
-      ...state,
-      subscriptions: state.subscriptions.filter((sub) => sub.show_id !== tv_id),
-      displayShows: [
-        state.shows.find((show) => parseInt(show.tv_id) === tv_id),
-      ].concat(state.displayShows),
+  useEffect(() => {
+    setOption2({
+      root: document.getElementById("SelectorMobile"),
+      rootMargin: "20px",
+      threshold: 0,
     });
-  };
+  }, []);
+
+  useEffect(() => {
+    setOption2({
+      root: document.getElementById("SelectorMobile"),
+      rootMargin: "20px",
+      threshold: 0,
+    });
+  }, [searchMode]);
 
   const addSubscriptions = (event, tv_id) => {
     const subscription = JSON.parse(
       document.getElementById(tv_id).dataset.subscription
     );
-    setState({
-      ...state,
-      subscriptions: [subscription].concat(state.subscriptions),
-      displayShows: state.displayShows.filter(
-        (show) => parseInt(show.tv_id) !== tv_id
-      ),
-    });
+    setLatestAddedSubscription(subscription);
   };
 
-  const handleBackdropShowBox = (event, tv_id) => {
-    const subscription = JSON.parse(
-      document.getElementById(tv_id + "-mobile").dataset.subscription
-    );
-    setState({
-      ...state,
-      subscriptions: [subscription].concat(state.subscriptions),
-      displayShows: state.displayShows.filter(
-        (show) => parseInt(show.tv_id) !== tv_id
-      ),
-      showBackdrop: false,
-      clickedShow: {},
-    });
+  const deleteSubscriptions = (event, sub) => {
+    setLatestRemovedSubscription(sub);
   };
 
   const submitSubscriptions = (event) => {
@@ -146,7 +110,7 @@ export default function Subscriptions(props) {
     // console.log(state.subscriptions);
     axios
       .patch("/api/users/subscriptions", {
-        subscriptions: JSON.stringify(state.subscriptions),
+        subscriptions: JSON.stringify(subscriptions),
         headers: {
           "x-access-token": token,
         },
@@ -154,59 +118,54 @@ export default function Subscriptions(props) {
       .then((res) => {
         dispatch({
           type: "UPDATE_SUBSCRIPTIONS",
-          subscriptions: state.subscriptions,
+          subscriptions: subscriptions,
         });
         props.history.push("/");
       });
   };
 
-  const handleMobileShowClick = (show) => {
-    setState({ ...state, clickedShow: show, showBackdrop: true });
+  const handleMobileShowClick = (event, show) => {
+    setMobileState({ showBackdrop: true, clickedShow: show });
   };
 
   const handleBackdropClick = (event) => {
     if (!mobileShowboxRef.current.contains(event.target)) {
-      setState({ ...state, showBackdrop: false, clickedShow: {} });
+      setMobileState({ ...mobileState, showBackdrop: false });
     }
+  };
+
+  const handleBackdropShowBox = async (event, tv_id) => {
+    const subscription = JSON.parse(
+      document.getElementById(tv_id + "-mobile").dataset.subscription
+    );
+    await setLatestAddedSubscription(subscription);
+    await setMobileState({ ...mobileState, showBackdrop: false });
   };
 
   const handleMobileSearch = (event) => {
     dispatch({ type: "SEARCH", searchValue: event.target.value });
   };
 
-  const handleExplanationForm = async (event) => {
-    event.preventDefault();
-    if (event.target.elements.explanation.checked) {
-      axios.patch("/api/users/subscription_explanation", {
-        headers: {
-          "x-access-token": localStorage.getItem("token"),
-        },
-        subscription_explanation: false,
-      });
-    }
-    setState({ ...state, explanationBackdrop: false });
-  };
-  //   console.log(state.subscriptions);
   return (
     <div className={classes.Subscriptions}>
       <div className={classes.FixedElements}>
-        {state.subscriptions ? (
+        {subscriptions && subscriptions.length !== 0 && (
           <div
             className={classes.ShowTags}
             style={{
-              display: state.subscriptions.length > 0 ? "block" : "none",
+              display: subscriptions.length > 0 ? "block" : "none",
             }}
           >
             <div
               className={classes.ShowTagContainer}
-              style={{ height: expandTags ? "fit-content" : "35px" }}
+              style={{ height: dropTags ? "fit-content" : "35px" }}
             >
-              {state.subscriptions.map((show) => (
+              {subscriptions.map((show) => (
                 <p className={classes.ShowTag} key={show.show_title}>
                   {show.show_title}
                   <span
                     className={classes.CloseButton}
-                    onClick={(event) => removeSubscription(event, show.show_id)}
+                    onClick={(event) => deleteSubscriptions(event, show)}
                   >
                     {" "}
                     x
@@ -219,22 +178,17 @@ export default function Subscriptions(props) {
               <BsCaretUpFill
                 className={classes.BsCaretUpFill}
                 style={{
-                  transform: !expandTags ? "rotate(180deg)" : "rotate(0deg)",
+                  transform: dropTags ? "rotate(180deg)" : "rotate(0deg)",
                 }}
-                onClick={() =>
-                  setExpandTags((prevExpandTags) => !prevExpandTags)
-                }
+                onClick={() => setDropTags((d) => !d)}
               ></BsCaretUpFill>
-              <button
-                onClick={(event) => submitSubscriptions(event)}
-                className={classes.Button}
-              >
+              <button onClick={submitSubscriptions} className={classes.Button}>
                 Submit
               </button>
             </div>
           </div>
-        ) : null}
-        {state.searchMode && mobileCutoff ? (
+        )}
+        {searchMode && mobileCutoff ? (
           <div className={classes.MobileSearch}>
             <div className={classes.MobileSearchInner}>
               <div className={classes.MobileSearchInnerInner}>
@@ -245,7 +199,7 @@ export default function Subscriptions(props) {
               </div>
               <AiOutlineClose
                 className={classes.CloseSearch}
-                onClick={() => setState({ ...state, searchMode: false })}
+                onClick={() => setSearchMode(false)}
               >
                 x
               </AiOutlineClose>
@@ -254,163 +208,127 @@ export default function Subscriptions(props) {
         ) : null}
       </div>
       <div
+        className={classes.SelectorContainer}
         style={{
-          margin: "auto",
-          position: "relative",
-          width: "90%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
+          top: searchMode
+            ? subscriptions.length === 0 || !subscriptions
+              ? "80px"
+              : "180px"
+            : subscriptions.length === 0 || !subscriptions
+            ? "0px"
+            : "100px",
         }}
       >
-        {!mobileCutoff && !state.isSearching ? (
-          <InfiniteScroll
-            dataLength={state.shows.length}
-            className={classes.Selector}
-            loader={<LoadingShowBox></LoadingShowBox>}
-            hasMore={true}
-            scrollThreshold={0}
-            next={getMoreShows}
-          >
-            {state.displayShows.map((show, index) => (
-              <ShowBox
-                key={`${show.tv_id}`}
-                id={show.tv_id}
-                title={show.title}
-                poster={show.poster}
-                show={show}
-                maxHeight={342}
-                submitFunc={(event) => addSubscriptions(event, show.tv_id)}
-              ></ShowBox>
-            ))}
-          </InfiniteScroll>
-        ) : null}
-        {!mobileCutoff && state.isSearching ? (
+        {!mobileCutoff && !isFiltering && (
           <div className={classes.Selector}>
-            {state.filteredShows.map((show, index) => (
-              <ShowBox
-                key={`${show.tv_id}`}
-                id={show.tv_id}
-                title={show.title}
-                poster={show.poster}
-                show={show}
-                maxHeight={342}
-                submitFunc={(event) => addSubscriptions(event, show.tv_id)}
-              ></ShowBox>
-            ))}
+            {notSubscribedShows &&
+              notSubscribedShows.map((show, index) => {
+                return (
+                  <ShowBox
+                    key={`${show.tv_id}`}
+                    id={show.tv_id}
+                    title={show.title}
+                    poster={show.poster}
+                    show={show}
+                    maxHeight={342}
+                    submitFunc={(event) => addSubscriptions(event, show.tv_id)}
+                  ></ShowBox>
+                );
+              })}
+            <div className={classes.LoadingShowBox} ref={loader}>
+              <div className={classes.loader}></div>
+            </div>
+            <div className={classes.LoadingShowBox}>
+              <div className={classes.loader}></div>
+            </div>
+            <div className={classes.LoadingShowBox}>
+              <div className={classes.loader}></div>
+            </div>
           </div>
-        ) : null}
-        {mobileCutoff && !state.isSearching ? (
-          <InfiniteScroll
-            dataLength={state.shows.length}
-            className={classes.SelectorMobile}
-            loader={<LoadingShowBox></LoadingShowBox>}
-            hasMore={true}
-            scrollThreshold={0}
-            next={getMoreShows}
-          >
-            {state.displayShows.map((show, index) => (
-              <div className={classes.ShowTitleBox}>
-                <p onClick={() => handleMobileShowClick(show)}>{show.title}</p>
-              </div>
-            ))}
-          </InfiniteScroll>
-        ) : null}
-        {mobileCutoff && state.isSearching ? (
-          <InfiniteScroll
-            dataLength={state.shows.length}
-            className={classes.SelectorMobile}
-            loader={<LoadingShowBox></LoadingShowBox>}
-            hasMore={true}
-            scrollThreshold={0}
-            next={getMoreShows}
-          >
-            {state.filteredShows.map((show, index) => (
-              <div className={classes.ShowTitleBox}>
-                <p onClick={() => handleMobileShowClick(show)}>{show.title}</p>
-              </div>
-            ))}
-          </InfiniteScroll>
-        ) : null}
+        )}
+        {!mobileCutoff && isFiltering && (
+          <div className={classes.Selector}>
+            {filteredShows &&
+              filteredShows.map((show, index) => {
+                return (
+                  <ShowBox
+                    key={`${show.tv_id}`}
+                    id={show.tv_id}
+                    title={show.title}
+                    poster={show.poster}
+                    show={show}
+                    maxHeight={342}
+                    submitFunc={(event) => addSubscriptions(event, show.tv_id)}
+                  ></ShowBox>
+                );
+              })}
+            <div style={{ height: "340px", width: "340px" }}></div>
+            <div style={{ height: "340px", width: "340px" }}></div>
+            <div style={{ height: "340px", width: "340px" }}></div>
+          </div>
+        )}
+        {mobileCutoff && !isFiltering && (
+          <div className={classes.SelectorMobile} id="SelectorMobile">
+            {notSubscribedShows &&
+              notSubscribedShows.map((show, index) => (
+                <div className={classes.ShowTitleBox}>
+                  <p onClick={(event) => handleMobileShowClick(event, show)}>
+                    {show.title}
+                  </p>
+                </div>
+              ))}
+
+            <div className={classes.MobileLoader} ref={loaderMobile}></div>
+          </div>
+        )}
+        {mobileCutoff && isFiltering && (
+          <div className={classes.SelectorMobile} id="SelectorMobile">
+            {filteredShows &&
+              filteredShows.map((show, index) => (
+                <div className={classes.ShowTitleBox}>
+                  <p onClick={(event) => handleMobileShowClick(event, show)}>
+                    {show.title}
+                  </p>
+                </div>
+              ))}
+            <div className={classes.ShowTitleBox}></div>
+            <div className={classes.ShowTitleBox}></div>
+          </div>
+        )}
       </div>
-      {!state.searchMode ? (
+      {!searchMode ? (
         <div
           className={classes.SearchIconContainer}
           onClick={() => {
             dispatch({ type: "SEARCH", searchValue: "" });
-            setState({ ...state, searchMode: true });
+            setSearchMode(true);
           }}
         >
           <BsSearch className={classes.SearchIcon}></BsSearch>
         </div>
       ) : null}
-
-      <Backdrop showBackdrop={state.showBackdrop} onClick={handleBackdropClick}>
-        {Object.keys(state.clickedShow).length !== 0 ? (
+      <Backdrop
+        showBackdrop={mobileState.showBackdrop}
+        onClick={handleBackdropClick}
+      >
+        {Object.keys(mobileState.clickedShow).length !== 0 ? (
           <ShowBox
-            key={`${state.clickedShow.tv_id}`}
-            id={state.clickedShow.tv_id + "-mobile"}
-            title={state.clickedShow.title}
-            poster={state.clickedShow.poster}
-            show={state.clickedShow}
+            key={`${mobileState.clickedShow.tv_id}`}
+            id={mobileState.clickedShow.tv_id + "-mobile"}
+            title={mobileState.clickedShow.title}
+            poster={mobileState.clickedShow.poster}
+            show={mobileState.clickedShow}
             maxHeight={342}
             submitFunc={(event) =>
-              handleBackdropShowBox(event, state.clickedShow.tv_id)
+              handleBackdropShowBox(event, mobileState.clickedShow.tv_id)
             }
             style={{ margin: "auto auto", top: "calc(50% - 171px)" }}
             ref={mobileShowboxRef}
           ></ShowBox>
         ) : null}
       </Backdrop>
-      <div
-        className={classes.ExplanationBackdrop}
-        style={{ display: state.explanationBackdrop ? "flex" : "none" }}
-      >
-        <form className={classes.Explanation} onSubmit={handleExplanationForm}>
-          <h2>Subscriptions</h2>
-          <div className={classes.InstructionsContainer}>
-            <p className={classes.Instructions}>
-              Follow these instructions to ensure the best experience:
-            </p>
-            <p className={classes.MobileInstructions}>
-              Click on the magnifying glass icon in the bottom-right to bring up
-              the search bar. Then, click on the title of the show you want to
-              add to your subscriptions. Select the LAST season and episode of
-              the show you watched from the popup box. We will be sure not to
-              show you posts tagged with spoilers for episodes past this point.
-              Clicking submit on the popup box will add the show to your list at
-              the top of the screen. Click the x next to the show's title in the
-              top section to remove it from your list. Remember to click submit
-              under this list of shows to save your subscriptions.
-            </p>
-          </div>
-          <div className={classes.CheckboxContainer}>
-            <label for="explanation">Don't show this message again</label>
-            <input type="checkbox" id="explanation" name="explanation"></input>
-          </div>
-
-          <button
-            type="submit"
-            className={classes.Button}
-            style={{
-              right: "0px",
-              backgroundColor: "var(--nord9)",
-              marginTop: "10px",
-            }}
-          >
-            Submit
-          </button>
-
-          <p
-            className={classes.CloseInstructions}
-            onClick={() => {
-              setState({ ...state, explanationBackdrop: false });
-            }}
-          >
-            CLOSE
-          </p>
-        </form>
-      </div>
     </div>
   );
-}
+};
+
+export default Subscriptions;
