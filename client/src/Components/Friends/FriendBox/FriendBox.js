@@ -2,13 +2,14 @@ import React from "react";
 import classes from "./FriendBox.module.css";
 
 const FriendBox = (props) => {
-  const { profilePic, username } = props.friend;
+  console.log(props.friend);
+  const { profile_pic, username } = props.friend;
 
   return (
     <div className={classes.FriendBox}>
       <div className={classes.ProfilePicContainer}>
         <img
-          src={profilePic}
+          src={profile_pic}
           className={classes.ProfilePicture}
           alt="Empty"
         ></img>

@@ -27,6 +27,7 @@
 .Warning {
   color: var(--nord5);
   text-align: center;
+  padding: 20px;
 }
 
 .LoaderContainer {

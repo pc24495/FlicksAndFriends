@@ -12,6 +12,8 @@ import { MdLocalMovies } from "react-icons/md";
 const Footer = (props) => {
   const loggedIn = useSelector((state) => state.loggedIn);
   const newFriendStatus = useSelector((state) => state.newFriendStatus);
+  const username = useSelector((state) => state.username);
+
   const [friendRequests, setFriendRequests] = useState({
     requests: [],
     numUnread: 0,
@@ -41,6 +43,31 @@ const Footer = (props) => {
     return () => {};
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    axios
+      .get("/api/friend-requests", {
+        headers: {
+          "x-access-token": token,
+        },
+        params: {
+          profile_pics: true,
+          usernames: true,
+        },
+      })
+      .then((res) => {
+        if (res.data.friend_requests) {
+          setFriendRequests({
+            ...friendRequests,
+            requests: res.data.friend_requests,
+            numUnread: res.data.num_unread,
+          });
+        }
+      });
+    return () => {};
+    // eslint-disable-next-line
+  }, [username]);
 
   useEffect(() => {
     if (Object.keys(newFriendStatus).length !== 0) {
