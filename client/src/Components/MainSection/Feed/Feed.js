@@ -1,26 +1,263 @@
-import React, { useState, useEffect } from "react";
+import useFetch from "../../../Helpers/useFetch.js";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
 import classes from "./Feed.module.css";
 import Post from "../Post/Post.js";
 import PostSpinner from "../Post/PostSpinner.js";
-import axios from "../../../axiosConfig.js";
-// import smile from "./smile.png";
-// import squareTest from "./SquareTestImage.png";
 import Backdrop from "../../Backdrop/Backdrop.js";
+import axios from "../../../axiosConfig.js";
 import InfiniteScroll from "react-infinite-scroll-component";
 import qs from "qs";
 
-// import TextareaAutosize from "react-textarea-autosize";
-
-export default function Feed(props) {
+function Feed(props) {
+  const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [removedID, setRemovedID] = useState(null);
   const subscriptions = useSelector((state) => {
     return state.subscriptions;
   });
-
   const profilePic = useSelector((state) => state.profilePic);
+  const loggedIn = useSelector((state) => state.loggedIn);
+  const { loading, error, postList, done, userPicsMap } = useFetch(
+    query,
+    page,
+    subscriptions,
+    removedID
+  );
+  const [newPostState, setNewPostState] = useState({
+    showBackdrop: false,
+    showDropdowns: true,
+    posts: [],
+    shows: [],
+    currentShow: { episodes: [] },
+    currentSeason: { episodes: [] },
+    currentEpisode: {},
+    show: "0",
+    season: "0",
+    episode: "0",
+    text: "",
+    userPics: new Map(),
+  });
+  const loader = useRef(null);
+  const ref = useRef();
 
-  const [shows, setShows] = useState([]);
-  // console.log(shows);
+  function useOnClickOutside(ref, handler) {
+    useEffect(
+      () => {
+        const listener = (event) => {
+          // Do nothing if clicking ref's element or descendent elements
+          if (!ref.current || ref.current.contains(event.target)) {
+            return;
+          }
+          handler(event);
+        };
+        document.addEventListener("mousedown", listener);
+        document.addEventListener("touchstart", listener);
+        return () => {
+          document.removeEventListener("mousedown", listener);
+          document.removeEventListener("touchstart", listener);
+        };
+      },
+      // Add ref and handler to effect dependencies
+      // It's worth noting that because passed in handler is a new ...
+      // ... function on every render that will cause this effect ...
+      // ... callback/cleanup to run every render. It's not a big deal ...
+      // ... but to optimize you can wrap handler in useCallback before ...
+      // ... passing it into this hook.
+      [ref, handler]
+    );
+  }
+
+  useOnClickOutside(ref, () =>
+    setNewPostState((state) => {
+      return { ...state, showBackdrop: false };
+    })
+  );
+
+  const handleObserver = useCallback((entries) => {
+    const target = entries[0];
+    if (target.isIntersecting) {
+      setPage((prev) => prev + 1);
+    }
+  }, []);
+
+  const deletePosts = (event, id) => {
+    const postToBeDeleted = postList.find((post) => 12 === post.post_id);
+    // console.log(postToBeDeleted);
+    // if (postToBeDeleted) {
+    //   console.log("Found");
+    // } else {
+    //   console.log("Not found");
+    // }
+    // console.log(id);
+    // console.log(newPostState.posts);
+
+    if (postList.find((post) => id === post.post_id)) {
+      axios.delete(`/api/posts/${id}`, {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+      });
+      setRemovedID(id);
+    } else if (newPostState.posts.find((post) => id === post.post_id)) {
+      axios.delete(`/api/posts/${id}`, {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+      });
+      setNewPostState((prev) => {
+        return {
+          ...prev,
+          posts: prev.posts.filter((post) => post.post_id !== id),
+        };
+      });
+    }
+  };
+
+  const onTextAreaChange = (event) => {
+    setNewPostState({ ...newPostState, text: event.target.value });
+  };
+
+  const onAnnouncementSelect = (event) => {
+    setNewPostState({ ...newPostState, showDropdowns: false });
+  };
+
+  const onSpoilerSelect = (event) => {
+    setNewPostState({ ...newPostState, showDropdowns: true });
+  };
+
+  const onShowSelect = (event) => {
+    const selected_show_tv_id = parseInt(event.target.value);
+    const selectedShow = newPostState.shows.find((show) => {
+      return show.tv_id === selected_show_tv_id;
+    });
+    setNewPostState({
+      ...newPostState,
+      currentShow: selectedShow,
+      currentSeason: selectedShow.episodes[0],
+      currentEpisode: selectedShow.episodes[0].episodes[0],
+    });
+  };
+
+  const onSeasonSelect = (event) => {
+    const selected_season_season_id = parseInt(event.target.value);
+    const selectedSeason = newPostState.currentShow.episodes.find((season) => {
+      return season.season_id === selected_season_season_id;
+    });
+    setNewPostState({
+      ...newPostState,
+      currentSeason: selectedSeason,
+      currentEpisode: selectedSeason.episodes[0],
+    });
+  };
+
+  const onEpisodeSelect = (event) => {
+    const selected_episode_episode_id = parseInt(event.target.value);
+    const selectedEpisode = newPostState.currentSeason.episodes.find(
+      (episode) => {
+        return episode.episode_id === selected_episode_episode_id;
+      }
+    );
+    setNewPostState({
+      ...newPostState,
+      currentEpisode: selectedEpisode,
+    });
+  };
+
+  const submitPost = (event) => {
+    event.preventDefault();
+    const token = localStorage.getItem("token");
+    if (newPostState.showDropdowns) {
+      axios
+        .post("/api/posts", {
+          headers: {
+            "x-access-token": token,
+          },
+          post_text: newPostState.text,
+          episode_air_date: newPostState.currentEpisode.air_date,
+          episode_order: newPostState.currentEpisode.episodeOrder,
+          tv_id: newPostState.currentShow.tv_id,
+          type: "spoiler",
+          episode_number: newPostState.currentEpisode.episode_number,
+          season_number: newPostState.currentEpisode.season_number,
+          title: newPostState.currentShow.title,
+        })
+        .then((res) => {
+          const posts = res.data.posts;
+          // console.log(posts);
+          let newUserPics;
+          const profilePicLoaded = newPostState.userPics.has(res.data.user_id);
+          // console.log(profilePicLoaded);
+          if (!profilePicLoaded) {
+            newUserPics = new Map([[res.data.user_id, res.data.profile_pic]]);
+          }
+          // window.location.reload();
+          // console.log(posts.concat(newPosts.posts));
+          setNewPostState((prevState) => {
+            // console.log(posts.concat(prevState.posts));
+            return {
+              ...prevState,
+              posts: posts.concat(prevState.posts),
+              userPics: profilePicLoaded
+                ? prevState.userPics
+                : new Map([...newUserPics, ...prevState.userPics]),
+              showBackdrop: false,
+            };
+          });
+          // setPostState({ ...postState, showBackdrop: false });
+          // setCurrentShow(shows[0]);
+        });
+    } else {
+      axios
+        .post("/api/posts", {
+          headers: {
+            "x-access-token": token,
+          },
+          post_text: newPostState.text,
+          episode_air_date: newPostState.currentEpisode.air_date,
+          episode_order: newPostState.currentEpisode.episodeOrder,
+          tv_id: newPostState.currentShow.tv_id,
+          type: "announcement",
+          episode_number: newPostState.currentEpisode.episode_number,
+          season_number: newPostState.currentEpisode.season_number,
+          title: newPostState.currentShow.title,
+        })
+        .then((res) => {
+          // console.log(res.data);
+          const posts = res.data.posts;
+          // console.log(posts);
+          let newUserPics;
+          const profilePicLoaded = newPostState.userPics.has(res.data.user_id);
+          if (!profilePicLoaded) {
+            newUserPics = new Map([[res.data.user_id, res.data.profile_pic]]);
+          }
+          // window.location.reload();
+          // console.log(posts.concat(newPosts.posts));
+          setNewPostState((prevState) => {
+            // console.log(posts.concat(prevState.posts));
+            return {
+              ...prevState,
+              posts: posts.concat(prevState.posts),
+              userPics: profilePicLoaded
+                ? prevState.userPics
+                : new Map([...newUserPics, ...prevState.userPics]),
+              showBackdrop: false,
+            };
+          });
+          // setPostState({ ...postState, showBackdrop: false });
+          // setCurrentShow(shows[0]);
+        });
+    }
+  };
+
+  const inputClickHandler = (event) => {
+    // console.log(props);
+    if (!loggedIn) {
+      props.history.push("/login");
+    } else {
+      setNewPostState({ ...newPostState, showBackdrop: true });
+    }
+  };
 
   useEffect(() => {
     const subscriptionIDs =
@@ -30,8 +267,6 @@ export default function Feed(props) {
           })
         : null;
     if (subscriptions && subscriptions.length > 0) {
-      // console.log(localStorage.getItem("token"));
-      // console.log(subscriptionIDs);
       axios
         .get("/api/shows", {
           headers: {
@@ -39,357 +274,48 @@ export default function Feed(props) {
           },
           params: {
             subscriptionIDs,
-            limit: 20,
           },
           paramsSerializer: (params) => {
             return qs.stringify(params);
           },
         })
         .then((res) => {
-          // console.log("Trying to get shows.");
           if (res.data.auth) {
-            setShows(res.data.shows);
+            setNewPostState({
+              ...newPostState,
+              shows: res.data.shows,
+              currentShow: res.data.shows[0],
+              currentSeason: res.data.shows[0].episodes[0],
+              currentEpisode: res.data.shows[0].episodes[0].episodes[0],
+              show: String(res.data.shows[0].tv_id),
+              season: String(res.data.shows[0].episodes[0].season_id),
+              episode: String(
+                res.data.shows[0].episodes[0].episodes[0].episode_id
+              ),
+            });
+          } else {
+            props.history.push("/login");
           }
-          // else {
-          //   props.history.push("/login");
-          // }
         });
     }
     // eslint-disable-next-line
   }, [subscriptions]);
 
-  const [state, setState] = useState({
-    imageArray: null,
-    showImage: false,
-    // showBackdrop: false,
-    showDropdowns: true,
-  });
-
-  const likes = [];
-  likes.length = 43;
-
-  // console.log(props.initPosts);
-  const [postState, setPostState] = useState({
-    ...props.initPosts,
-    loadMore: true,
-    showBackdrop: false,
-  }); //userPics entries are of the form [userID, picture]
-  // console.log(postState);
-  const [newPosts, setNewPosts] = useState({ posts: [], userPics: new Map() });
-  // useEffect(() => {
-  //   setPostState({ ...props.initPosts, showBackdrop: false });
-  // }, [props.initPosts]);
-  const loggedIn = useSelector((state) => state.loggedIn);
-  // console.log(subscriptions);
-  // console.log(shows[0]);
-
-  const setInitShow = (shows) => {
-    if (shows.length > 0) {
-      // console.log(shows[0]);
-      return shows[0];
-    } else {
-      // console.log("Bloop");
-      return null;
-    }
-  };
-  // console.log(shows);
-  const [currentShow, setCurrentShow] = useState(setInitShow(shows));
-  // console.log(currentShow);
-
-  const setInitSeason = (currentShow) => {
-    if (currentShow && currentShow.episodes.length > 0) {
-      // console.log(currentShow.episodes[0]);
-      return currentShow.episodes[0];
-    } else {
-      // console.log("No episodes in show or show not loaded!");
-      return null;
-    }
-  };
-
-  const [currentSeason, setCurrentSeason] = useState(
-    setInitSeason(currentShow)
-  );
-
-  const setInitEpisode = (currentSeason) => {
-    if (currentSeason && currentSeason.episodes.length > 0) {
-      // console.log("About to set init episode");
-      // console.log(currentSeason.episodes[0]);
-      return currentSeason.episodes[0];
-    } else {
-      return null;
-    }
-  };
-
-  const [currentEpisode, setCurrentEpisode] = useState(
-    setInitEpisode(currentSeason)
-  );
-
-  const [text, setText] = useState("");
-
   useEffect(() => {
-    setCurrentShow(setInitShow(shows));
-  }, [shows]);
-
-  useEffect(() => {
-    // console.log("Show has been changed");
-    setCurrentSeason(setInitSeason(currentShow));
-  }, [currentShow]);
-
-  useEffect(() => {
-    // console.log("Season has been changed");
-    setCurrentEpisode(setInitEpisode(currentSeason));
-  }, [currentSeason]);
-
-  //FUNCTIONS
-  const inputClickHandler = (event) => {
-    // console.log(props);
-    if (!loggedIn) {
-      props.history.push("/login");
-    } else {
-      setPostState({ ...postState, showBackdrop: true });
-    }
-  };
-
-  const handleBackdropClick = (event) => {
-    if (event.target.className.includes("Backdrop_Backdrop")) {
-      setPostState({ ...postState, showBackdrop: false });
-    }
-  };
-  //
-  const onAnnouncementSelect = (event) => {
-    setState({ ...state, showDropdowns: false });
-  };
-
-  const onSpoilerSelect = (event) => {
-    setState({ ...state, showDropdowns: true });
-  };
-
-  const onShowSelect = (event) => {
-    // console.log("Show has been selected");
-    const showTitle = event.target.value;
-    // console.log(showTitle);
-    shows.forEach((show) => {
-      if (show.title === showTitle) {
-        setCurrentShow(show);
-      }
-    });
-  };
-
-  const onSeasonSelect = (event) => {
-    const seasonTitle = event.target.value;
-    // console.log(currentShow);
-    // console.log(seasonTitle);
-    currentShow.episodes.forEach((season) => {
-      if (season.season_name === seasonTitle) {
-        setCurrentSeason(season);
-      }
-    });
-  };
-
-  const onEpisodeSelect = (event) => {
-    const episodeTitle = event.target.value;
-    currentSeason.episodes.forEach((episode) => {
-      if (episode.title === episodeTitle) {
-        setCurrentEpisode(episode);
-      }
-    });
-  };
-
-  const onTextAreaChange = (event) => {
-    setText(event.target.value);
-  };
-
-  const submitPost = (event) => {
-    const token = localStorage.getItem("token");
-    // console.log(currentEpisode);
-    if (state.showDropdowns) {
-      axios
-        .post("/api/posts", {
-          headers: {
-            "x-access-token": token,
-          },
-          post_text: text,
-          episode_air_date: currentEpisode.air_date,
-          episode_order: currentEpisode.episodeOrder,
-          tv_id: currentShow.tv_id,
-          type: "spoiler",
-          episode_number: currentEpisode.episode_number,
-          season_number: currentEpisode.season_number,
-          title: currentShow.title,
-        })
-        .then((res) => {
-          // console.log(res.data);
-          const posts = res.data.posts;
-          // console.log(posts);
-          let newUserPics;
-          const profilePicLoaded = newPosts.userPics.has(res.data.user_id);
-          // console.log(profilePicLoaded);
-          if (!profilePicLoaded) {
-            newUserPics = new Map([[res.data.user_id, res.data.profile_pic]]);
-          }
-          // window.location.reload();
-          // console.log(posts.concat(newPosts.posts));
-          setNewPosts((prevState) => {
-            // console.log(posts.concat(prevState.posts));
-            return {
-              ...prevState,
-              posts: posts.concat(prevState.posts),
-              userPics: profilePicLoaded
-                ? prevState.userPics
-                : new Map([...newUserPics, ...prevState.userPics]),
-            };
-          });
-          setPostState({ ...postState, showBackdrop: false });
-          setCurrentShow(shows[0]);
-        });
-    } else {
-      axios
-        .post("/api/posts", {
-          headers: {
-            "x-access-token": token,
-          },
-          post_text: text,
-          episode_air_date: currentEpisode.air_date,
-          episode_order: currentEpisode.episodeOrder,
-          tv_id: currentShow.tv_id,
-          type: "announcement",
-          episode_number: currentEpisode.episode_number,
-          season_number: currentEpisode.season_number,
-          title: currentShow.title,
-        })
-        .then((res) => {
-          // console.log(res.data);
-          const posts = res.data.posts;
-          // console.log(posts);
-          let newUserPics;
-          const profilePicLoaded = newPosts.userPics.has(res.data.user_id);
-          if (!profilePicLoaded) {
-            newUserPics = new Map([[res.data.user_id, res.data.profile_pic]]);
-          }
-          // window.location.reload();
-          // console.log(posts.concat(newPosts.posts));
-          setNewPosts((prevState) => {
-            // console.log(posts.concat(prevState.posts));
-            return {
-              ...prevState,
-              posts: posts.concat(prevState.posts),
-              userPics: profilePicLoaded
-                ? prevState.userPics
-                : new Map([...newUserPics, ...prevState.userPics]),
-            };
-          });
-          setPostState({ ...postState, showBackdrop: false });
-          setCurrentShow(shows[0]);
-        });
-    }
-  };
-
-  const deletePosts = (event, postID) => {
-    axios.delete(`/api/posts/${postID}`, {
-      headers: {
-        "x-access-token": localStorage.getItem("token"),
-      },
-    });
-    newPosts.posts.every((post) => {
-      if (parseInt(post.post_id) === parseInt(postID)) {
-        const newNewPosts = newPosts.posts.filter(
-          (post) => parseInt(post.post_id) !== parseInt(postID)
-        );
-        setNewPosts({ ...newPosts, posts: newNewPosts });
-        return false;
-      } else {
-        return true;
-      }
-    });
-    postState.posts.every((post) => {
-      if (parseInt(post.post_id) === parseInt(postID)) {
-        const newPostStatePosts = postState.posts.filter(
-          (post) => parseInt(post.post_id) !== parseInt(postID)
-        );
-        setPostState({ ...postState, posts: newPostStatePosts });
-        return false;
-      } else {
-        return true;
-      }
-    });
-  };
-  // let profilePicBase64 = null;
-
-  const getMorePosts = async () => {
-    console.log("Fetching posts");
-    setTimeout(async () => {
-      const subscriptionIDs =
-        subscriptions && subscriptions.length > 0
-          ? subscriptions.map((sub) => {
-              return sub.show_id;
-            })
-          : null;
-      // console.log(subscriptionIDs);
-      console.log(postState);
-      console.log(
-        postState.posts
-          .map((post) => post.post_id)
-          .concat(newPosts.posts.map((post) => post.post_id))
-      );
-      if (subscriptionIDs) {
-        await axios
-          .get("/api/posts", {
-            params: {
-              postIDs: postState.posts
-                .map((post) => post.post_id)
-                .concat(newPosts.posts.map((post) => post.post_id)),
-              userIDs: Array.from(postState.userPics.keys()),
-              subscriptionIDs: subscriptionIDs,
-            },
-            paramsSerializer: (params) => {
-              return qs.stringify(params);
-            },
-            headers: {
-              "x-access-token": localStorage.getItem("token"),
-            },
-          })
-          .then((res) => {
-            // console.log("Fetched posts");
-            // const { posts, userPics } = { ...res.data };
-            // console.log(posts);
-            const posts = res.data.posts;
-            // console.log(posts);
-            const userPics = new Map(JSON.parse(res.data.userPics));
-            // console.log(userPics);
-            // console.log(postState);
-            // console.log(posts);
-            // console.log(posts);
-            setPostState((prevState) => ({
-              ...prevState,
-              posts: prevState.posts.concat(posts),
-              userPics: new Map([...prevState.userPics, ...userPics]),
-              loadMore: true,
-            }));
-          });
-      }
-      // setPostState((prevState) => ({
-      //   ...prevState,
-      //   posts: prevState.posts.concat(blankArray),
-      // }));
-    }, 200);
-  };
-
-  useEffect(getMorePosts, []);
-  useEffect(getMorePosts, [loggedIn]);
-
-  useEffect(() => {
-    // console.log(postState.posts.length);
-    // console.log(postState.posts);
-  }, [postState]);
+    const option = {
+      root: null,
+      rootMargin: "20px",
+      threshold: 0,
+    };
+    const observer = new IntersectionObserver(handleObserver, option);
+    if (loader.current) observer.observe(loader.current);
+  }, [handleObserver]);
 
   return (
     <div className={classes.Feed}>
-      {postState.showBackdrop ? (
-        <Backdrop
-          showBackdrop={postState.showBackdrop}
-          onClick={handleBackdropClick}
-        >
-          <div className={classes.Modal}>
+      {newPostState.showBackdrop && (
+        <Backdrop showBackdrop={newPostState.showBackdrop}>
+          <div className={classes.Modal} ref={ref}>
             <div className={classes.ModalTitle}>Enter post</div>
             <textarea
               className={classes.PostInput}
@@ -419,27 +345,36 @@ export default function Feed(props) {
 
             <div className={classes.Dropdowns}>
               <select className={classes.Dropdown} onChange={onShowSelect}>
-                {shows.map((show) => {
+                {newPostState.shows.map((show) => {
                   // console.log("Show11");
-                  return <option id={show.show_id}>{show.title}</option>;
+                  return (
+                    <option id={show.tv_id} value={show.tv_id}>
+                      {show.title}
+                    </option>
+                  );
                 })}
               </select>
-              {state.showDropdowns && shows.length > 0 ? (
+              {newPostState.showDropdowns && newPostState.shows.length > 0 ? (
                 <select className={classes.Dropdown} onChange={onSeasonSelect}>
-                  {currentShow.episodes.map((season) => {
+                  {newPostState.currentShow.episodes.map((season) => {
                     return (
-                      <option id={season.season_id}>
+                      <option id={season.season_id} value={season.season_id}>
                         {season.season_name}
                       </option>
                     );
                   })}
                 </select>
               ) : null}
-              {state.showDropdowns && shows.length > 0 ? (
+              {newPostState.showDropdowns && newPostState.shows.length > 0 ? (
                 <select className={classes.Dropdown} onChange={onEpisodeSelect}>
-                  {currentSeason.episodes.map((episode) => {
+                  {newPostState.currentSeason.episodes.map((episode) => {
                     return (
-                      <option id={episode.episode_id}>{episode.title}</option>
+                      <option
+                        id={episode.episode_id}
+                        value={episode.episode_id}
+                      >
+                        {episode.title}
+                      </option>
                     );
                   })}
                 </select>
@@ -453,7 +388,7 @@ export default function Feed(props) {
             </div>
           </div>
         </Backdrop>
-      ) : null}
+      )}
 
       {loggedIn ? (
         <div className={classes.InputPost}>
@@ -469,64 +404,66 @@ export default function Feed(props) {
           ></input>
         </div>
       ) : null}
-      {loggedIn ? null : <PostSpinner></PostSpinner>}
-      {loggedIn
-        ? newPosts.posts.map((post) => {
-            // console.log(post.tags);
-            return (
-              <Post
-                body={post.body}
-                username={post.username}
-                post_date={post.post_date.toString()}
-                likes={post.likes}
-                comments={post.comments}
-                user_liked_post={post.user_liked_post}
-                user_id={post.user_id}
-                user_pic_map={newPosts.userPics}
-                type={post.type}
-                episode_tag={post.episode}
-                tags={post.tags}
-                friend_status={post.friend_status}
-                post_id={post.post_id}
-                num_likes={post.num_likes}
-                delete_posts={deletePosts}
-              ></Post>
-            );
-          })
-        : null}
-      {loggedIn ? (
-        <InfiniteScroll
-          dataLength={postState.posts.length}
-          loader={<PostSpinner></PostSpinner>}
-          next={getMorePosts}
-          hasMore={true}
-          scrollThreshold={50}
-          className={classes.InfiniteScroll}
-        >
-          {postState.posts.map((post) => {
-            // console.log(post.comments);
-            return (
-              <Post
-                body={post.body}
-                username={post.username}
-                post_date={post.post_date.toString()}
-                likes={post.likes}
-                comments={post.comments}
-                user_liked_post={post.user_liked_post}
-                user_id={post.user_id}
-                user_pic_map={postState.userPics}
-                type={post.type}
-                episode_tag={post.episode}
-                tags={post.tags}
-                post_id={post.post_id}
-                friend_status={post.friend_status}
-                num_likes={post.num_likes}
-                delete_posts={deletePosts}
-              ></Post>
-            );
-          })}
-        </InfiniteScroll>
-      ) : null}
+      <div>
+        {newPostState.posts.map((post) => {
+          return (
+            <Post
+              body={post.body}
+              username={post.username}
+              post_date={post.post_date.toString()}
+              likes={post.likes}
+              comments={post.comments}
+              user_liked_post={post.user_liked_post}
+              user_id={post.user_id}
+              user_pic_map={newPostState.userPics}
+              type={post.type}
+              episode_tag={post.episode}
+              tags={post.tags}
+              post_id={post.post_id}
+              friend_status={post.friend_status}
+              num_likes={post.num_likes}
+              delete_posts={deletePosts}
+              key={post.post_id}
+            ></Post>
+          );
+        })}
+      </div>
+      <div>
+        {postList.map((post) => {
+          return (
+            <Post
+              body={post.body}
+              username={post.username}
+              post_date={post.post_date.toString()}
+              likes={post.likes}
+              comments={post.comments}
+              user_liked_post={post.user_liked_post}
+              user_id={post.user_id}
+              user_pic_map={userPicsMap}
+              type={post.type}
+              episode_tag={post.episode}
+              tags={post.tags}
+              post_id={post.post_id}
+              friend_status={post.friend_status}
+              num_likes={post.num_likes}
+              delete_posts={deletePosts}
+              key={post.post_id}
+            ></Post>
+          );
+        })}
+      </div>
+      {loading && !done && <PostSpinner></PostSpinner>}
+      {error && <p>Error!</p>}
+      {done && (
+        <div className={classes.EndMessageContainer}>
+          <p className={classes.EndMessage}>
+            No more posts for your subscribed shows!
+          </p>
+        </div>
+      )}
+      <div ref={loader} />
     </div>
   );
 }
+
+export default Feed;

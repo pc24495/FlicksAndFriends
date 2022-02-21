@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import classes from "./MainSection.module.css";
-import Feed from "./Feed/Feed3.js";
+import Feed from "./Feed/Feed.js";
 import Sidebar from "./Sidebar/Sidebar.js";
 import FriendsSidebar from "./FriendsSidebar/FriendsSidebar.js";
 import { useHistory } from "react-router-dom";
