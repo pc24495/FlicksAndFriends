@@ -145,13 +145,23 @@
   margin-top: 10px;
   border-radius: 50%;
   display: flex;
-  justify-self: center;
+  justify-content: center;
   align-items: center;
+}
+
+.EditIcon {
+  display: none;
+  color: var(--nord2);
+  font-size: 40px;
 }
 
 .ChangePicLink:hover {
   opacity: 0.4;
   cursor: pointer;
+}
+
+.ChangePicLink:hover .EditIcon {
+  display: block;
 }
 
 @media (max-width: 960px) {

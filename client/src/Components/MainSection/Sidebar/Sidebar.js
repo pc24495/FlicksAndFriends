@@ -1,14 +1,23 @@
 import React, { Component } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import classes from "./Sidebar.module.css";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
+import { HiPencilAlt } from "react-icons/hi";
 
 const Sidebar = (props) => {
   const profilePic = useSelector((state) => state.profilePic);
   const username = useSelector((state) => state.username);
   const loggedIn = useSelector((state) => state.loggedIn);
   const subscriptions = useSelector((state) => state.subscriptions);
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const changeProfilePicture = (event) => {
+    dispatch({ type: "CHANGE_PROFILE_PICTURE_LINK", redirectLink: "/" });
+    history.push("/profilepic");
+  };
 
   return (
     <div className={classes.Sidebar}>
@@ -19,7 +28,11 @@ const Sidebar = (props) => {
           alt="Profile"
         ></img>
       )}
-      {profilePic && <div className={classes.ChangePicLink}></div>}
+      {profilePic && (
+        <div className={classes.ChangePicLink} onClick={changeProfilePicture}>
+          <HiPencilAlt className={classes.EditIcon} />
+        </div>
+      )}
       <p
         className={classes.Username}
         style={{
