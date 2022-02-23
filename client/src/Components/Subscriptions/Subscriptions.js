@@ -51,6 +51,7 @@ const Subscriptions = (props) => {
     showBackdrop: false,
     clickedShow: {},
   });
+  const [showExplanationBackdrop, setShowExplanationBackdrop] = useState(false);
   const dispatch = useDispatch();
   const handleObserver = useCallback((entries) => {
     const target = entries[0];
@@ -84,6 +85,18 @@ const Subscriptions = (props) => {
       rootMargin: "20px",
       threshold: 0,
     });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("api/users/subscription_explanation", {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+      })
+      .then((response) => {
+        setShowExplanationBackdrop(response.data.subscription_explanation);
+      });
   }, []);
 
   useEffect(() => {
@@ -144,6 +157,21 @@ const Subscriptions = (props) => {
 
   const handleMobileSearch = (event) => {
     dispatch({ type: "SEARCH", searchValue: event.target.value });
+  };
+
+  const handleExplanations = (event) => {
+    event.preventDefault();
+    if (event.target.elements.show_explanation.checked) {
+      axios.patch("api/users/subscription_explanation", {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+        params: {
+          subscription_explanation: true,
+        },
+      });
+    }
+    setShowExplanationBackdrop(false);
   };
 
   return (
@@ -212,11 +240,11 @@ const Subscriptions = (props) => {
         style={{
           top: searchMode
             ? subscriptions.length === 0 || !subscriptions
-              ? "80px"
-              : "180px"
+              ? "100px"
+              : "200px"
             : subscriptions.length === 0 || !subscriptions
-            ? "0px"
-            : "100px",
+            ? "20px"
+            : "120px",
         }}
       >
         {!mobileCutoff && !isFiltering && (
@@ -327,6 +355,55 @@ const Subscriptions = (props) => {
           ></ShowBox>
         ) : null}
       </Backdrop>
+      <div
+        className={classes.ExplanationBackdrop}
+        style={{ display: showExplanationBackdrop ? "flex" : "none" }}
+      >
+        <div className={classes.ExplanationModal}>
+          <div className={classes.ExplanationModalInner}>
+            <p>
+              Welcome to the subscriptions page! Please follow these
+              instructions for the best experience:{" "}
+            </p>
+            <h3>Mobile:</h3>
+            <p>
+              Click on the title of a show you're watching. You can scroll down
+              until you see a title you recognize or click the search icon in
+              the bottom-right to bring up a search bar. Clicking on the title
+              will bring up a popup for the show. Select the LAST episode you
+              watched and click submit to add it to your subscriptions. Once
+              you've added at least one show to your subscriptions, you'll see
+              your list of tags of your subsrcibed shows at the top of the
+              screen below the navigation bar. You can click on the "x" next to
+              a show's title to remove it from your subscriptions list, but keep
+              in mind changes will not be saved until you click "submit" on the
+              show tag bar.{" "}
+            </p>
+          </div>
+          <form
+            className={classes.ExplanationForm}
+            onSubmit={handleExplanations}
+          >
+            <div className={classes.CheckboxContainer}>
+              <input
+                type="checkbox"
+                id="show_explanation"
+                name="show_explanation"
+              ></input>
+              <label for="show_explanation">
+                Don't show this message again
+              </label>
+            </div>
+            <button className={classes.SubmitButton}>Submit</button>
+          </form>
+          <p
+            className={classes.ModalClose}
+            onClick={() => setShowExplanationBackdrop(false)}
+          >
+            x
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

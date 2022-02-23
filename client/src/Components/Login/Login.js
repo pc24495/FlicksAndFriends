@@ -37,10 +37,8 @@ const Login = (props) => {
 
   const submitLogin = (event) => {
     event.preventDefault();
-    // console.log("Logging in");
     const username = event.target.elements.username.value;
     const password = event.target.elements.password.value;
-    // console.log(password);
     const newLoginErrors = {
       usernameErrors: [],
       passwordErrors: [],
@@ -51,9 +49,6 @@ const Login = (props) => {
     if (password === null || password === "") {
       newLoginErrors.passwordErrors.push("Please enter a password");
     }
-    // console.log(newLoginErrors);
-    // console.log(newLoginErrors.usernameErrors.length);
-    // console.log(newLoginErrors.passwordErrors.length);
     if (
       newLoginErrors.usernameErrors.length === 0 &&
       newLoginErrors.passwordErrors.length === 0
@@ -61,30 +56,24 @@ const Login = (props) => {
       axios.post("/api/login", { username, password }).then((response) => {
         if (response.data.success) {
           localStorage.setItem("token", response.data.token);
-          // console.log(response.data.result);
-          // console.log("Pushing!!");
           dispatch({
             type: "LOGIN",
             username: response.data.result.username,
             profilePic: response.data.result.profile_pic,
             userID: response.data.result.user_id,
           });
-          // console.log("Pushing!!");
           history.push("/");
         } else {
-          // console.log(response.data.errors);
           setLoginErrors(response.data.errors);
         }
       });
     } else {
-      // console.log("Login failed");
       setLoginErrors(newLoginErrors);
     }
   };
 
   const submitLoginMobile = (event) => {
     event.preventDefault();
-    // console.log("Lol");
     event.target.elements.username = {};
     event.target.elements.username.value =
       event.target.elements.mobileUsername.value;
@@ -99,14 +88,11 @@ const Login = (props) => {
     const username = event.target.elements.username.value;
     const password = event.target.elements.password.value;
     const confirmPassword = event.target.elements.confirmPassword.value;
-    // console.log(password);
     const newRegisterErrors = {
       usernameErrors: [],
       passwordErrors: [],
       confirmPasswordErrors: [],
     };
-    // console.log(password.length);
-    // console.log(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?@]/g.test(password));
     if (password === null || password === "") {
       newRegisterErrors.passwordErrors.push("Please enter a password");
     } else if (
@@ -130,9 +116,6 @@ const Login = (props) => {
         "Usernames must be less than 20 characters long"
       );
     }
-    // console.log(newRegisterErrors.usernameErrors.length);
-    // console.log(newRegisterErrors.passwordErrors.length);
-    // console.log(newRegisterErrors.confirmPasswordErrors.length);
     if (
       newRegisterErrors.usernameErrors.length === 0 &&
       newRegisterErrors.passwordErrors.length === 0 &&
@@ -153,9 +136,7 @@ const Login = (props) => {
                 password,
               })
               .then((res) => {
-                //   console.log("Setting token");
                 if (res.data.success) {
-                  // console.log(res.data.result);
                   localStorage.setItem("token", res.data.token);
                   dispatch({
                     type: "LOGIN",
@@ -180,7 +161,6 @@ const Login = (props) => {
 
   const submitRegisterMobile = (event) => {
     event.preventDefault();
-    // console.log("Lol");
     event.target.elements.username = {};
     event.target.elements.username.value =
       event.target.elements.mobileUsername.value;
@@ -202,8 +182,6 @@ const Login = (props) => {
     axios.post("/api/login/google", { googleId, email }).then((res) => {
       if (res.data.success) {
         if (res.data.firstTime) {
-          // console.log("First time!");
-          // console.log(res.data);
           setGoogleState({
             ...googleState,
             showBackdrop: true,
@@ -212,7 +190,6 @@ const Login = (props) => {
             token: res.data.token,
           });
         } else {
-          // console.log("Not first time!");
           localStorage.setItem("token", res.data.token);
           dispatch({
             type: "LOGIN",
@@ -228,13 +205,11 @@ const Login = (props) => {
   };
 
   const googleFailure = (err) => {
-    // console.log("Google login failed, try again later");
     console.log(err);
   };
 
   const handleSubmitUsername = (event) => {
     event.preventDefault();
-    console.log(event.target.elements.username_change.value);
     axios
       .patch(`/api/users/username`, {
         username: event.target.elements.username_change.value,
@@ -243,7 +218,6 @@ const Login = (props) => {
         },
       })
       .then((res) => {
-        console.log(res.data);
         if (res.data.success) {
           localStorage.setItem("token", googleState.token);
           dispatch({

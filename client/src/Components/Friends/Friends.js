@@ -46,7 +46,7 @@ const Friends = (props) => {
       ) : null}
       {state.isLoaded && state.friends.length === 0 ? (
         <div className={classes.WarningContainer}>
-          <p className={classes.Warning}>
+          <p className={classes.NoFriendsWarning}>
             You have no friends. To send someone a friend request, hover over
             their username on one of their posts and click "Add Friend".
           </p>

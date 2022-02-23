@@ -133,11 +133,8 @@ router.patch("/username", verifyJWT, async (request, response) => {
       request.userID,
     ])
     .then((res) => {
-      console.log(res.rows[0]);
       return res.rows[0];
     });
-  console.log("Returning changed user: ");
-  console.log(result);
   return response.status(200).json({ success: true, result });
 });
 

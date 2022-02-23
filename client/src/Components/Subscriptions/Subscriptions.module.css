@@ -7,8 +7,6 @@
   flex-direction: column;
 }
 
-/* Start of show tag CSS */
-
 .FixedElements {
   position: fixed;
   top: var(--toolbar-height);
@@ -111,7 +109,7 @@
 /* End of show tag CSS */
 
 .SelectorContainer {
-  top: 100px;
+  top: 120px;
   margin: auto;
   position: relative;
   width: 90%;
@@ -329,6 +327,99 @@
   outline: none;
   /* line-height: 50px; */
   /* font-size: 50px; */
+}
+
+.ExplanationBackdrop {
+  z-index: 300;
+  background-color: rgba(0, 0, 0, 0.5);
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: calc(var(--toolbar-height) * -1);
+}
+
+.ExplanationModal {
+  width: 300px;
+  height: 450px;
+  background-color: var(--nord10);
+  opacity: 1;
+  padding: 25px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.ExplanationModalInner {
+  flex-grow: 1;
+  overflow: scroll;
+  /* background-color: turquoise; */
+  margin: 0px;
+  padding: 0px;
+}
+
+.ExplanationModalInner p,
+h3 {
+  color: var(--nord5);
+}
+
+.ExplanationForm {
+  height: 50px;
+  /* background-color: yellow; */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--nord5);
+  margin-top: 15px;
+}
+
+.CheckboxContainer {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.SubmitButton {
+  padding: 0.7em;
+  margin: 0 0.3em 0.3em 0;
+  border-radius: 0.2em;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  color: var(--nord6);
+  background-color: var(--nord8);
+
+  border: none;
+  text-align: center;
+  right: 0px;
+  position: relative;
+  margin-bottom: 10px;
+  /* right: 20px; */
+}
+
+.SubmitButton:hover {
+  cursor: pointer;
+}
+
+.ModalClose {
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  font-size: 20px;
+}
+
+.ModalClose:hover {
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 @-webkit-keyframes load5 {

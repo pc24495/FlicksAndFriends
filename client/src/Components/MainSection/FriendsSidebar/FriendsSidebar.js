@@ -93,6 +93,12 @@ const FriendsSidebar = (props) => {
       ) : null}
       {loggedIn && state.isLoaded ? (
         <div className={classes.FriendsSidebarInner}>
+          {state.friendsList.length === 0 && (
+            <p>
+              You have no friends, hover over someone's username to send them a
+              friend request.{" "}
+            </p>
+          )}
           {state.friendsList.map((friend) => {
             return (
               <FriendBox

@@ -55,6 +55,11 @@
   transform: translateZ(0);
 }
 
+.NoFriendsWarning {
+  width: 100%;
+  text-align: center;
+}
+
 @-webkit-keyframes load5 {
   0%,
   100% {
