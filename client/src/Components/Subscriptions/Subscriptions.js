@@ -166,9 +166,8 @@ const Subscriptions = (props) => {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
-        params: {
-          subscription_explanation: true,
-        },
+
+        subscription_explanation: false,
       });
     }
     setShowExplanationBackdrop(false);

@@ -13,8 +13,10 @@ router.get("/", verifyJWT, (req, res) => {
       } else if (err) {
         console.log("Error");
       } else {
-        // console.log(result.rows);
-        res.json({ auth: true, userData: result.rows[0] });
+        res.json({
+          auth: true,
+          userData: { ...result.rows[0], password: null },
+        });
       }
     }
   );
@@ -142,6 +144,12 @@ router.patch(
   "/subscription_explanation",
   verifyJWT,
   async (request, response) => {
+    if (request.body.subscription_explanation == null) {
+      return response.status(400).json({ success: false });
+    }
+    if (typeof request.body.subscription_explanation !== "boolean") {
+      return response.status(400).json({ success: false });
+    }
     db.query("UPDATE users SET subscription_explanation=$1 WHERE user_id=$2", [
       request.body.subscription_explanation,
       request.userID,
