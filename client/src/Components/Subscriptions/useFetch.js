@@ -31,6 +31,7 @@ function useFetch(
         },
       })
       .then(async (res) => {
+        console.log(res.data.subscriptions);
         // if();
         await setShows([...res.data.subscribedShows, ...res.data.shows]);
         await setNotSubscribedShows(res.data.shows);

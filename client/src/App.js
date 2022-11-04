@@ -12,6 +12,7 @@ import CreatePost from "./Components/CreatePost/CreatePost.js";
 import { useEffect } from "react";
 import FriendRequests from "./Components/FriendRequests/FriendRequests.js";
 import Friends from "./Components/Friends/Friends.js";
+import logoutTest from "./Helpers/logout.js";
 
 function App(props) {
   const history = useHistory();
@@ -62,11 +63,15 @@ function App(props) {
             // getShows();
             getSubscriptions();
           } else {
+            // console.log("Auth failed");
+            logoutTest(localStorage.getItem("token"));
             dispatch({ type: "LOGOUT" });
             history.push("/");
           }
         });
     } else {
+      // console.log("No token");
+      logoutTest(localStorage.getItem("token"));
       dispatch({ type: "LOGOUT" });
       history.push("/");
     }
@@ -77,6 +82,7 @@ function App(props) {
   updateLogin();
   getSubscriptions();
 
+  // console.log(loggedIn);
   return (
     <div>
       <Layout>

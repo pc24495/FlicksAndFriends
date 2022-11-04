@@ -237,8 +237,30 @@ const Login = (props) => {
     setGoogleState({ ...googleState, username: event.target.value });
   };
 
+  const testLogin = (event) => {
+    event.preventDefault();
+    axios.post("/api/login/test").then(async (response) => {
+      if (response.data.success) {
+        await localStorage.setItem("token", response.data.token);
+        // console.log(response.data.token);
+        await dispatch({
+          type: "LOGIN",
+          username: response.data.result.username,
+          profilePic: response.data.result.profile_pic,
+          userID: response.data.result.user_id,
+        });
+        // history.push("/profilepic");
+      } else {
+        console.log(response.data.errors);
+      }
+    });
+  };
+
   return (
     <div className={classes.LoginOuter}>
+      <h2 className={classes.TestUser} onClick={testLogin}>
+        Click here to login as a test user!
+      </h2>
       <div className={classes.Login}>
         <div className={classes.Text}>
           <div className={classes.TextInner}>

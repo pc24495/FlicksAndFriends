@@ -169,7 +169,7 @@ function Feed(props) {
     const token = localStorage.getItem("token");
     if (newPostState.showDropdowns) {
       axios
-        .post("/api/posts", {
+      .post("/api/posts", {
           headers: {
             "x-access-token": token,
           },

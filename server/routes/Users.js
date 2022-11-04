@@ -4,6 +4,7 @@ const verifyJWT = require("../middlewares/VerifyJWT.js");
 const db = require("../database");
 
 router.get("/", verifyJWT, (req, res) => {
+  console.log(req.userID);
   db.query(
     "SELECT * FROM users WHERE user_id=$1",
     [req.userID],

@@ -132,6 +132,7 @@ const ProfilePicUpload = (props) => {
 
   const submitImage = async (event) => {
     let token = localStorage.getItem("token");
+    console.log(redirectLink);
     // console.log(emptySrc);
     axios
       .patch("/api/users/profilePic", {

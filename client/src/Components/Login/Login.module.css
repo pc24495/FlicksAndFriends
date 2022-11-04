@@ -5,6 +5,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+}
+
+.TestUser {
+  font-size: 40px;
+  padding: 0px 10px;
+  text-align: center;
+  margin-bottom: 0px;
+}
+
+.TestUser:hover {
+  color: var(--nord7);
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 h2 {

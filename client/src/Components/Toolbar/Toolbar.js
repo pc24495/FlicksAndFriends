@@ -12,6 +12,7 @@ import { FiLogOut } from "react-icons/fi";
 import { TiUserDelete } from "react-icons/ti";
 import { GrClose } from "react-icons/gr";
 import axios from "../../axiosConfig.js";
+import logoutTest from "../../Helpers/logout.js";
 
 const Toolbar = (props) => {
   const loggedIn = useSelector((state) => state.loggedIn);
@@ -44,7 +45,9 @@ const Toolbar = (props) => {
   const pathname = useLocation().pathname;
 
   const logout = () => {
+    logoutTest(localStorage.getItem("token"));
     localStorage.removeItem("token");
+    console.log("Logging out");
     dispatch({ type: "LOGOUT" });
   };
 
@@ -196,6 +199,7 @@ const Toolbar = (props) => {
           "x-access-token": localStorage.getItem("token"),
         },
       });
+      logoutTest(localStorage.getItem("token"));
       await dispatch({ type: "LOGOUT" });
       setBackdropState({ ...backdropState, showBackdrop: false });
     }

@@ -55,6 +55,7 @@ const reducer = (state = initialState, action) => {
   }
 
   if (action.type === "LOGOUT") {
+    console.log("Logging out from Index.js");
     localStorage.clear();
     return {
       ...state,

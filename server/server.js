@@ -54,8 +54,12 @@ app.use("/api/friends", friendsRoute);
 app.use("/api/posts", postsRoute);
 app.use("/api/comments", commentsRoute);
 app.use("/api/shows", showsRoute);
+// app.use("/api/pets", petsRoute);
+// router.get("/", (req, res) => {
+// res.json({"Fox":})
+// });
 
-const PORT = process.env.port || 5000;
+const PORT = process.env.port || 5002;
 
 app.listen(PORT, () => {
   console.log(`Server is up and listening on port ${PORT}`);

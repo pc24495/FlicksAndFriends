@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import classes from "./MobileSidebar.module.css";
 import { GrClose } from "react-icons/gr";
 import axios from "../../axiosConfig.js";
+import logoutTest from "../../Helpers/logout.js";
 
 export default function MobileSidebar(props) {
   const history = useHistory();
@@ -34,6 +35,7 @@ export default function MobileSidebar(props) {
           "x-access-token": localStorage.getItem("token"),
         },
       });
+      logoutTest(localStorage.getItem("token"));
       await dispatch({ type: "LOGOUT" });
       setBackdropState({ ...backdropState, showBackdrop: false });
     }
