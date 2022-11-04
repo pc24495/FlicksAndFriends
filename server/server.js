@@ -59,7 +59,7 @@ app.use("/api/shows", showsRoute);
 // res.json({"Fox":})
 // });
 
-const PORT = process.env.port || 5002;
+const PORT = process.env.port || 5000;
 
 app.listen(PORT, () => {
   console.log(`Server is up and listening on port ${PORT}`);
